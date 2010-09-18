@@ -34,7 +34,7 @@ public class Duemilanove implements SerialPortEventListener{
 
 	//Variables arduino
 	int sensores_t=0;
-	String sensores[]=null;
+	public byte sensores[][]=null;
 	String res= new String();
 
 	public void initialize() {
@@ -148,7 +148,7 @@ public class Duemilanove implements SerialPortEventListener{
 	//	}
 
 	private synchronized String leerArduinoHilos(){
-		
+
 		synchronized (res) {
 			try {
 				res.wait();
@@ -178,7 +178,9 @@ public class Duemilanove implements SerialPortEventListener{
 		//*********************************
 		try {
 			//tenemos que esperar algo para que vuelque la informacion
-			Thread.sleep(40);
+			//Thread.sleep(40);
+
+			Thread.sleep(150);
 
 			int available = input.available();
 			byte data[] = new byte[available];
@@ -187,6 +189,33 @@ public class Duemilanove implements SerialPortEventListener{
 				String res = new String(data);
 				return res;
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	byte[] leerArduinoBytes(){
+		//********************************
+		//MEJORA: QUE NO ESPERE, CON HILOS Y WAIT NOTIFY
+		//*********************************
+		try {
+			//tenemos que esperar algo para que vuelque la informacion
+			Thread.sleep(40);
+
+			int available = input.available();
+			byte data[] = new byte[available];
+			input.read(data, 0, available);
+			return data;
+			//			Byte[] d= new Byte[8];
+			//			for(int i=0;i<data.length;i++){
+			//				d[i]=data[i];
+			//			}
+			//			return d;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,7 +242,7 @@ public class Duemilanove implements SerialPortEventListener{
 		}
 		return this.sensores_t;
 	}
-	public void resetearBusqueda(){
+	public void resetearBusquedaT(){
 		try {
 			output.write(0x6B);
 		} catch (IOException e) {
@@ -222,22 +251,60 @@ public class Duemilanove implements SerialPortEventListener{
 		}
 	}
 
-	public String[] listarSensores(){
+	public byte[][] listarSensoresT(){
 		try {
 			this.contarSensoresT();
-			this.resetearBusqueda();
-			this.sensores= new String[this.sensores_t];
+			this.resetearBusquedaT();
+			this.sensores= new byte[this.sensores_t][8];
 			for(int i=0;i<this.sensores_t;i++){
 				output.write(0x6C);
-				String res =  leerArduino();
+				byte res[] =  leerArduinoBytes();
 				this.sensores[i]=res;
 			}
-			this.resetearBusqueda();
+			this.resetearBusquedaT();
 			return this.sensores;
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
+	public int seleccionsSensorT(byte[] sensor){ //0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
+		try {
+			//el comando es mXXXXXXXX
+			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
+			output.write(comando);
+			int res= Integer.parseInt(leerArduino());
+			return res;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -2;
+	}
+	public Float obtenerTemperatura(byte[] sensor){
+		try {
+			//Seleccionamos el sensor
+			if(seleccionsSensorT(sensor) != 1)
+				return null;
+			else {
+				output.write(0x6E);
+				//Tiempo necesario para la conversion
+				Thread.sleep(1000);
+				String res= leerArduino();
+				Float res_f= Float.parseFloat(res);
+				return res_f;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	}
+
 }
