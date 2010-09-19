@@ -35,7 +35,6 @@ public class Duemilanove implements SerialPortEventListener{
 	//Variables arduino
 	int sensores_t=0;
 	public byte sensores[][]=null;
-	String res= new String();
 
 	public void initialize() {
 		CommPortIdentifier portId = null;
@@ -119,9 +118,6 @@ public class Duemilanove implements SerialPortEventListener{
 	}
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			synchronized (res) {
-				res.notify();
-			}
 			//				try {
 			//					int available = input.available();
 			//					byte chunk[] = new byte[available];
@@ -148,30 +144,24 @@ public class Duemilanove implements SerialPortEventListener{
 	//	}
 
 	private synchronized String leerArduinoHilos(){
-
-		synchronized (res) {
-			try {
-				res.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				int available;
-				try {
-					available = input.available();
-					byte data[] = new byte[available];
-					int count = input.read(data, 0, available);
-					if(count > 0){//convertimos el dato en ASCII a int
-						String res = new String(data);
-						return res;
-					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		int available;
+		try {
+			available = input.available();
+			byte data[] = new byte[available];
+			int count = input.read(data, 0, available);
+			if(count > 0){//convertimos el dato en ASCII a int
+				String res = new String(data);
+				return res;
 			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		return null;
 	}
+
 	private  String leerArduino(){
 		//********************************
 		//MEJORA: QUE NO ESPERE, CON HILOS Y WAIT NOTIFY
@@ -270,7 +260,7 @@ public class Duemilanove implements SerialPortEventListener{
 		}
 		return null;
 	}
-	public int seleccionsSensorT(byte[] sensor){ //0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
+	int seleccionsSensorT(byte[] sensor){ //0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
 		try {
 			//el comando es mXXXXXXXX
 			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
@@ -307,4 +297,30 @@ public class Duemilanove implements SerialPortEventListener{
 		}	
 	}
 
+//	class Monitor{
+//		private byte[] data;
+//		private boolean available= false;
+//		public synchronized byte[] get() { 
+//			while (available == false) {
+//				try { 
+//					wait();
+//				}catch (InterruptedException e) { 
+//				}
+//			} 
+//			available = false; 
+//			notify(); 
+//			return data;
+//		}
+//		public synchronized void put(byte[] value) { 
+//			while (available == true) {
+//				try { 
+//					wait();
+//				} catch (InterruptedException e) {
+//				}
+//			} 
+//			data = value; 
+//			available = true; 
+//			notify();
+//		}
+//	}
 }

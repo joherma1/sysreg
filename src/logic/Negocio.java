@@ -5,10 +5,17 @@ import arduino.Duemilanove;
 
 public class Negocio {
 	Duemilanove due;
-
+	String[] sensores;
+	byte[][] sensores_raw;
 	public Negocio(){
 		due=new Duemilanove();
 		due.initialize();
+	}
+	public String[] getSensores() {
+		return sensores;
+	}
+	public byte[][] getSensores_raw() {
+		return sensores_raw;
 	}
 	public boolean iniciarRiego(){
 		return due.startReg();
@@ -20,11 +27,12 @@ public class Negocio {
 		return due.contarSensoresT();
 	}
 	public String[] listarSensoresT(){
-		byte raw[][] = due.listarSensoresT();
-		String [] sensore_hex = new String[raw.length];
-		for(int i=0;i<raw.length;i++)
-			sensore_hex[i] = toHexadecimal(raw[i]);
-		return sensore_hex;
+		//Los indices son los mismos para sensores y sensores_raw
+		sensores_raw = due.listarSensoresT();
+		sensores = new String[sensores_raw.length];
+		for(int i=0;i<sensores_raw.length;i++)
+			sensores[i] = toHexadecimal(sensores_raw[i]);
+		return sensores;
 	}
 	String toHexadecimal(byte[] datos) 
 	{ 
@@ -42,15 +50,17 @@ public class Negocio {
 		} 
 		return resultado; 
 	}
-	public boolean seleccionaSensorT(){
-		int res=due.seleccionsSensorT(due.sensores[0]);
-		if(res==1)//Seleccionado el sensor
-			return true;
-		else return false;
-	}
-	
-	public Float obtenerTemperatura(){
-		return due.obtenerTemperatura(due.sensores[0]);
+	public Float obtenerTemperatura(String sensor){
+		int i;
+		for (i=0;i<sensores.length;i++)
+			if(sensor.compareTo(sensores[i])==0)
+				break;
+		if(i==sensores.length)//No se ha encontrado el sensor
+			return null;
+		else{
+			Float res=due.obtenerTemperatura(sensores_raw[i]);
+			return res;
+		}
 	}
 
 }
