@@ -1,0 +1,3 @@
+Instalar paquete rxtx:
+	librxtx-java
+Importar en eclipse la libreria RXTXcomm.jar
