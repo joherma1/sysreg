@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
+import java.awt.Rectangle;
+import java.awt.Insets;
 
 public class Principal {
 
@@ -27,6 +29,7 @@ public class Principal {
 	private JButton b_obtenerTemperatura = null;
 	private JComboBox cb_sensoresT = null;
 	private JButton b_limpiar = null;
+	private String [] sensores =null;
 	private void inicializar(){
 		logica = new Negocio();
 	}
@@ -38,7 +41,7 @@ public class Principal {
 	private JFrame getF_Principal() {
 		if (f_Principal == null) {
 			f_Principal = new JFrame();
-			f_Principal.setSize(new Dimension(471, 295));
+			f_Principal.setSize(new Dimension(561, 248));
 			f_Principal.setTitle("SysReg");
 			f_Principal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_Principal.setContentPane(getCp_Principal());
@@ -53,46 +56,16 @@ public class Principal {
 	 */
 	private JPanel getCp_Principal() {
 		if (cp_Principal == null) {
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 1;
-			gridBagConstraints13.gridy = 6;
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridy = 8;
-			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints6.gridx = 1;
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 1;
-			gridBagConstraints5.gridy = 5;
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.fill = GridBagConstraints.BOTH;
-			gridBagConstraints3.gridy = 0;
-			gridBagConstraints3.weightx = 1.0;
-			gridBagConstraints3.weighty = 1.0;
-			gridBagConstraints3.gridwidth = 1;
-			gridBagConstraints3.gridheight = 8;
-			gridBagConstraints3.gridx = 0;
-			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.gridx = 1;
-			gridBagConstraints12.gridy = 3;
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 1;
-			gridBagConstraints11.gridy = 2;
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 1;
-			gridBagConstraints1.gridy = 1;
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 1;
-			gridBagConstraints.gridy = 0;
 			cp_Principal = new JPanel();
-			cp_Principal.setLayout(new GridBagLayout());
-			cp_Principal.add(getB_start(), gridBagConstraints);
-			cp_Principal.add(getB_stop(), gridBagConstraints1);
-			cp_Principal.add(getB_contar(), gridBagConstraints11);
-			cp_Principal.add(getB_listar_t(), gridBagConstraints12);
-			cp_Principal.add(getSc_datos(), gridBagConstraints3);
-			cp_Principal.add(getB_obtenerTemperatura(), gridBagConstraints5);
-			cp_Principal.add(getCb_sensoresT(), gridBagConstraints6);
-			cp_Principal.add(getB_limpiar(), gridBagConstraints13);
+			cp_Principal.setLayout(null);
+			cp_Principal.add(getB_start(), null);
+			cp_Principal.add(getB_stop(), null);
+			cp_Principal.add(getB_contar(), null);
+			cp_Principal.add(getB_listar_t(), null);
+			cp_Principal.add(getSc_datos(), null);
+			cp_Principal.add(getB_obtenerTemperatura(), null);
+			cp_Principal.add(getCb_sensoresT(), null);
+			cp_Principal.add(getB_limpiar(), null);
 		}
 		return cp_Principal;
 	}
@@ -106,6 +79,7 @@ public class Principal {
 		if (b_start == null) {
 			b_start = new JButton();
 			b_start.setText("Start");
+			b_start.setBounds(new Rectangle(240, 30, 75, 29));
 			b_start.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					logica.iniciarRiego();
@@ -124,6 +98,7 @@ public class Principal {
 		if (b_stop == null) {
 			b_stop = new JButton();
 			b_stop.setText("Stop");
+			b_stop.setBounds(new Rectangle(435, 30, 75, 29));
 			b_stop.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					logica.pararRiego();
@@ -142,6 +117,7 @@ public class Principal {
 		if (b_contar == null) {
 			b_contar = new JButton();
 			b_contar.setText("Contar Sensores");
+			b_contar.setBounds(new Rectangle(210, 135, 146, 29));
 			b_contar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					a_datos.setText(a_datos.getText() + logica.contarSensoresT()+ "\n");
@@ -159,12 +135,13 @@ public class Principal {
 		if (b_listar_t == null) {
 			b_listar_t = new JButton();
 			b_listar_t.setText("Listar Sensores");
+			b_listar_t.setBounds(new Rectangle(210, 90, 139, 29));
 			b_listar_t.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String[] aux= logica.listarSensoresT();
 					cb_sensoresT.removeAllItems();
 					for (int i=0;i<aux.length;i++){
-						cb_sensoresT.addItem(aux[i]);
+						cb_sensoresT.addItem(aux[i]);;
 					}
 				}
 			});
@@ -192,6 +169,7 @@ public class Principal {
 	private JScrollPane getSc_datos() {
 		if (sc_datos == null) {
 			sc_datos = new JScrollPane();
+			sc_datos.setBounds(new Rectangle(0, 0, 195, 196));
 			sc_datos.setViewportView(getA_datos());
 		}
 		return sc_datos;
@@ -205,6 +183,7 @@ public class Principal {
 		if (b_obtenerTemperatura == null) {
 			b_obtenerTemperatura = new JButton();
 			b_obtenerTemperatura.setText("Obtener Temperatura");
+			b_obtenerTemperatura.setBounds(new Rectangle(375, 135, 168, 29));
 			b_obtenerTemperatura.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String sensor = (String)cb_sensoresT.getSelectedItem();
@@ -227,6 +206,7 @@ public class Principal {
 	private JComboBox getCb_sensoresT() {
 		if (cb_sensoresT == null) {
 			cb_sensoresT = new JComboBox();
+			cb_sensoresT.setBounds(new Rectangle(360, 90, 191, 27));
 		}
 		return cb_sensoresT;
 	}
@@ -239,6 +219,7 @@ public class Principal {
 		if (b_limpiar == null) {
 			b_limpiar = new JButton();
 			b_limpiar.setText("Limpiar");
+			b_limpiar.setBounds(new Rectangle(49, 197, 91, 29));
 			b_limpiar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					a_datos.setText("");
@@ -250,11 +231,17 @@ public class Principal {
 	/**
 	 * @param args
 	 */
+	private void inicializar_sensores(){
+		this.sensores = logica.listarSensoresT();
+		for(int i =0; i<sensores.length; i++)
+			cb_sensoresT.addItem(sensores[i]);
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Principal main = new Principal();
 		main.inicializar();
 		JFrame frame = main.getF_Principal();
+		main.inicializar_sensores();
 		frame.setVisible(true);
 	}
 

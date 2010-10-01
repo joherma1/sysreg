@@ -1,21 +1,22 @@
 package logic;
 import java.io.ByteArrayInputStream;
 
+import arduino.Arduino;
 import arduino.Duemilanove;
 
 public class Negocio {
 	Duemilanove due;
-	String[] sensores;
-	byte[][] sensores_raw;
+	String[] sensores_t;
+	byte[][] sensores_t_raw;
 	public Negocio(){
 		due=new Duemilanove();
 		due.initialize();
 	}
-	public String[] getSensores() {
-		return sensores;
+	public String[] getSensoresT() {
+		return sensores_t;
 	}
-	public byte[][] getSensores_raw() {
-		return sensores_raw;
+	public byte[][] getSensoresTRaw() {
+		return sensores_t_raw;
 	}
 	public boolean iniciarRiego(){
 		return due.startReg();
@@ -28,13 +29,13 @@ public class Negocio {
 	}
 	public String[] listarSensoresT(){
 		//Los indices son los mismos para sensores y sensores_raw
-		sensores_raw = due.listarSensoresT();
-		sensores = new String[sensores_raw.length];
-		for(int i=0;i<sensores_raw.length;i++)
-			sensores[i] = toHexadecimal(sensores_raw[i]);
-		return sensores;
+		sensores_t_raw = due.listarSensoresT();
+		sensores_t = new String[sensores_t_raw.length];
+		for(int i=0;i<sensores_t_raw.length;i++)
+			sensores_t[i] = toHexadecimal(sensores_t_raw[i]);
+		return sensores_t;
 	}
-	String toHexadecimal(byte[] datos) 
+	private String toHexadecimal(byte[] datos) 
 	{ 
 		String resultado=""; 
 		ByteArrayInputStream input = new ByteArrayInputStream(datos); 
@@ -52,15 +53,49 @@ public class Negocio {
 	}
 	public Float obtenerTemperatura(String sensor){
 		int i;
-		for (i=0;i<sensores.length;i++)
-			if(sensor.compareTo(sensores[i])==0)
+		//Buscamos el indice del sensor
+		for (i=0;i<sensores_t.length;i++)
+			if(sensor.compareTo(sensores_t[i])==0)
 				break;
-		if(i==sensores.length)//No se ha encontrado el sensor
+		if(i==sensores_t.length)//No se ha encontrado el sensor
 			return null;
 		else{
-			Float res=due.obtenerTemperatura(sensores_raw[i]);
+			Float res=due.obtenerTemperatura(sensores_t_raw[i]);//Los dos indices coinciden
 			return res;
 		}
+	}
+	private void pintarMenu(){
+		System.out.println("------------------");
+		System.out.println("1-Activar riego");
+		System.out.println("j-Parar riego");
+		System.out.println("3-Contar sensores");
+		System.out.println("4-Listar sensores");
+		System.out.println("-------------------");
+	}
+	public static void main(String[] args) throws Exception {
+		Negocio main = new Negocio();
+//		main.pintarMenu();
+//		while(true){
+//			int value = System.in.read();
+//			switch (value) {
+//			case 0x6A:
+//				System.out.println("Hay "+main.contarSensoresT());
+//				break;
+//
+//			default:
+//				break;
+//			}
+//			main.pintarMenu();
+//		}
+		//TIEMPOS
+		//Inicio 1450
+		//contarSensoresT 40
+		//ListarSensoresT 40
+		
+		System.out.println(main.contarSensoresT());
+		main.listarSensoresT();
+		System.out.println(main.obtenerTemperatura(main.sensores_t[0]));
+		System.exit(0);
 	}
 
 }
