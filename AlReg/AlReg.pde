@@ -28,13 +28,7 @@ void loop(void){
   byte addr[8];//Identificador del sensor
   int count = Serial.available();
   if(count > 0){
-    //-----
-    //Serial.print("Quedan: ");
-    //Serial.println(count);
-    command=Serial.read();
-    //-----
-    //Serial.print("He leido: ");
-    //Serial.println(command);    
+    command=Serial.read();  
     switch (command){
     case 0x64: //activarRiego: d 100 0x64
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
@@ -62,42 +56,22 @@ void loop(void){
     case 0x6C: //siguienteSensor: l 108 0x6C
       if(ds.search(addr)){
         for(i=0;i<8;i++){
-          //Serial.print("Byte ");
-          //Serial.print(i,DEC);
-          //Serial.print(" ");
           Serial.print(addr[i], BYTE);
         }
       }
       break;
     case 0x6D: //seleccionarCursor: m 109 0x6D
-      //Serial.print("leyendo los datos del sensor");
       //leemos los 8 siguientes byte que seran el ID del sensor
       delay(40);
       contador=0;
-      //contador=8;
       for (i=0;i<8;i++){
-       
-       //  Serial.print(Serial.available());
        if(Serial.available()>0){
-       sensor_id[i]=Serial.read();
-       contador++;
+         sensor_id[i]=Serial.read();
+         contador++;
        }
-       }
-      /*sensor_id[0]=0x28;
-      sensor_id[1]=0xf5;
-      sensor_id[2]=0xE9;
-      sensor_id[3]=0xAF;
-      sensor_id[4]=0x02;
-      sensor_id[5]=0x00;
-      sensor_id[6]=0x00;
-      sensor_id[7]=0xD2;*/
+      }
       if(contador==8){
-        //for (i=0;i<8;i++){
-        //  Serial.print(sensor_id[i]);
-        //}
-        //comprobamos que el sensor es valido
-        if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {
-          //Serial.print("CRC no es valido!\n");
+        if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
           Serial.print(0);
           return;
         } 
@@ -110,27 +84,16 @@ void loop(void){
         Serial.print(-1);
       break; 
     case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
+    //Codigo Arduino Playground One Wire 
       ds.write(0x44,1);         // start conversion, with parasite power on at the end
       delay(1000);     // maybe 750ms is enough, maybe not
       // we might do a ds.depower() here, but the reset will take care of it.
-
       present = ds.reset();
       ds.select(sensor_id);    
       ds.write(0xBE);         // Read Scratchpad
-
-
-      //Serial.print("P=");
-      //Serial.print(present,HEX);
-      //Serial.print(" ");
       for ( i = 0; i < 9; i++) {           // we need 9 bytes
         data[i] = ds.read();
-        //Serial.print(data[i], HEX);
-        //Serial.print(" ");
       }
-      //Serial.print(" CRC=");
-      //Serial.print( OneWire::crc8( data, 8), HEX);
-      //Serial.println();
-
       LowByte = data[0];
       HighByte = data[1];
       TReading = (HighByte << 8) + LowByte;
@@ -143,8 +106,6 @@ void loop(void){
 
       Whole = Tc_100 / 100;  // separate off the whole and fractional portions
       Fract = Tc_100 % 100;
-
-
       if (SignBit) // If its negative
       {
         Serial.print("-");
@@ -156,11 +117,8 @@ void loop(void){
         Serial.print("0");
       }
       Serial.print(Fract);
-
-      //Serial.print("\n");
       break;
     }
-    //Serial.println();
   }
   command=0; 
 }
