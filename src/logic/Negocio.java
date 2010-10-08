@@ -1,7 +1,6 @@
 package logic;
 import java.io.ByteArrayInputStream;
 
-import arduino.Arduino;
 import arduino.Duemilanove;
 
 public class Negocio {
