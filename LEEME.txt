@@ -1,7 +1,5 @@
-09/10/2010
+cp Ejecucion:
 	Utilizar RXTX 2.2-
-
-Ejecucion:
 Mac OS X 10.6
 	RXTX 2.1 Stabel
 		Instalar RXTX 2.1-7-bins-r2
@@ -14,13 +12,25 @@ Mac OS X 10.6
 Ubuntu 10.04
 	x32
 		Instalar RXTX 2.1-7-bins-r2 siguiendo el fichero instalacion Ubuntu
+		ó
+		Instalar RXTX 2.2 Pre
+		sudo cp rxtx-2.2pre2-bins/RXTXcomm.jar /usr/lib/jvm/java-6-openjdk/jre/lib/ext/
+		sudo chmod 755 /usr/lib/jvm/java-6-openjdk/jre/lib/ext/RXTXcomm.jar
+		sudo cp rxtx-2.2pre2-bins/i686-pc-linux-gnu/* /usr/lib/jvm/java-6-openjdk/jre/bin/
+		chmod 755 /usr/lib/jvm/java-6-openjdk/jre/bin/librxtx*
+
 		Abrir .jar con OpenJDK
 	
 	x64
+		igual que en x32 con la carpeta x86_64-unknown-linux-gnu
 	
 Windows XP
 	x32
-		Instalar RXTX 2.1-7-bins-r2 siguiendo el fichero instalacion XP
+		Instalar RXTX 2.2
+			Copiar .dll en java/jre/bin
+			Copiar .jar en java/jre/lib/ext
+		Cambiar el puerto del arduino a COM11
+		Doble click archivo
 	
 Windows 7 
 	x64
