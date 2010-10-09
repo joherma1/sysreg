@@ -1,0 +1,36 @@
+09/10/2010
+	Utilizar RXTX 2.2-
+
+Ejecucion:
+Mac OS X 10.6
+	RXTX 2.1 Stabel
+		Instalar RXTX 2.1-7-bins-r2
+		java -d32 -jar SysAdmin.jar
+	RXT 2.2 Pre
+		Instalar RXTX 2.2pr2 segun el fichero instalación Mac OS X
+		Doble click aplicacion => java -jar SysAdmin.jar
+	
+
+Ubuntu 10.04
+	x32
+		Instalar RXTX 2.1-7-bins-r2 siguiendo el fichero instalacion Ubuntu
+		Abrir .jar con OpenJDK
+	
+	x64
+	
+Windows XP
+	x32
+		Instalar RXTX 2.1-7-bins-r2 siguiendo el fichero instalacion XP
+	
+Windows 7 
+	x64
+		Instalar java jdk 1.6.0_21
+		Instalar RXTX 2.2pre2 version 64 bits
+			copiar como dice el fichero Instalacion XP
+		
+Desarrollo en eclipse:
+Mac OS X 10.6 y Windows
+	RXTX 2.2 Pre
+	 -> Preferences -> Java -> Compiler -> Errors/Warnings
+	 (Project) Properties -> Java Compiler -> Errors/Warnings
+	 	Deprecated and restricted API ->Forbidden reference (access rules) -> Warnings
