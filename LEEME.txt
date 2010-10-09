@@ -1,5 +1,8 @@
-cp Ejecucion:
+Ejecucion:
 	Utilizar RXTX 2.2-
+Nota IMPORTANTE:
+	Debido a que arduinoIDE-0021 utiliza la version estable si, comprobado en MAC, tenemos instalada la version 2.2 no funcionara correctamente, cierres inesperados. Para trabajar con arduino IDE deberemos borrar las libreriras RXTX 2.2 y para ejecutar de nuevo la aplicación volveremos a copiarlas en /Library/Java/Extensions
+
 Mac OS X 10.6
 	RXTX 2.1 Stabel
 		Instalar RXTX 2.1-7-bins-r2
