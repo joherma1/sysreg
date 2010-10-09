@@ -22,7 +22,7 @@ public class Duemilanove{
 	private static final String PORT_NAMES[] = { 
 	"/dev/tty.usbserial-A700e0xk", // Mac OS X
 	"/dev/ttyUSB0", // Linux
-	"COM3", // Windows
+	"COM11", // Windows
 	};
 	/** Buffered input stream from the port */
 	private InputStream input;
@@ -115,8 +115,8 @@ public class Duemilanove{
 	private  String leerArduino(){
 		try {
 			//tenemos que esperar algo para que vuelque la informacion
-			//contarSensores = 40
-			Thread.sleep(40);
+			//contarSensores = 40, en Windows 50
+			Thread.sleep(50);
 			int available = input.available();
 			byte data[] = new byte[available];
 			int count = input.read(data, 0, available);
@@ -137,8 +137,8 @@ public class Duemilanove{
 	byte[] leerArduinoBytes(){
 		try {
 			//tenemos que esperar algo para que vuelque la informacion
-			//listarSensoresT = 28
-			Thread.sleep(30);
+			//listarSensoresT = 28, en Windows 40
+			Thread.sleep(40);
 			int available = input.available();
 			byte data[] = new byte[available];
 			input.read(data, 0, available);
