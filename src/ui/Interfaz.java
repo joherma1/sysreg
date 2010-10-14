@@ -26,7 +26,7 @@ public class Interfaz {
 	private JLabel l_solenoide = null;
 	private Negocio logica = null;  //  @jve:decl-index=0:
 	private String [] sensores = null;
-	//Panel T»
+	//Panel Tï¿½
 	private ArrayList<JLabel> l_id = new ArrayList<JLabel>();
 	private ArrayList<JLabel> l_value = new ArrayList<JLabel>();  //  @jve:decl-index=0:
 	private ArrayList<JButton> b_refresh = new ArrayList<JButton>();  //  @jve:decl-index=0:
@@ -86,7 +86,7 @@ public class Interfaz {
 			l_solenoide.setText("");
 			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
 			
-			//Panel T»
+			//Panel Tï¿½
 			GridBagConstraints gridBagConstraints0 = new GridBagConstraints();
 			gridBagConstraints0.gridx = 1;
 			gridBagConstraints0.gridy = 2;
@@ -145,7 +145,7 @@ public class Interfaz {
 	private JPanel getP_sensor() {
 		if (p_sensor == null) {
 			l_tipoSensor = new JLabel();
-			l_tipoSensor.setText("Temperatura (¼C)");
+			l_tipoSensor.setText("Temperatura (ÂºC)");
 			BorderLayout borderLayout = new BorderLayout();
 			borderLayout.setHgap(0);
 			borderLayout.setVgap(0);
@@ -195,7 +195,7 @@ public class Interfaz {
 	private JButton getB_anyadir() {
 		if (b_anyadir == null) {
 			b_anyadir = new JButton();
-			b_anyadir.setText("A–adir");
+			b_anyadir.setText("AÃ±adir");
 		}
 		return b_anyadir;
 	}
@@ -208,7 +208,7 @@ public class Interfaz {
 	private JButton getB_eliminar() {
 		if (b_eliminar == null) {
 			b_eliminar = new JButton();
-			b_eliminar.setText("Eliminar");
+			b_eliminar.setText("EliminÃ¡r");
 		}
 		return b_eliminar;
 	}
@@ -252,7 +252,7 @@ public class Interfaz {
 	}
 	void inicializar(){
 			logica = new Negocio();
-			//Sensores T»
+			//Sensores Tï¿½
 			String[] sensores = logica.listarSensoresT();
 			for(String sensor: sensores){
 				Float res=logica.obtenerTemperatura(sensor);
