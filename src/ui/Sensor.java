@@ -39,7 +39,7 @@ public class Sensor {
 			borderLayout.setHgap(0);
 			borderLayout.setVgap(0);
 			l_tipoSensor = new JLabel();
-			l_tipoSensor.setText("Temperatura (¼C)");
+			l_tipoSensor.setText("Temperatura (ÂªC)");
 			p_sensor = new JPanel();
 			p_sensor.setLayout(borderLayout);
 			p_sensor.setSize(new Dimension(267, 202));
@@ -92,7 +92,7 @@ public class Sensor {
 	private JButton getB_anyadir() {
 		if (b_anyadir == null) {
 			b_anyadir = new JButton();
-			b_anyadir.setText("A–adir");
+			b_anyadir.setText("AÃ±adir");
 		}
 		return b_anyadir;
 	}

@@ -2,9 +2,13 @@ package ui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
@@ -16,6 +20,7 @@ import javax.swing.ImageIcon;
 
 import logic.Negocio;
 import javax.swing.JScrollPane;
+import javax.swing.JProgressBar;
 
 public class Interfaz {
 
@@ -26,7 +31,7 @@ public class Interfaz {
 	private JLabel l_solenoide = null;
 	private Negocio logica = null;  //  @jve:decl-index=0:
 	private String [] sensores = null;
-	//Panel T�
+	//Panel Tª
 	private ArrayList<JLabel> l_id = new ArrayList<JLabel>();
 	private ArrayList<JLabel> l_value = new ArrayList<JLabel>();  //  @jve:decl-index=0:
 	private ArrayList<JButton> b_refresh = new ArrayList<JButton>();  //  @jve:decl-index=0:
@@ -38,6 +43,8 @@ public class Interfaz {
 	private JButton b_eliminar = null;
 	private JScrollPane sp_listado = null;
 	private JPanel p_listado = null;
+	private JProgressBar pb_procesando = null;
+	private JLabel esp_progresbar = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -46,9 +53,10 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(324, 287));
+			f_interfaz.setSize(new Dimension(324, 297));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			f_interfaz.setVisible(true);
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.setLocationRelativeTo(null);
 		}
@@ -62,6 +70,24 @@ public class Interfaz {
 	 */
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
+			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+			gridBagConstraints7.gridx = 1;
+			gridBagConstraints7.ipadx = 0;
+			gridBagConstraints7.ipady = 30;
+			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints7.gridy = 3;
+			esp_progresbar = new JLabel();
+			esp_progresbar.setText("");
+			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+			gridBagConstraints6.gridx = 2;
+			gridBagConstraints6.insets = new Insets(0, 5, 5, 5);
+			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints6.ipadx = 0;
+			gridBagConstraints6.anchor = GridBagConstraints.EAST;
+			gridBagConstraints6.ipady = 0;
+			gridBagConstraints6.gridwidth = 1;
+			gridBagConstraints6.gridheight = 1;
+			gridBagConstraints6.gridy = 3;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
 			gridBagConstraints3.gridwidth = 2;
@@ -85,18 +111,20 @@ public class Interfaz {
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
 			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
-			
+
 			//Panel T�
 			GridBagConstraints gridBagConstraints0 = new GridBagConstraints();
 			gridBagConstraints0.gridx = 1;
 			gridBagConstraints0.gridy = 2;
-			
+
 			p_interfaz = new JPanel();
 			p_interfaz.setLayout(new GridBagLayout());
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
 			p_interfaz.add(getB_desactivarRiego(), gridBagConstraints5);
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
+			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
+			p_interfaz.add(esp_progresbar, gridBagConstraints7);
 		}
 		return p_interfaz;
 	}
@@ -131,12 +159,12 @@ public class Interfaz {
 			b_desactivarRiego.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					logica.pararRiego();
-					}
+				}
 			});
 		}
 		return b_desactivarRiego;
 	}
-	
+
 	/**
 	 * This method initializes p_sensor	
 	 * 	
@@ -240,6 +268,20 @@ public class Interfaz {
 	}
 
 	/**
+	 * This method initializes pb_procesando	
+	 * 	
+	 * @return javax.swing.JProgressBar	
+	 */
+	private JProgressBar getPb_procesando() {
+		if (pb_procesando == null) {
+			pb_procesando = new JProgressBar();
+			pb_procesando.setIndeterminate(true);
+			pb_procesando.setVisible(false);
+		}
+		return pb_procesando;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -251,15 +293,15 @@ public class Interfaz {
 		frame_main.setVisible(true);
 	}
 	void inicializar(){
-			logica = new Negocio();
-			//Sensores T�
-			String[] sensores = logica.listarSensoresT();
-			for(String sensor: sensores){
-				Float res=logica.obtenerTemperatura(sensor);
-				anyardirSensor(sensor, res);
-			}
+		logica = new Negocio();
+		//Sensores Tª
+		String[] sensores = logica.listarSensoresT();
+		for(String sensor: sensores){
+			Float res=logica.obtenerTemperatura(sensor);
+			anyardirSensor(sensor, res);
+		}
 	}
-	
+
 	void anyardirSensor(String id, Float temp){
 		//Constraints
 		//id
@@ -283,7 +325,7 @@ public class Interfaz {
 		gridBagConstraints2.ipady = 0;
 		gridBagConstraints2.insets = new Insets(5, 5, 5, 5);
 		gridBagConstraints2.gridy = b_refresh.size();
-		
+
 		l_id.add(new JLabel());
 		l_id.get(l_id.size()-1).setText(id);
 		l_value.add(new JLabel());
@@ -295,13 +337,49 @@ public class Interfaz {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				int indice = b_refresh.indexOf((JButton)e.getSource());
 				//la etiqueta, el valor y el boton comparten el mismo id
-				Float nuevo_valor = logica.obtenerTemperatura(l_id.get(indice).getText());
-				l_value.get(indice).setText(nuevo_valor.toString());
+				pb_procesando.setVisible(true);
+				//No se puede obtener la temperatura de mas de dos sensores a la vez
+				//Desactivamos la actualizacion de los todos
+				for (int i=0; i<b_refresh.size();i++)
+					b_refresh.get(i).setEnabled(false);
+				Task tarea = new Task(indice);
+				tarea.execute();
 			}
 		});
-				
+
 		p_listado.add(l_id.get(l_id.size()-1), gridBagConstraints);
 		p_listado.add(l_value.get(l_value.size()-1), gridBagConstraints1);
 		p_listado.add(b_refresh.get(b_refresh.size()-1), gridBagConstraints2);
 	}
+	class Task extends SwingWorker<Void, Void> {
+		/*
+		 * Main task. Executed in background thread.
+		 */
+		Float nuevo_valor = null;
+		int indice;
+		Task(int indice){
+			this.indice = indice;
+		}
+		@Override
+		public Void doInBackground() {			
+			//System.out.println("Obteniendo temperatura de: " + l_id.get(indice).getText());
+			nuevo_valor = logica.obtenerTemperatura(l_id.get(indice).getText());
+			//System.out.println( l_id.get(indice).getText() + ": " + nuevo_valor);
+			l_value.get(indice).setText(nuevo_valor.toString());
+			return null;		
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			pb_procesando.setVisible(false);
+			//Volvemos a permitir actualizar los sensores
+			for (int i=0; i<b_refresh.size();i++)
+				b_refresh.get(i).setEnabled(true);
+			b_refresh.get(indice).setFocusPainted(true);
+		}
+	}
+
 }

@@ -17,12 +17,15 @@ import javax.sql.rowset.spi.SyncResolver;
 //MEJORA
 
 public class Duemilanove{
+	//--------------
+	//Variables RXTX
+	//--------------
 	SerialPort serialPort;
 	/** The port we're normally going to use. */
 	private static final String PORT_NAMES[] = { 
-	"/dev/tty.usbserial-A700e0xk", // Mac OS X
-	"/dev/ttyUSB0", // Linux
-	"COM11", // Windows
+		"/dev/tty.usbserial-A700e0xk", // Mac OS X
+		"/dev/ttyUSB0", // Linux
+		"COM11", // Windows
 	};
 	/** Buffered input stream from the port */
 	private InputStream input;
@@ -32,13 +35,18 @@ public class Duemilanove{
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
-
-	//Variables arduino
+	
+	//-----------------
+	//Variables Arduino
+	//-----------------
 	int n_sensores_t=0;
 	public byte sensores_t[][]=null;
 
+	//------------
+	//Métodos RXTX
+	//------------
 	public void initialize() {
-		//Inicializaci�n libreria RXTX
+		//Inicializaci�n libreria RXTX
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
@@ -89,30 +97,10 @@ public class Duemilanove{
 		}
 	}
 
-
-	public boolean startReg(){
-		try {
-			output.write(0x64);
-			return true;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public boolean stopReg(){
-		try {
-			output.write(0x65);
-			return true;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	private  String leerArduino(){
+	//---------------------------
+	//Métodos privados al paquete
+	//---------------------------
+	String leerArduino(){
 		try {
 			//tenemos que esperar algo para que vuelque la informacion
 			//contarSensores = 40, en Windows 50
@@ -153,6 +141,61 @@ public class Duemilanove{
 		return null;
 	}
 
+	void resetearBusquedaT(){
+		try {
+			output.write(0x6B);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	int seleccionarSensorT(byte[] sensor){ 
+		//0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
+		try {
+			//el comando es mXXXXXXXX
+			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
+			output.write(comando);
+			//Tiempo seleccionar cursor, 6ms
+			Thread.sleep(10);
+			int res= Integer.parseInt(leerArduino());
+			return res;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -2;
+	}
+
+	//------------------------
+	//Métodos públicos
+	//------------------------
+	public boolean startReg(){
+		try {
+			output.write(0x64);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean stopReg(){
+		try {
+			output.write(0x65);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+
 	public int contarSensoresT(){
 		try {
 			output.write(0x6A);
@@ -169,14 +212,7 @@ public class Duemilanove{
 		}
 		return this.n_sensores_t;
 	}
-	public void resetearBusquedaT(){
-		try {
-			output.write(0x6B);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 
 	public byte[][] listarSensoresT(){
 		try {
@@ -197,28 +233,11 @@ public class Duemilanove{
 		}
 		return null;
 	}
-	int seleccionsSensorT(byte[] sensor){ //0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
-		try {
-			//el comando es mXXXXXXXX
-			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
-			output.write(comando);
-			//Tiempo seleccionar cursor, 6ms
-			Thread.sleep(10);
-			int res= Integer.parseInt(leerArduino());
-			return res;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return -2;
-	}
+	
 	public Float obtenerTemperatura(byte[] sensor){
 		try {
 			//Seleccionamos el sensor
-			if(seleccionsSensorT(sensor) != 1)
+			if(seleccionarSensorT(sensor) != 1)
 				return null;
 			else {
 				output.write(0x6E);
