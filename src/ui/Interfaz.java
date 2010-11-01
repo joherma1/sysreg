@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
@@ -45,6 +46,10 @@ public class Interfaz {
 	private JPanel p_listado = null;
 	private JProgressBar pb_procesando = null;
 	private JLabel esp_progresbar = null;
+	private JFrame f_iniciando = null;  //  @jve:decl-index=0:visual-constraint="623,119"
+	private JPanel cp_iniciando = null;
+	private JLabel l_iniciando = null;
+	private JProgressBar pb_iniciando = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -53,10 +58,10 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(324, 297));
+			f_interfaz.setSize(new Dimension(330, 305));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			f_interfaz.setVisible(true);
+			f_interfaz.setVisible(false);
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.setLocationRelativeTo(null);
 		}
@@ -112,7 +117,7 @@ public class Interfaz {
 			l_solenoide.setText("");
 			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
 
-			//Panel T�
+			//Panel Tª
 			GridBagConstraints gridBagConstraints0 = new GridBagConstraints();
 			gridBagConstraints0.gridx = 1;
 			gridBagConstraints0.gridy = 2;
@@ -236,7 +241,7 @@ public class Interfaz {
 	private JButton getB_eliminar() {
 		if (b_eliminar == null) {
 			b_eliminar = new JButton();
-			b_eliminar.setText("Eliminár");
+			b_eliminar.setText("Eliminar");
 		}
 		return b_eliminar;
 	}
@@ -282,23 +287,84 @@ public class Interfaz {
 	}
 
 	/**
+	 * This method initializes f_iniciando	
+	 * 	
+	 * @return javax.swing.JFrame	
+	 */
+	private JFrame getF_iniciando() {
+		if (f_iniciando == null) {
+			f_iniciando = new JFrame();
+			f_iniciando.setSize(new Dimension(228, 132));
+			f_iniciando.setTitle("RegAdmin");
+			f_iniciando.setContentPane(getCp_iniciando());
+			f_iniciando.setLocationRelativeTo(null);
+		}
+		return f_iniciando;
+	}
+
+	/**
+	 * This method initializes cp_iniciando	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getCp_iniciando() {
+		if (cp_iniciando == null) {
+			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			gridBagConstraints9.gridx = 0;
+			gridBagConstraints9.gridy = 1;
+			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+			gridBagConstraints8.gridx = 0;
+			gridBagConstraints8.gridy = 0;
+			l_iniciando = new JLabel();
+			l_iniciando.setText("Conectando...");
+			cp_iniciando = new JPanel();
+			cp_iniciando.setLayout(new GridBagLayout());
+			cp_iniciando.add(l_iniciando, gridBagConstraints8);
+			cp_iniciando.add(getPb_iniciando(), gridBagConstraints9);
+		}
+		return cp_iniciando;
+	}
+
+	/**
+	 * This method initializes pb_iniciando	
+	 * 	
+	 * @return javax.swing.JProgressBar	
+	 */
+	private JProgressBar getPb_iniciando() {
+		if (pb_iniciando == null) {
+			pb_iniciando = new JProgressBar();
+			pb_iniciando.setIndeterminate(true);
+		}
+		return pb_iniciando;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
+		JFrame frame_iniciando = main.getF_iniciando();
+		frame_iniciando.setVisible(true);
 		main.inicializar();
-		//main.inicializar_sensores();
-		frame_main.setVisible(true);
 	}
 	void inicializar(){
 		logica = new Negocio();
-		//Sensores Tª
-		String[] sensores = logica.listarSensoresT();
-		for(String sensor: sensores){
-			Float res=logica.obtenerTemperatura(sensor);
-			anyardirSensor(sensor, res);
+		int ini= logica.inicializar();
+		if(ini == -1){
+			JOptionPane.showMessageDialog(this.f_iniciando, "No se ha encontrado el puerto de comunicación", "Error", JOptionPane.ERROR_MESSAGE);
+			f_iniciando.dispose();
+			f_interfaz.dispose();
+			System.exit(-1);
+		}else if(ini == -2){
+			JOptionPane.showMessageDialog(this.f_iniciando, "Error al inicializar el puerto", "Error", JOptionPane.ERROR_MESSAGE);
+			f_iniciando.dispose();
+			f_interfaz.dispose();
+			System.exit(-1);
+		}else{
+			TareaInicializar tarea = new TareaInicializar();
+			tarea.execute();
 		}
 	}
 
@@ -342,7 +408,7 @@ public class Interfaz {
 				//Desactivamos la actualizacion de los todos
 				for (int i=0; i<b_refresh.size();i++)
 					b_refresh.get(i).setEnabled(false);
-				Task tarea = new Task(indice);
+				TareaTemperatura tarea = new TareaTemperatura(indice);
 				tarea.execute();
 			}
 		});
@@ -351,21 +417,21 @@ public class Interfaz {
 		p_listado.add(l_value.get(l_value.size()-1), gridBagConstraints1);
 		p_listado.add(b_refresh.get(b_refresh.size()-1), gridBagConstraints2);
 	}
-	class Task extends SwingWorker<Void, Void> {
+	class TareaTemperatura extends SwingWorker<Void, Void> {
 		/*
 		 * Main task. Executed in background thread.
 		 */
 		Float nuevo_valor = null;
 		int indice;
-		Task(int indice){
+		TareaTemperatura(int indice){
 			this.indice = indice;
 		}
 		@Override
 		public Void doInBackground() {			
 			//System.out.println("Obteniendo temperatura de: " + l_id.get(indice).getText());
 			nuevo_valor = logica.obtenerTemperatura(l_id.get(indice).getText());
-			//System.out.println( l_id.get(indice).getText() + ": " + nuevo_valor);
 			l_value.get(indice).setText(nuevo_valor.toString());
+			//System.out.println( l_id.get(indice).getText() + ": " + nuevo_valor);
 			return null;		
 		}
 
@@ -379,6 +445,31 @@ public class Interfaz {
 			for (int i=0; i<b_refresh.size();i++)
 				b_refresh.get(i).setEnabled(true);
 			b_refresh.get(indice).setFocusPainted(true);
+		}
+	}	
+	class TareaInicializar extends SwingWorker<Void, Void> {
+		/*
+		 * Main task. Executed in background thread.
+		 */
+		@Override
+		public Void doInBackground() {			
+			//System.out.println("Obteniendo temperatura de: " + l_id.get(indice).getText());
+			//Sensores Tª
+			String[] sensores = logica.listarSensoresT();
+			for(String sensor: sensores){
+				Float res=logica.obtenerTemperatura(sensor);
+				anyardirSensor(sensor, res);
+			}
+			return null;		
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			f_iniciando.setVisible(false);
+			f_interfaz.setVisible(true);
 		}
 	}
 

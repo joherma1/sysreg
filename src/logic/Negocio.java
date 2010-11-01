@@ -9,7 +9,9 @@ public class Negocio {
 	byte[][] sensores_t_raw;
 	public Negocio(){
 		due=new Duemilanove();
-		due.initialize();
+	}
+	public int inicializar(){
+		return due.initialize();
 	}
 	public String[] getSensoresT() {
 		return sensores_t;
@@ -43,7 +45,7 @@ public class Negocio {
 		while(leido != -1) 
 		{ 
 			cadAux = Integer.toHexString(leido); 
-			if(cadAux.length() < 2) //Hay que a–adir un 0 
+			if(cadAux.length() < 2) //Hay que aï¿½adir un 0 
 				resultado += "0"; 
 			resultado += cadAux; 
 			leido = input.read(); 

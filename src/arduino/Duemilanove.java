@@ -45,8 +45,11 @@ public class Duemilanove{
 	//------------
 	//Métodos RXTX
 	//------------
-	public void initialize() {
-		//Inicializaci�n libreria RXTX
+	public int initialize() {
+		//0 OK
+		//-1 No se ha encontrado puerto
+		//-2 Error Abrir el puerto
+		//Inicializacion libreria RXTX
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
@@ -63,7 +66,7 @@ public class Duemilanove{
 
 		if (portId == null) {
 			System.out.println("Could not find COM port.");
-			return;
+			return -1;
 		}
 
 		try {
@@ -81,8 +84,10 @@ public class Duemilanove{
 			output = serialPort.getOutputStream();
 			//Tiempo de arranque, unos 1450
 			Thread.sleep(1500);
+			return 0;
 		} catch (Exception e) {
 			System.err.println(e.toString());
+			return -2;
 		}
 	}
 
