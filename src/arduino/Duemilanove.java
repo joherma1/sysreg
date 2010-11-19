@@ -282,8 +282,7 @@ public class Duemilanove implements SerialPortEventListener{
 			}
 			vacio=true;
 			byte[] res = buffer;
-			buffer=null;
-			notify();
+			buffer=null;;
 //			for(int i=0;i<res.length;i++)
 //				System.out.println("|"+res[i]+"|");
 			return res;
