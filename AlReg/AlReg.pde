@@ -20,6 +20,9 @@ void setup(void){
   Serial.begin(9600);
   //Activamos el puente H
   digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
+  Serial.print(6,BYTE);//Codigo de inicializacion, ACK
+  Serial.print(4,BYTE);//EndOfTransmission (ASCII)
+  
 }
 void loop(void){
   byte i; //Variable para bucles
@@ -49,6 +52,7 @@ void loop(void){
     case 0x6A: //contarSensores: j 106 0x6A
       //Lo enviamos como texto, si lo enviamos como Byte (RAW) solo podremos enviar 1 Byte en Ca2
       Serial.print(contarSensores());
+      Serial.print(4,BYTE);
       break;
     case 0x6B: //resetBusqueda: k 107 0x6B
       ds.reset_search();
@@ -58,6 +62,7 @@ void loop(void){
         for(i=0;i<8;i++){
           Serial.print(addr[i], BYTE);
         }
+        Serial.print(4,BYTE);
       }
       break;
     case 0x6D: //seleccionarCursor: m 109 0x6D
@@ -72,16 +77,20 @@ void loop(void){
       }
       if(contador==8){
         if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
-          Serial.print(0);
+          Serial.print(0,DEC);
+          Serial.print(4,BYTE);
           return;
         } 
         //Sensor valido
-        Serial.print(1);
+        Serial.print(1,DEC);
+        Serial.print(4,BYTE);
         ds.reset();
         ds.select(sensor_id);
       }
-      else 
-        Serial.print(-1);
+      else{
+        Serial.print(-1,DEC);
+        Serial.print(4,BYTE);
+      }
       break; 
     case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
     //Codigo Arduino Playground One Wire 
@@ -117,6 +126,7 @@ void loop(void){
         Serial.print("0");
       }
       Serial.print(Fract);
+      Serial.print(4,BYTE);
       break;
     }
   }
