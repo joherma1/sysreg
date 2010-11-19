@@ -1,22 +1,18 @@
 package arduino;
 
-import java.awt.Event;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-
 import gnu.io.CommPortIdentifier; 
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
 import java.util.Enumeration;
 
-import javax.sql.rowset.spi.SyncResolver;
-
 //MEJORA
 
-public class Duemilanove{
+@SuppressWarnings("restriction")
+public class Duemilanove implements SerialPortEventListener{
 	//--------------
 	//Variables RXTX
 	//--------------
@@ -35,12 +31,13 @@ public class Duemilanove{
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
-	
+
 	//-----------------
 	//Variables Arduino
 	//-----------------
 	int n_sensores_t=0;
 	public byte sensores_t[][]=null;
+	Monitor m=new Monitor();
 
 	//------------
 	//Métodos RXTX
@@ -82,15 +79,19 @@ public class Duemilanove{
 			// open the streams
 			input = serialPort.getInputStream();
 			output = serialPort.getOutputStream();
+
+			// add event listeners
+			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
 			//Tiempo de arranque, unos 1450
-			Thread.sleep(1500);
-			return 0;
+			if(this.leerArduinoBytes()[0]==6)//Arduino nos responde con ACK
+				return 0;
+			else return -2;
 		} catch (Exception e) {
 			System.err.println(e.toString());
 			return -2;
 		}
 	}
-
 	/**
 	 * This should be called when you stop using the port.
 	 * This will prevent port locking on platforms like Linux.
@@ -101,49 +102,62 @@ public class Duemilanove{
 			serialPort.close();
 		}
 	}
+	public synchronized void serialEvent(SerialPortEvent oEvent) {
+		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+			try {
+				int available = input.available();
+				byte chunk[] = new byte[available];
+				input.read(chunk, 0, available);
+				//Cuando llegue información la depositamos en el buffer del monitor
+				m.depositar(chunk);
+			} catch (Exception e) {
+				System.err.println(e.toString());
+			}
+		}
+		// Ignore all the other eventTypes, but you should consider the other ones.
+	}
 
 	//---------------------------
 	//Métodos privados al paquete
 	//---------------------------
 	String leerArduino(){
-		try {
-			//tenemos que esperar algo para que vuelque la informacion
-			//contarSensores = 40, en Windows 50
-			Thread.sleep(50);
-			int available = input.available();
-			byte data[] = new byte[available];
-			int count = input.read(data, 0, available);
-			if(count > 0){//convertimos el dato en ASCII a int
-				String res = new String(data);
-				return res;
+		byte[] data = m.recoger();
+		while(data[data.length -1]!=4){//Mientras no nos diga fin de transmision seguimos esperando
+			byte[] data2 = m.recoger();
+			//creamos el nuevo vector y lo rellenamos
+			byte[] aux= new byte[data.length+data2.length];
+			for(int i=0;i<aux.length;i++){
+				if(i<data.length)
+					aux[i]=data[i];
+				else
+					aux[i]=data2[i-data.length];
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			data=aux;
 		}
-		return null;
+		//ya tenemos todo el mensaje, lo pasamos a string elminando el caracter EOT
+		String res= new String(data,0,data.length-1);
+		return res;
 	}
 
 	byte[] leerArduinoBytes(){
-		try {
-			//tenemos que esperar algo para que vuelque la informacion
-			//listarSensoresT = 28, en Windows 40
-			Thread.sleep(40);
-			int available = input.available();
-			byte data[] = new byte[available];
-			input.read(data, 0, available);
-			return data;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		byte[] data = m.recoger();
+		while(data[data.length -1]!=4){//Mientras no nos diga fin de transmision seguimos esperando
+			byte[] data2 = m.recoger();
+			//creamos el nuevo vector y lo rellenamos
+			byte[] aux= new byte[data.length+data2.length];
+			for(int i=0;i<aux.length;i++){
+				if(i<data.length)
+					aux[i]=data[i];
+				else
+					aux[i]=data2[i-data.length];
+			}
+			data=aux;
 		}
-		return null;
+		//ya tenemos todo el mensaje,elminamos el caracter EOT
+		byte[] res = new byte[data.length-1];
+		for(int i=0;i<res.length;i++)
+			res[i]=data[i];
+		return res;
 	}
 
 	void resetearBusquedaT(){
@@ -154,7 +168,7 @@ public class Duemilanove{
 			e.printStackTrace();
 		}
 	}
-	
+
 	int seleccionarSensorT(byte[] sensor){ 
 		//0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
 		try {
@@ -162,13 +176,10 @@ public class Duemilanove{
 			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
 			output.write(comando);
 			//Tiempo seleccionar cursor, 6ms
-			Thread.sleep(10);
-			int res= Integer.parseInt(leerArduino());
+			String res1 = leerArduino();
+			int res= Integer.parseInt(res1);
 			return res;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -199,7 +210,7 @@ public class Duemilanove{
 			return false;
 		}
 	}
-	
+
 
 	public int contarSensoresT(){
 		try {
@@ -217,7 +228,7 @@ public class Duemilanove{
 		}
 		return this.n_sensores_t;
 	}
-	
+
 
 	public byte[][] listarSensoresT(){
 		try {
@@ -238,7 +249,7 @@ public class Duemilanove{
 		}
 		return null;
 	}
-	
+
 	public Float obtenerTemperatura(byte[] sensor){
 		try {
 			//Seleccionamos el sensor
@@ -246,8 +257,7 @@ public class Duemilanove{
 				return null;
 			else {
 				output.write(0x6E);
-				//Tiempo necesario para la conversion
-				Thread.sleep(1000);
+				//Tiempo necesario para la conversion, unos 1000¡
 				String res= leerArduino();
 				Float res_f= Float.parseFloat(res);
 				return res_f;
@@ -256,10 +266,93 @@ public class Duemilanove{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
 		}	
+	}
+	public class Monitor {
+		private byte[] buffer;
+		private boolean vacio = true;
+
+		public synchronized byte[] recoger(){
+			while(vacio==true){
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			vacio=true;
+			byte[] res = buffer;
+			buffer=null;
+			notify();
+//			for(int i=0;i<res.length;i++)
+//				System.out.println("|"+res[i]+"|");
+			return res;
+		}
+
+		public synchronized void depositar(byte[] data){
+			buffer=data;
+			vacio=false;
+			notify();
+		}
+	}
+	
+	public static void main(String[] args){
+		Duemilanove d= new Duemilanove();
+		d.initialize();
+//		System.out.println("1-Contar sensores");
+//		System.out.println("2-Listar sensores");
+//		System.out.println("3-Obtener temperatura del 1r sensor");
+//		System.out.println("4-Obtener temperatura del 2o sensor");
+		int opcion;
+		for(int ii=0;ii<1;ii++){
+			//int n=d.contarSensoresT();
+			//System.out.println("Numero de sensores "+ n);
+//			byte[][] l=d.listarSensoresT();
+//			for(int i=0;i<d.n_sensores_t;i++){
+//				String aux= new String(l[i]);
+//				System.out.println(aux);
+//			}
+			//System.out.println("Temperatura Sensor 1");
+			//d.obtenerTemperatura(l[0]);
+			//System.out.println("Ya listados");
+			//d.obtenerTemperatura(l[1]);
+		}
+		byte[] sensor= new byte[8];
+		sensor[0] = 40;
+		sensor[1] = -11;
+		sensor[2] = -23;
+		sensor[3] = -81;
+		sensor[4] = 2;
+		sensor[5] = 0;
+		sensor[6] = 0;
+		sensor[7] = -46;
+		d.seleccionarSensorT(sensor);
+		int n=d.contarSensoresT();
+		System.exit(0);
+			
+//		try {
+//			opcion = System.in.read();
+//			while(opcion!=-1){
+//				switch (opcion) {
+//				case 49://1 ASCII
+//					int n=d.contarSensoresT();
+//					System.out.println("Numero de sensores "+ n);
+//					break;
+//				case 50:
+//					byte[][] l=d.listarSensoresT();
+//					for(int i=0;i<d.n_sensores_t;i++){
+//						String aux= new String(l[i]);
+//						System.out.println(aux);
+//					}							
+//				default:
+//					break;
+//				}
+//				opcion = System.in.read();
+//			}
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }
