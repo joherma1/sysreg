@@ -13,6 +13,9 @@ public class Negocio {
 	public int inicializar(){
 		return due.initialize();
 	}
+	public void cerrar(){
+		due.close();
+	}
 	public String[] getSensoresT() {
 		return sensores_t;
 	}

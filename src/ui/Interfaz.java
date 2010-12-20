@@ -63,6 +63,11 @@ public class Interfaz {
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
 			f_interfaz.setContentPane(getP_interfaz());
+			f_interfaz.addWindowListener(new java.awt.event.WindowAdapter() {
+				public void windowClosing(java.awt.event.WindowEvent e) {
+					logica.cerrar();
+				}
+			});
 			f_interfaz.setLocationRelativeTo(null);
 		}
 		return f_interfaz;
@@ -98,6 +103,7 @@ public class Interfaz {
 			gridBagConstraints3.gridwidth = 2;
 			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
 			gridBagConstraints3.ipady = 80;
+			gridBagConstraints3.ipadx = 10;
 			gridBagConstraints3.gridy = 2;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 2;

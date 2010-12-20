@@ -327,6 +327,7 @@ public class Duemilanove implements SerialPortEventListener{
 		sensor[7] = -46;
 		d.seleccionarSensorT(sensor);
 		int n=d.contarSensoresT();
+		d.close();
 		System.exit(0);
 			
 //		try {
