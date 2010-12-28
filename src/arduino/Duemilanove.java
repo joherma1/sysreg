@@ -84,6 +84,9 @@ public class Duemilanove implements SerialPortEventListener{
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
 			//Tiempo de arranque, unos 1450
+			//Le enviamos una peticion de enlace
+			//Inicializamos por peticion aunque aceptamos la inicializacion por conexion
+			output.write(0x05);
 			if(this.leerArduinoBytes()[0]==6)//Arduino nos responde con ACK
 				return 0;
 			else return -2;

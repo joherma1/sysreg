@@ -8,6 +8,7 @@ import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.JButton;
@@ -352,6 +353,9 @@ public class Interfaz {
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
+		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
+		frame_main.setIconImage(icono);
+		frame_iniciando.setIconImage(icono);
 		frame_iniciando.setVisible(true);
 		main.inicializar();
 	}
