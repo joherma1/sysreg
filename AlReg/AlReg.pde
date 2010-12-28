@@ -19,10 +19,10 @@ void setup(void){
   //Inicializamos el puerto de serie
   Serial.begin(9600);
   //Activamos el puente H
-  digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
-  Serial.print(6,BYTE);//Codigo de inicializacion, ACK
-  Serial.print(4,BYTE);//EndOfTransmission (ASCII)
-  
+  digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high  
+  //Inicializacion por conexion
+  Serial.print(6, BYTE);//Codigo de inicializacion, ACK
+  Serial.print(4, BYTE);//EndOfTransmission (ASCII);
 }
 void loop(void){
   byte i; //Variable para bucles
@@ -31,8 +31,13 @@ void loop(void){
   byte addr[8];//Identificador del sensor
   int count = Serial.available();
   if(count > 0){
-    command=Serial.read();  
-    switch (command){
+    command=Serial.read();
+    switch (command){ 
+    //Inicializaion por peticion
+    case 0x05: //Solicitud de conexion: ENQ
+      Serial.print(6, BYTE);//Codigo de inicializacion, ACK
+      Serial.print(4,BYTE);//EndOfTransmission (ASCII)
+      break;
     case 0x64: //activarRiego: d 100 0x64
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
@@ -70,10 +75,10 @@ void loop(void){
       delay(40);
       contador=0;
       for (i=0;i<8;i++){
-       if(Serial.available()>0){
-         sensor_id[i]=Serial.read();
-         contador++;
-       }
+        if(Serial.available()>0){
+          sensor_id[i]=Serial.read();
+          contador++;
+        }
       }
       if(contador==8){
         if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
@@ -93,7 +98,7 @@ void loop(void){
       }
       break; 
     case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
-    //Codigo Arduino Playground One Wire 
+      //Codigo Arduino Playground One Wire 
       ds.write(0x44,1);         // start conversion, with parasite power on at the end
       delay(1000);     // maybe 750ms is enough, maybe not
       // we might do a ds.depower() here, but the reset will take care of it.
@@ -143,6 +148,7 @@ int contarSensores(void){
   ds.reset_search();
   return count;
 }
+
 
 
 
