@@ -16,6 +16,7 @@ void setup(void){
   pinMode(motor1Pin, OUTPUT); 
   pinMode(motor2Pin, OUTPUT); 
   pinMode(enable,OUTPUT);
+  pinMode(13, OUTPUT);
   //Inicializamos el puerto de serie
   Serial.begin(9600);
   //Activamos el puente H
