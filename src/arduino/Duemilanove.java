@@ -20,6 +20,7 @@ public class Duemilanove implements SerialPortEventListener{
 	/** The port we're normally going to use. */
 	private static final String PORT_NAMES[] = { 
 		"/dev/tty.usbserial-A700e0xk", // Mac OS X
+		"/dev/tty.usbmodem1d11",
 		"/dev/ttyUSB0", // Linux
 		"COM11", // Windows
 	};

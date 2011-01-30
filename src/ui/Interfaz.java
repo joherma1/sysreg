@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import logic.Negocio;
 import javax.swing.JScrollPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 public class Interfaz {
 
@@ -47,10 +48,12 @@ public class Interfaz {
 	private JPanel p_listado = null;
 	private JProgressBar pb_procesando = null;
 	private JLabel esp_progresbar = null;
-	private JFrame f_iniciando = null;  //  @jve:decl-index=0:visual-constraint="623,119"
+	private JFrame f_iniciando = null;  //  @jve:decl-index=0:visual-constraint="953,138"
 	private JPanel cp_iniciando = null;
 	private JLabel l_iniciando = null;
 	private JProgressBar pb_iniciando = null;
+	private JTextArea ta_horario = null;
+	private JScrollPane cp_horario = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -59,7 +62,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(330, 330));
+			f_interfaz.setSize(new Dimension(455, 330));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -81,12 +84,20 @@ public class Interfaz {
 	 */
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
+			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+			gridBagConstraints12.fill = GridBagConstraints.BOTH;
+			gridBagConstraints12.gridy = 0;
+			gridBagConstraints12.weightx = 1.0;
+			gridBagConstraints12.weighty = 1.0;
+			gridBagConstraints12.gridheight = 3;
+			gridBagConstraints12.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints12.gridx = 3;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 1;
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
 			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints7.gridy = 3;
+			gridBagConstraints7.gridy = 4;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -98,14 +109,14 @@ public class Interfaz {
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridwidth = 1;
 			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 3;
+			gridBagConstraints6.gridy = 4;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
-			gridBagConstraints3.gridwidth = 2;
+			gridBagConstraints3.gridwidth = 3;
 			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
 			gridBagConstraints3.ipady = 80;
 			gridBagConstraints3.ipadx = 10;
-			gridBagConstraints3.gridy = 2;
+			gridBagConstraints3.gridy = 3;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 2;
 			gridBagConstraints5.gridy = 1;
@@ -137,6 +148,7 @@ public class Interfaz {
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
 			p_interfaz.add(esp_progresbar, gridBagConstraints7);
+			p_interfaz.add(getCp_horario(), gridBagConstraints12);
 		}
 		return p_interfaz;
 	}
@@ -346,6 +358,32 @@ public class Interfaz {
 	}
 
 	/**
+	 * This method initializes ta_horario	
+	 * 	
+	 * @return javax.swing.JTextArea	
+	 */
+	private JTextArea getTa_horario() {
+		if (ta_horario == null) {
+			ta_horario = new JTextArea();
+			ta_horario.setEditable(false);
+		}
+		return ta_horario;
+	}
+
+	/**
+	 * This method initializes cp_horario	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getCp_horario() {
+		if (cp_horario == null) {
+			cp_horario = new JScrollPane();
+			cp_horario.setViewportView(getTa_horario());
+		}
+		return cp_horario;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -470,6 +508,7 @@ public class Interfaz {
 				Float res=logica.obtenerTemperatura(sensor);
 				anyardirSensor(sensor, res);
 			}
+			ta_horario.setText(logica.cargarCalendario());
 			return null;		
 		}
 
