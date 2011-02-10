@@ -6,7 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -15,19 +17,28 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.lang.Thread.State;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.ImageIcon;
 
+import logic.Evento;
 import logic.Negocio;
 import javax.swing.JScrollPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class Interfaz {
 
-	private JFrame f_interfaz = null;  //  @jve:decl-index=0:visual-constraint="169,48"
+	private JFrame f_interfaz = null;  //  @jve:decl-index=0:visual-constraint="165,86"
 	private JPanel p_interfaz = null;
 	private JButton b_activarRiego = null;
 	private JButton b_desactivarRiego = null;
@@ -52,8 +63,9 @@ public class Interfaz {
 	private JPanel cp_iniciando = null;
 	private JLabel l_iniciando = null;
 	private JProgressBar pb_iniciando = null;
-	private JTextArea ta_horario = null;
 	private JScrollPane cp_horario = null;
+	private JTextPane tp_horario = null;
+	private JPanel p_horario = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -62,7 +74,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(455, 330));
+			f_interfaz.setSize(new Dimension(459, 410));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -90,18 +102,19 @@ public class Interfaz {
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.gridheight = 3;
-			gridBagConstraints12.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints12.gridx = 3;
+			gridBagConstraints12.insets = new Insets(10, 5, 10, 10);
+			gridBagConstraints12.gridwidth = 1;
+			gridBagConstraints12.gridx = 4;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 1;
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
 			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints7.gridy = 4;
+			gridBagConstraints7.gridy = 5;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 2;
+			gridBagConstraints6.gridx = 3;
 			gridBagConstraints6.insets = new Insets(0, 5, 5, 5);
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints6.ipadx = 0;
@@ -109,27 +122,31 @@ public class Interfaz {
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridwidth = 1;
 			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 4;
+			gridBagConstraints6.gridy = 5;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
-			gridBagConstraints3.gridwidth = 3;
-			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints3.gridwidth = 4;
+			gridBagConstraints3.insets = new Insets(5, 5, 0, 5);
 			gridBagConstraints3.ipady = 80;
 			gridBagConstraints3.ipadx = 10;
-			gridBagConstraints3.gridy = 3;
+			gridBagConstraints3.gridy = 4;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 2;
-			gridBagConstraints5.gridy = 1;
+			gridBagConstraints5.gridx = 1;
+			gridBagConstraints5.anchor = GridBagConstraints.NORTH;
+			gridBagConstraints5.insets = new Insets(5, 10, 5, 5);
+			gridBagConstraints5.fill = GridBagConstraints.NONE;
+			gridBagConstraints5.gridy = 2;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 2;
-			gridBagConstraints4.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints4.gridy = 0;
+			gridBagConstraints4.gridx = 1;
+			gridBagConstraints4.insets = new Insets(5, 10, 5, 5);
+			gridBagConstraints4.anchor = GridBagConstraints.NORTH;
+			gridBagConstraints4.gridy = 1;
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 1;
-			gridBagConstraints11.gridheight = 2;
-			gridBagConstraints11.anchor = GridBagConstraints.WEST;
+			gridBagConstraints11.gridheight = 1;
+			gridBagConstraints11.anchor = GridBagConstraints.CENTER;
 			gridBagConstraints11.gridwidth = 1;
-			gridBagConstraints11.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints11.insets = new Insets(10, 10, 5, 5);
 			gridBagConstraints11.gridy = 0;
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
@@ -358,19 +375,6 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes ta_horario	
-	 * 	
-	 * @return javax.swing.JTextArea	
-	 */
-	private JTextArea getTa_horario() {
-		if (ta_horario == null) {
-			ta_horario = new JTextArea();
-			ta_horario.setEditable(false);
-		}
-		return ta_horario;
-	}
-
-	/**
 	 * This method initializes cp_horario	
 	 * 	
 	 * @return javax.swing.JScrollPane	
@@ -378,9 +382,44 @@ public class Interfaz {
 	private JScrollPane getCp_horario() {
 		if (cp_horario == null) {
 			cp_horario = new JScrollPane();
-			cp_horario.setViewportView(getTa_horario());
+			cp_horario.setViewportView(getP_horario());
 		}
 		return cp_horario;
+	}
+
+	/**
+	 * This method initializes tp_horario	
+	 * 	
+	 * @return javax.swing.JTextPane	
+	 */
+	private JTextPane getTp_horario() {
+		if (tp_horario == null) {
+			tp_horario = new JTextPane();
+			tp_horario.setEditable(false);
+			//Para que aparezca el scroll horizontal hemos metido el jtextpane en un jpane y este a su vez en un jscrollpane
+			//Si queremos que aparezca con su comportamiento por defecto (sin scroll horizontal pero con wrap line) solo hay que meter el jtextpane en un jscrollpane
+		}
+		return tp_horario;
+	}
+
+	/**
+	 * This method initializes p_horario	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getP_horario() {
+		if (p_horario == null) {
+			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			gridBagConstraints10.fill = GridBagConstraints.BOTH;
+			gridBagConstraints10.gridy = 0;
+			gridBagConstraints10.weightx = 1.0;
+			gridBagConstraints10.weighty = 1.0;
+			gridBagConstraints10.gridx = 0;
+			p_horario = new JPanel();
+			p_horario.setLayout(new GridBagLayout());
+			p_horario.add(getTp_horario(), gridBagConstraints10);
+		}
+		return p_horario;
 	}
 
 	/**
@@ -508,7 +547,63 @@ public class Interfaz {
 				Float res=logica.obtenerTemperatura(sensor);
 				anyardirSensor(sensor, res);
 			}
-			ta_horario.setText(logica.cargarCalendario());
+			List<Evento> eventos= logica.cargarCalendario();
+			try {
+				StyledDocument doc = tp_horario.getStyledDocument();
+				//ROJO
+				// Create a style object and then set the style attributes
+				Style styleRed = doc.addStyle("StyleRed", null);
+				// Italic -> cursiva
+				StyleConstants.setItalic(styleRed, true);
+				// Bold -> negrita
+				StyleConstants.setBold(styleRed, false);
+				// Font family
+				StyleConstants.setFontFamily(styleRed, "SansSerif");
+				// Font size
+				StyleConstants.setFontSize(styleRed, 12);
+				// Background color
+				StyleConstants.setBackground(styleRed, Color.white);
+				// Foreground color
+				StyleConstants.setForeground(styleRed, Color.red);
+				//NEGRO
+				Style styleBlack = doc.addStyle("StyleBlack", null);
+				StyleConstants.setItalic(styleBlack, false);
+				StyleConstants.setBold(styleBlack, false);
+				StyleConstants.setFontFamily(styleBlack, "SansSerif");
+				StyleConstants.setFontSize(styleBlack, 12);
+				StyleConstants.setBackground(styleBlack, Color.white);
+				StyleConstants.setForeground(styleBlack, Color.black);
+				//VERDE
+				Style styleGreen = doc.addStyle("StyleGreen", null);
+				StyleConstants.setItalic(styleGreen, true);
+				StyleConstants.setBold(styleGreen, true);
+				StyleConstants.setFontFamily(styleGreen, "SansSerif");
+				StyleConstants.setFontSize(styleGreen, 12);
+				StyleConstants.setBackground(styleGreen, Color.white);
+				StyleConstants.setForeground(styleGreen, Color.green);
+
+				// Append to document
+				for(int i = 0; i < eventos.size(); i++){
+					Evento e = eventos.get(i);
+					Evento.State es = e.getEstado();
+					switch(es){
+					case NEGRO:
+						doc.insertString(doc.getLength(), e.toString() + "\n", styleBlack);
+						break;
+					case ROJO:
+						doc.insertString(doc.getLength(), e.toString() + "\n", styleRed);
+						break;
+					case VERDE:
+						doc.insertString(doc.getLength(), e.toString() + "\n", styleGreen);
+						break;						
+					}
+				}
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
 			return null;		
 		}
 

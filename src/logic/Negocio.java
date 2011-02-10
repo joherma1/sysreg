@@ -129,8 +129,7 @@ public class Negocio {
 	//Devuelve una cadena con los eventos para hoy y mañana
 	//Hoy:
 	//hora_ini - hora_fin => Titulo: Descripcion
-	public String cargarCalendario(){	
-		String res = "";
+	public List<Evento> cargarCalendario(){	
 		try {
 			//Autenticacion
 			CalendarService myService = new CalendarService("RegAdmin");
@@ -154,6 +153,7 @@ public class Negocio {
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
 			DateTime ahora = obtenerHoy();
 			DateTime mañana = obtenerManyana();
+			//EL BUENO
 			//myQuery.setMinimumStartTime(obtenerHoy());
 			//myQuery.setMaximumStartTime(obtenerManyana());
 			myQuery.setMinimumStartTime(DateTime.parseDateTime("2011-01-29T00:00:00"));
@@ -177,11 +177,25 @@ public class Negocio {
 //					System.out.println();
 				}
 			}
+			//Ordenamos los eventos
 			Collections.sort(sortedEvents);
 			for(int i = 0; i < sortedEvents.size(); i++){
 				Evento e = sortedEvents.get(i);
-				res += e.toString() + "\n";
 			}
+			//Coloreamos los estados
+			for(int i = 0; i < sortedEvents.size(); i++){
+				Evento e = sortedEvents.get(i);
+				//verde			
+				e.colorear(DateTime.parseDateTime("2011-01-30T19:10:00.000+01:00"));
+				//rojo			
+				//e.colorear(DateTime.parseDateTime("2011-02-09T11:10:00.000+01:00"));
+				//negro			
+				//e.colorear(DateTime.parseDateTime("2001-01-29T11:10:00.000+01:00"));
+				//EL BUENO
+				//DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
+				//e.colorear(now);
+			}
+			return sortedEvents;
 
 		} catch (AuthenticationException e) {
 			// TODO Auto-generated catch block
@@ -196,7 +210,7 @@ public class Negocio {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return res;
+		return null;
 	}
 
 	private DateTime obtenerHoy(){
