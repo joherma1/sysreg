@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import logic.Evento.State;
+
 import com.google.gdata.client.*;
 import com.google.gdata.client.calendar.*;
 import com.google.gdata.data.*;
@@ -22,11 +24,13 @@ import com.google.gdata.util.*;
 import arduino.Duemilanove;
 
 public class Negocio {
-	Duemilanove due;
-	String[] sensores_t;
-	byte[][] sensores_t_raw;
-	String usuario;
-	String contrasenya;
+	private Duemilanove due;
+	private String[] sensores_t;
+	private byte[][] sensores_t_raw;
+	private String usuario;
+	private String contrasenya;
+	private List<Evento> sortedEvents;
+	private boolean riego_maestro = false; //Solo se puede desactivar manalmente
 	public Negocio(){
 		due=new Duemilanove();
 	}
@@ -42,11 +46,30 @@ public class Negocio {
 	public byte[][] getSensoresTRaw() {
 		return sensores_t_raw;
 	}
+	public boolean iniciarRiego(boolean manual){
+		if(manual == true)
+			riego_maestro = true;
+		return due.startReg();
+	}
 	public boolean iniciarRiego(){
 		return due.startReg();
 	}
+	public boolean pararRiego(boolean manual){
+		if(manual == true){
+			riego_maestro = false;
+			return due.stopReg();
+		} else { //Si no es una parada manual
+			if(riego_maestro == true)
+				return false; //Si es un riego maestro no lo podemos parar
+			else 
+				return due.stopReg();
+		}
+	}
 	public boolean pararRiego(){
-		return due.stopReg();
+		if(riego_maestro == true)
+			return false;
+		else
+			return due.stopReg();
 	}
 	public int contarSensoresT(){
 		return due.contarSensoresT();
@@ -144,8 +167,8 @@ public class Negocio {
 			//			  System.out.println("\t" + entry.getTitle().getPlainText());
 			//			}
 			URL feedUrl = new URL("https://www.google.com/calendar/feeds/default/private/full");
-			
-			
+
+
 			//The metafeed is a private, read-only feed that contains an entry for each calendar that a user has access to
 			//URL feedUrl = new URL("https://www.google.com/calendar/feeds/default");
 			//The allcalendars feed is a private read/write feed that is used for managing subscriptions and personalization settings of a user's calendars
@@ -154,12 +177,12 @@ public class Negocio {
 			DateTime ahora = obtenerHoy();
 			DateTime mañana = obtenerManyana();
 			//EL BUENO
-			//myQuery.setMinimumStartTime(obtenerHoy());
-			//myQuery.setMaximumStartTime(obtenerManyana());
-			myQuery.setMinimumStartTime(DateTime.parseDateTime("2011-01-29T00:00:00"));
-			myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-02-06T23:59:59"));
+			myQuery.setMinimumStartTime(obtenerHoy());
+			myQuery.setMaximumStartTime(obtenerManyana());
+			//myQuery.setMinimumStartTime(DateTime.parseDateTime("2011-01-29T00:00:00"));
+			//myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-02-06T23:59:59"));
 			CalendarEventFeed resultFeed = myService.query(myQuery, CalendarEventFeed.class);
-			List<Evento> sortedEvents= new ArrayList<Evento>();
+			sortedEvents= new ArrayList<Evento>();
 			for (int i = 0; i < resultFeed.getEntries().size(); i++) {
 				CalendarEventEntry entry = (CalendarEventEntry)resultFeed.getEntries().get(i);
 				for(int j = 0; j < entry.getTimes().size(); j++){
@@ -170,30 +193,27 @@ public class Negocio {
 						lugar = entry.getLocations().get(0).getValueString();
 					e.setLugar(lugar);
 					sortedEvents.add(e);
-					
-//					System.out.print(entry.getTimes().get(j).getStartTime()+ " --> " + entry.getTimes().get(0).getEndTime().toString() + "=> ");
-//					System.out.print(entry.getTitle().getPlainText() + ": " + entry.getPlainTextContent());
-//					System.out.print(" en " + lugar);
-//					System.out.println();
+
+					//					System.out.print(entry.getTimes().get(j).getStartTime()+ " --> " + entry.getTimes().get(0).getEndTime().toString() + "=> ");
+					//					System.out.print(entry.getTitle().getPlainText() + ": " + entry.getPlainTextContent());
+					//					System.out.print(" en " + lugar);
+					//					System.out.println();
 				}
 			}
 			//Ordenamos los eventos
 			Collections.sort(sortedEvents);
-			for(int i = 0; i < sortedEvents.size(); i++){
-				Evento e = sortedEvents.get(i);
-			}
 			//Coloreamos los estados
 			for(int i = 0; i < sortedEvents.size(); i++){
 				Evento e = sortedEvents.get(i);
 				//verde			
-				e.colorear(DateTime.parseDateTime("2011-01-30T19:10:00.000+01:00"));
+				//e.colorear(DateTime.parseDateTime("2011-01-30T19:10:00.000+01:00"));
 				//rojo			
 				//e.colorear(DateTime.parseDateTime("2011-02-09T11:10:00.000+01:00"));
 				//negro			
 				//e.colorear(DateTime.parseDateTime("2001-01-29T11:10:00.000+01:00"));
 				//EL BUENO
-				//DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
-				//e.colorear(now);
+				DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
+				e.colorear(now);
 			}
 			return sortedEvents;
 
@@ -225,6 +245,24 @@ public class Negocio {
 		now.set((now.get(Calendar.YEAR)), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
 		now.add(Calendar.DAY_OF_MONTH, 1);
 		return new DateTime(now.getTime(),TimeZone.getTimeZone("Europe/Madrid"));
+	}
+	public List<Evento> comprobarRiego(){
+		//DISEÑADO PARA SOLO UNA VALVULA
+		//Actualizamos los colores y si hay algun evento activo activamos riego, si alguno acaba desactivamos riego
+		//y actualizamos colores
+		boolean activo=false;
+		for(int i = 0; i < sortedEvents.size(); i++){
+			Evento e = sortedEvents.get(i);
+			DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
+			e.colorear(now);
+			if(e.getEstado()==State.VERDE)
+				activo=true;			
+		}
+		if(activo)
+			iniciarRiego();
+		else
+			pararRiego();
+		return sortedEvents;
 	}
 }
 

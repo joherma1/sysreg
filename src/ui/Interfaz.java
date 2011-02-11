@@ -18,7 +18,9 @@ import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Insets;
 import java.lang.Thread.State;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -38,13 +40,14 @@ import javax.swing.text.StyledDocument;
 
 public class Interfaz {
 
-	private JFrame f_interfaz = null;  //  @jve:decl-index=0:visual-constraint="165,86"
+	private JFrame f_interfaz = null;  //  @jve:decl-index=0:visual-constraint="165,50"
 	private JPanel p_interfaz = null;
 	private JButton b_activarRiego = null;
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
 	private Negocio logica = null;  //  @jve:decl-index=0:
 	private String [] sensores = null;
+	private List<Evento> eventos = null;
 	//Panel Tª
 	private ArrayList<JLabel> l_id = new ArrayList<JLabel>();
 	private ArrayList<JLabel> l_value = new ArrayList<JLabel>();  //  @jve:decl-index=0:
@@ -65,7 +68,9 @@ public class Interfaz {
 	private JProgressBar pb_iniciando = null;
 	private JScrollPane cp_horario = null;
 	private JTextPane tp_horario = null;
-	private JPanel p_horario = null;
+	private JButton b_recargar = null;
+	private JLabel l_ultimaact = null;
+	private JLabel l_hora = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -74,7 +79,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(459, 410));
+			f_interfaz.setSize(new Dimension(459, 426));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -96,15 +101,35 @@ public class Interfaz {
 	 */
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
+			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+			gridBagConstraints14.gridx = 1;
+			gridBagConstraints14.anchor = GridBagConstraints.WEST;
+			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
+			gridBagConstraints14.gridy = 3;
+			l_hora = new JLabel();
+			l_hora.setText("Hora:");
+			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			gridBagConstraints13.gridx = 3;
+			gridBagConstraints13.gridwidth = 2;
+			gridBagConstraints13.anchor = GridBagConstraints.EAST;
+			gridBagConstraints13.insets = new Insets(0, 0, 0, 60);
+			gridBagConstraints13.gridy = 3;
+			l_ultimaact = new JLabel();
+			l_ultimaact.setText("Última actualización:");
+			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			gridBagConstraints10.gridx = 4;
+			gridBagConstraints10.anchor = GridBagConstraints.EAST;
+			gridBagConstraints10.insets = new Insets(0, 10, 1, 10);
+			gridBagConstraints10.gridy = 3;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.gridy = 0;
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.gridheight = 3;
-			gridBagConstraints12.insets = new Insets(10, 5, 10, 10);
-			gridBagConstraints12.gridwidth = 1;
-			gridBagConstraints12.gridx = 4;
+			gridBagConstraints12.insets = new Insets(10, 5, 0, 10);
+			gridBagConstraints12.gridwidth = 3;
+			gridBagConstraints12.gridx = 2;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 1;
 			gridBagConstraints7.ipadx = 0;
@@ -117,7 +142,7 @@ public class Interfaz {
 			gridBagConstraints6.gridx = 3;
 			gridBagConstraints6.insets = new Insets(0, 5, 5, 5);
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints6.ipadx = 0;
+			gridBagConstraints6.ipadx = 150;
 			gridBagConstraints6.anchor = GridBagConstraints.EAST;
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridwidth = 1;
@@ -166,6 +191,9 @@ public class Interfaz {
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
 			p_interfaz.add(esp_progresbar, gridBagConstraints7);
 			p_interfaz.add(getCp_horario(), gridBagConstraints12);
+			p_interfaz.add(getB_recargar(), gridBagConstraints10);
+			p_interfaz.add(l_ultimaact, gridBagConstraints13);
+			p_interfaz.add(l_hora, gridBagConstraints14);
 		}
 		return p_interfaz;
 	}
@@ -181,7 +209,7 @@ public class Interfaz {
 			b_activarRiego.setText("Iniciar riego");
 			b_activarRiego.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					logica.iniciarRiego();
+					logica.iniciarRiego(true);
 				}
 			});
 		}
@@ -199,7 +227,7 @@ public class Interfaz {
 			b_desactivarRiego.setText("Finalizar riego");
 			b_desactivarRiego.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					logica.pararRiego();
+					logica.pararRiego(true);
 				}
 			});
 		}
@@ -382,7 +410,7 @@ public class Interfaz {
 	private JScrollPane getCp_horario() {
 		if (cp_horario == null) {
 			cp_horario = new JScrollPane();
-			cp_horario.setViewportView(getP_horario());
+			cp_horario.setViewportView(getTp_horario());
 		}
 		return cp_horario;
 	}
@@ -403,23 +431,21 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes p_horario	
+	 * This method initializes b_recargar	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.JButton	
 	 */
-	private JPanel getP_horario() {
-		if (p_horario == null) {
-			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			gridBagConstraints10.fill = GridBagConstraints.BOTH;
-			gridBagConstraints10.gridy = 0;
-			gridBagConstraints10.weightx = 1.0;
-			gridBagConstraints10.weighty = 1.0;
-			gridBagConstraints10.gridx = 0;
-			p_horario = new JPanel();
-			p_horario.setLayout(new GridBagLayout());
-			p_horario.add(getTp_horario(), gridBagConstraints10);
+	private JButton getB_recargar() {
+		if (b_recargar == null) {
+			b_recargar = new JButton();
+			b_recargar.setIcon(new ImageIcon(getClass().getResource("/imagenes/icon_refresh_captcha.png")));
+			b_recargar.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					actualizarCalendario();
+				}
+			});
 		}
-		return p_horario;
+		return b_recargar;
 	}
 
 	/**
@@ -452,6 +478,10 @@ public class Interfaz {
 		}else{
 			TareaInicializar tarea = new TareaInicializar();
 			tarea.execute();
+			Thread r_cal = new Thread(new RelojCalendar(),"Cuenta5min");
+			r_cal.start();
+			Thread r_reg = new Thread(new RelojRiego(),"Cuenta1min");
+			r_reg.start();
 		}
 	}
 
@@ -504,6 +534,78 @@ public class Interfaz {
 		p_listado.add(l_value.get(l_value.size()-1), gridBagConstraints1);
 		p_listado.add(b_refresh.get(b_refresh.size()-1), gridBagConstraints2);
 	}
+	private void actualizarCalendario(){
+		eventos = logica.cargarCalendario();
+		//Pintamos los eventos
+		pintarEventos();
+		//Actualizar la hora
+		DecimalFormat entero = new DecimalFormat("00");
+		Calendar now= Calendar.getInstance();
+		l_ultimaact.setText("Última actualización: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));
+		//Comprobamos como tiene que estar el riego
+		eventos = logica.comprobarRiego();
+		//Actualizar la hora
+		l_hora.setText("Hora: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));			
+
+	}	
+	private void pintarEventos(){
+		try {
+			tp_horario.setText("");
+			StyledDocument doc = tp_horario.getStyledDocument();
+			//ROJO
+			// Create a style object and then set the style attributes
+			Style styleRed = doc.addStyle("StyleRed", null);
+			// Italic -> cursiva
+			StyleConstants.setItalic(styleRed, true);
+			// Bold -> negrita
+			StyleConstants.setBold(styleRed, false);
+			// Font family
+			StyleConstants.setFontFamily(styleRed, "SansSerif");
+			// Font size
+			StyleConstants.setFontSize(styleRed, 12);
+			// Background color
+			StyleConstants.setBackground(styleRed, Color.white);
+			// Foreground color
+			StyleConstants.setForeground(styleRed, Color.red);
+			//NEGRO
+			Style styleBlack = doc.addStyle("StyleBlack", null);
+			StyleConstants.setItalic(styleBlack, false);
+			StyleConstants.setBold(styleBlack, false);
+			StyleConstants.setFontFamily(styleBlack, "SansSerif");
+			StyleConstants.setFontSize(styleBlack, 12);
+			StyleConstants.setBackground(styleBlack, Color.white);
+			StyleConstants.setForeground(styleBlack, Color.black);
+			//VERDE
+			Style styleGreen = doc.addStyle("StyleGreen", null);
+			StyleConstants.setItalic(styleGreen, true);
+			StyleConstants.setBold(styleGreen, true);
+			StyleConstants.setFontFamily(styleGreen, "SansSerif");
+			StyleConstants.setFontSize(styleGreen, 12);
+			StyleConstants.setBackground(styleGreen, Color.white);
+			StyleConstants.setForeground(styleGreen, Color.green);
+
+			// Append to document
+			for(int i = 0; i < eventos.size(); i++){
+				Evento e = eventos.get(i);
+				Evento.State es = e.getEstado();
+				switch(es){
+				case NEGRO:
+					doc.insertString(doc.getLength(), e.toString() + "\n", styleBlack);
+					break;
+				case ROJO:
+					doc.insertString(doc.getLength(), e.toString() + "\n", styleRed);
+					break;
+				case VERDE:
+					doc.insertString(doc.getLength(), e.toString() + "\n", styleGreen);
+					break;						
+				}
+			}
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	class TareaTemperatura extends SwingWorker<Void, Void> {
 		/*
 		 * Main task. Executed in background thread.
@@ -547,63 +649,7 @@ public class Interfaz {
 				Float res=logica.obtenerTemperatura(sensor);
 				anyardirSensor(sensor, res);
 			}
-			List<Evento> eventos= logica.cargarCalendario();
-			try {
-				StyledDocument doc = tp_horario.getStyledDocument();
-				//ROJO
-				// Create a style object and then set the style attributes
-				Style styleRed = doc.addStyle("StyleRed", null);
-				// Italic -> cursiva
-				StyleConstants.setItalic(styleRed, true);
-				// Bold -> negrita
-				StyleConstants.setBold(styleRed, false);
-				// Font family
-				StyleConstants.setFontFamily(styleRed, "SansSerif");
-				// Font size
-				StyleConstants.setFontSize(styleRed, 12);
-				// Background color
-				StyleConstants.setBackground(styleRed, Color.white);
-				// Foreground color
-				StyleConstants.setForeground(styleRed, Color.red);
-				//NEGRO
-				Style styleBlack = doc.addStyle("StyleBlack", null);
-				StyleConstants.setItalic(styleBlack, false);
-				StyleConstants.setBold(styleBlack, false);
-				StyleConstants.setFontFamily(styleBlack, "SansSerif");
-				StyleConstants.setFontSize(styleBlack, 12);
-				StyleConstants.setBackground(styleBlack, Color.white);
-				StyleConstants.setForeground(styleBlack, Color.black);
-				//VERDE
-				Style styleGreen = doc.addStyle("StyleGreen", null);
-				StyleConstants.setItalic(styleGreen, true);
-				StyleConstants.setBold(styleGreen, true);
-				StyleConstants.setFontFamily(styleGreen, "SansSerif");
-				StyleConstants.setFontSize(styleGreen, 12);
-				StyleConstants.setBackground(styleGreen, Color.white);
-				StyleConstants.setForeground(styleGreen, Color.green);
-
-				// Append to document
-				for(int i = 0; i < eventos.size(); i++){
-					Evento e = eventos.get(i);
-					Evento.State es = e.getEstado();
-					switch(es){
-					case NEGRO:
-						doc.insertString(doc.getLength(), e.toString() + "\n", styleBlack);
-						break;
-					case ROJO:
-						doc.insertString(doc.getLength(), e.toString() + "\n", styleRed);
-						break;
-					case VERDE:
-						doc.insertString(doc.getLength(), e.toString() + "\n", styleGreen);
-						break;						
-					}
-				}
-			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-
+			actualizarCalendario();
 			return null;		
 		}
 
@@ -616,5 +662,39 @@ public class Interfaz {
 			f_interfaz.setVisible(true);
 		}
 	}
-
+	private class RelojCalendar implements Runnable{
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				while(true){
+					Thread.sleep(300000);
+					System.out.println("Hilo actualizar calendario");
+					actualizarCalendario();
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	private class RelojRiego implements Runnable{
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				while(true){
+					Thread.sleep(60000);
+					System.out.println("Hilo comprobar riego");
+					eventos=logica.comprobarRiego();
+					pintarEventos();
+					//Actualizar la hora
+					DecimalFormat entero = new DecimalFormat("00");
+					Calendar now= Calendar.getInstance();
+					l_hora.setText("Hora: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));					
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
