@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="jcm"
+    nsURI="http:///org/eclipse/ve/internal/jcm.ecore" nsPrefix="org.eclipse.ve.internal.jcm">
+  <eClassifiers xsi:type="ecore:EClass" name="BeanDecorator" eSuperTypes="../../org.eclipse.emf.ecore/model/Ecore.ecore#//EAnnotation ../../org.eclipse.ve.cde/model/cdm.ecore#//KeyedValueHolder">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decorates the bean for bean specific inforamation, for example the BeanProxyAdapter class."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanProxyClassName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the class for the BeanProxyAdapter."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanLocation" eType="#//InstanceLocation"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The location of any beans of this type, or subclasses that are not overridden, if not specifically overridden by the BeanFeatureDecorator or the Annotation key of INSTANCELOC."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanReturn" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Will this bean have a return method or not. A return method is one that when called will answer the bean. This will only be used for locations of GLOBAL type."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BeanFeatureDecorator" eSuperTypes="../../org.eclipse.emf.ecore/model/Ecore.ecore#//EAnnotation ../../org.eclipse.ve.cde/model/cdm.ecore#//KeyedValueHolder">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decorate a bean feature.  For example the mediator for handling bean feature application/canceling in the proxy adapter."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanProxyMediatorName"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Mediator to handle apply/cancel of bean properties."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="linkType" eType="#//LinkType"
+        defaultValueLiteral="NORMAL">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this is a child feature. This means that if the parent is deleted, then the child should be deleted except if the child is referenced by another feature that is a child feature."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanLocation" eType="#//InstanceLocation"
+        defaultValueLiteral="GLOBAL_GLOBAL" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The location of any beans of this feature, if not specifically overridden by the Annotation key of INSTANCELOC."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BeanComposition" eSuperTypes="../../org.eclipse.ve.cde/model/cdm.ecore#//DiagramData #//MemberContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listenerTypes" upperBound="-1"
+        eType="#//ListenerType" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractEventInvocation" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="callbacks" upperBound="-1"
+        eType="#//Callback" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listener" eType="#//Listener"
+        eOpposite="#//Listener/listenedBy"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ListenerType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the inner class when it is a non-anonymous class."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="thisPart" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the listener is the this part. This is for VAJ style 1 where the this object itself implements all of the necessary listener interfaces."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extends" eType="ecore:EClass ../../org.eclipse.jem/model/java.ecore#//JavaClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="implements" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.jem/model/java.ecore#//JavaClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="is" eType="ecore:EClass ../../org.eclipse.jem/model/java.ecore#//JavaClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listeners" upperBound="-1"
+        eType="#//Listener" containment="true" eOpposite="#//Listener/listenerType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Properties are values that are settings of properties on members, but do not have any settings on themselves. If the value has set property settings then it should be in members instead."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is the collection of members. Members are values that are located in this container AND have either a declaration or property settings."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="implicits" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This contains implicit settings. These are settings that are properties of members but they are not explicitly set. They are the value of a setting that has not been set. It is a default value. Unlike properties, implicit may have further settings on them."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Listener">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listenedBy" upperBound="-1"
+        eType="#//AbstractEventInvocation" eOpposite="#//AbstractEventInvocation/listener"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listenerType" eType="#//ListenerType"
+        transient="true" eOpposite="#//ListenerType/listeners"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Callback">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sharedScope" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="method" lowerBound="1"
+        eType="ecore:EClass ../../org.eclipse.jem/model/java.ecore#//Method"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.jem/model/instance.ecore#//PTExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="List of modeled statements to be in this callback."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventInvocation" eSuperTypes="#//AbstractEventInvocation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass ../../org.eclipse.jem.beaninfo/model/beaninfo.ecore#//BeanEvent"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyChangeEventInvocation" eSuperTypes="#//AbstractEventInvocation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addMethod" lowerBound="1"
+        eType="ecore:EClass ../../org.eclipse.jem/model/java.ecore#//Method"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//PropertyEvent" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="useIfExpression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BeanSubclassComposition" eSuperTypes="#//BeanComposition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thisPart" lowerBound="1"
+        eType="ecore:EClass ../../org.eclipse.jem/model/instance.ecore#//IJavaObjectInstance"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
+        eType="#//JCMMethod" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JCMMethod" eSuperTypes="#//MemberContainer">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initializes" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="return" eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="InstanceLocation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Enumeration for the location of where the instance variable and initialization will be located."/>
+    </eAnnotations>
+    <eLiterals name="GLOBAL_GLOBAL">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Instance Variable will be GLOBAL (i.e. a member of the class) and the initialization will be GLOBAL (i.e. there is a separate initialization method for the instance)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="GLOBAL_LOCAL" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The instance variable will be GLOBAL (i.e. it will be a member of the class) and the initialization will be LOCAL (i.e. there is not a separate initialization method, the initialization will be in the initialization method of another instance),"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="LOCAL" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The instance and initialization will be LOCAL (i.e. it will be declared and initialized in the initialization method of another instance)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="PROPERTY" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="There will be no instance variable. It will be a property. This will be applicable if there are no settings on the instance. If there are any settings, then it will promote up to LOCAL automatically."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KeyedInstanceLocation" instanceClassName="java.util.Map$Entry">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Map Entry for A InstanceLocation in the Key/Values of the Annotation. Used to supply override of InstanceLocation on a per-instance basis."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="#//InstanceLocation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LinkType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This indicates the linkage type of a feature (through the BeanFeatureDecorator)."/>
+    </eAnnotations>
+    <eLiterals name="NORMAL">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>This is a normal linkage (which is the default). When a source object is being deleted and a target object is pointed to through a feature listed as NORMAL, then this target object will be deleted if there are no other references to it."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="CHILD" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>This is a child linkage. When a source object is being deleted and there is a target object pointed to through a CHILD linkage, then the target object will be deleted except if there are any other CHILD references to the target.&#xD;&#xA;&lt;p>&#xD;&#xA;A child reference basically means that the target is a child of the source and if the source goes away you want the target to go away."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="DEPENDENCY" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>This is a dependency linkage. This is slightly reversed from NORMAL and CHILD in that it comes into effect only from the target side instead of the source side.&#xD;&#xA;&lt;p>&#xD;&#xA;So, when a target is being deleted, it will look at all references to it and for any that are marked as dependency the source object will be investigated. If the source object has no child references to it, then the source object will be deleted too.&#xD;&#xA;&lt;p>&#xD;&#xA;That is what dependency means. It means the source depends on the target and if the target goes away the source should go away, except if it is being held on to by a strong link such as a CHILD link."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JavaCacheData">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is used to cache info for quick caching of the model. It is not part of the model itself."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NamesToBeans" upperBound="-1"
+        eType="#//NamesToBeans" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NamesToBeans" instanceClassName="java.util.Map$Entry">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is a map entry from a unique name (string) to a bean instance in the model."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Key for the map. It should be a unique name in the model."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+  </eClassifiers>
+</ecore:EPackage>
