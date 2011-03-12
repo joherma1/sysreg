@@ -37,6 +37,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.JToolBar;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import java.awt.event.KeyEvent;
+import javax.swing.JMenuItem;
 
 public class Interfaz {
 
@@ -71,6 +76,16 @@ public class Interfaz {
 	private JButton b_recargar = null;
 	private JLabel l_ultimaact = null;
 	private JLabel l_hora = null;
+	private JMenuBar mb_menu = null;
+	private JMenu m_configuracion = null;
+	private JMenu m_sensores = null;
+	private JMenu m_calendario = null;
+	private JMenuItem mi_exportar = null;
+	private JMenu m_ayuda = null;
+	private JMenuItem mi_acercade = null;
+	private JMenuItem mi_importar = null;
+	private JMenuItem mi_temperatura = null;
+	private JMenuItem mi_cuenta = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -79,10 +94,11 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(459, 426));
+			f_interfaz.setSize(new Dimension(459, 433));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
+			f_interfaz.setJMenuBar(getMb_menu());
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosing(java.awt.event.WindowEvent e) {
@@ -105,7 +121,7 @@ public class Interfaz {
 			gridBagConstraints14.gridx = 1;
 			gridBagConstraints14.anchor = GridBagConstraints.WEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
-			gridBagConstraints14.gridy = 3;
+			gridBagConstraints14.gridy = 4;
 			l_hora = new JLabel();
 			l_hora.setText("Hora:");
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
@@ -113,7 +129,7 @@ public class Interfaz {
 			gridBagConstraints13.gridwidth = 2;
 			gridBagConstraints13.anchor = GridBagConstraints.EAST;
 			gridBagConstraints13.insets = new Insets(0, 0, 0, 60);
-			gridBagConstraints13.gridy = 3;
+			gridBagConstraints13.gridy = 4;
 			l_ultimaact = new JLabel();
 			l_ultimaact.setText("Última actualización:");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
@@ -123,7 +139,7 @@ public class Interfaz {
 			gridBagConstraints10.gridy = 3;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
-			gridBagConstraints12.gridy = 0;
+			gridBagConstraints12.gridy = 1;
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.gridheight = 3;
@@ -135,7 +151,7 @@ public class Interfaz {
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
 			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints7.gridy = 5;
+			gridBagConstraints7.gridy = 6;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -147,32 +163,32 @@ public class Interfaz {
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridwidth = 1;
 			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 5;
+			gridBagConstraints6.gridy = 6;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
 			gridBagConstraints3.gridwidth = 4;
 			gridBagConstraints3.insets = new Insets(5, 5, 0, 5);
 			gridBagConstraints3.ipady = 80;
 			gridBagConstraints3.ipadx = 10;
-			gridBagConstraints3.gridy = 4;
+			gridBagConstraints3.gridy = 5;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 1;
 			gridBagConstraints5.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints5.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints5.fill = GridBagConstraints.NONE;
-			gridBagConstraints5.gridy = 2;
+			gridBagConstraints5.gridy = 3;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.gridx = 1;
 			gridBagConstraints4.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints4.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints4.gridy = 1;
+			gridBagConstraints4.gridy = 2;
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 1;
 			gridBagConstraints11.gridheight = 1;
 			gridBagConstraints11.anchor = GridBagConstraints.CENTER;
 			gridBagConstraints11.gridwidth = 1;
 			gridBagConstraints11.insets = new Insets(10, 10, 5, 5);
-			gridBagConstraints11.gridy = 0;
+			gridBagConstraints11.gridy = 1;
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
 			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
@@ -449,10 +465,151 @@ public class Interfaz {
 	}
 
 	/**
+	 * This method initializes mb_menu	
+	 * 	
+	 * @return javax.swing.JMenuBar	
+	 */
+	private JMenuBar getMb_menu() {
+		if (mb_menu == null) {
+			mb_menu = new JMenuBar();
+			mb_menu.add(getM_configuracion());
+			mb_menu.add(getM_sensores());
+			mb_menu.add(getM_calendario());
+			mb_menu.add(getM_ayuda());
+		}
+		return mb_menu;
+	}
+
+	/**
+	 * This method initializes m_configuracion	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getM_configuracion() {
+		if (m_configuracion == null) {
+			m_configuracion = new JMenu();
+			m_configuracion.setText("Configuración");
+			m_configuracion.add(getMi_exportar());
+			m_configuracion.add(getMi_importar());
+		}
+		return m_configuracion;
+	}
+
+	/**
+	 * This method initializes m_sensores	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getM_sensores() {
+		if (m_sensores == null) {
+			m_sensores = new JMenu();
+			m_sensores.setText("Sensores");
+			m_sensores.add(getMi_temperatura());
+		}
+		return m_sensores;
+	}
+
+	/**
+	 * This method initializes m_calendario	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getM_calendario() {
+		if (m_calendario == null) {
+			m_calendario = new JMenu();
+			m_calendario.setMnemonic(KeyEvent.VK_UNDEFINED);
+			m_calendario.setText("Calendario");
+			m_calendario.add(getMi_cuenta());
+		}
+		return m_calendario;
+	}
+
+	/**
+	 * This method initializes mi_exportar	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getMi_exportar() {
+		if (mi_exportar == null) {
+			mi_exportar = new JMenuItem();
+			mi_exportar.setText("Exportar");
+		}
+		return mi_exportar;
+	}
+
+	/**
+	 * This method initializes m_ayuda	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getM_ayuda() {
+		if (m_ayuda == null) {
+			m_ayuda = new JMenu();
+			m_ayuda.setText("Ayuda");
+			m_ayuda.add(getMi_acercade());
+		}
+		return m_ayuda;
+	}
+
+	/**
+	 * This method initializes mi_acercade	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getMi_acercade() {
+		if (mi_acercade == null) {
+			mi_acercade = new JMenuItem();
+			mi_acercade.setText("Acerca de");
+		}
+		return mi_acercade;
+	}
+
+	/**
+	 * This method initializes mi_importar	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getMi_importar() {
+		if (mi_importar == null) {
+			mi_importar = new JMenuItem();
+			mi_importar.setText("Importar");
+		}
+		return mi_importar;
+	}
+
+	/**
+	 * This method initializes mi_temperatura	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getMi_temperatura() {
+		if (mi_temperatura == null) {
+			mi_temperatura = new JMenuItem();
+			mi_temperatura.setText("Temperatura");
+		}
+		return mi_temperatura;
+	}
+
+	/**
+	 * This method initializes mi_cuenta	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getMi_cuenta() {
+		if (mi_cuenta == null) {
+			mi_cuenta = new JMenuItem();
+			mi_cuenta.setText("Cuenta");
+		}
+		return mi_cuenta;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		if(isMac())
+			System.setProperty("apple.laf.useScreenMenuBar", "true"); //Barra de menu Mac OS
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
@@ -462,6 +619,28 @@ public class Interfaz {
 		frame_iniciando.setVisible(true);
 		main.inicializar();
 	}
+	
+	 
+	private static boolean isWindows(){
+		String os = System.getProperty("os.name").toLowerCase();
+		//windows
+	    return (os.indexOf( "win" ) >= 0); 
+ 
+	}
+ 
+	private static boolean isMac(){
+		String os = System.getProperty("os.name").toLowerCase();
+		//Mac
+	    return (os.indexOf( "mac" ) >= 0); 
+ 
+	}
+ 
+	private static boolean isUnix(){
+		String os = System.getProperty("os.name").toLowerCase();
+		//linux or unix
+	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
+	}
+ 
 	void inicializar(){
 		logica = new Negocio();
 		int ini= logica.inicializar();

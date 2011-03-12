@@ -7,8 +7,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import logic.Evento.State;
 
@@ -35,7 +41,9 @@ public class Negocio {
 		due=new Duemilanove();
 	}
 	public int inicializar(){
-		return due.initialize();
+		int value_due = due.initialize();
+		cargarConfiguracion();
+		return value_due;
 	}
 	public void cerrar(){
 		due.close();
@@ -142,7 +150,7 @@ public class Negocio {
 		//		System.out.println(main.contarSensoresT());
 		//		main.listarSensoresT();
 		//		System.out.println(main.obtenerTemperatura(main.sensores_t[0]));
-
+		main.cargarConfiguracion();
 		main.cargarCalendario();
 		System.exit(0);
 	}
@@ -156,7 +164,8 @@ public class Negocio {
 		try {
 			//Autenticacion
 			CalendarService myService = new CalendarService("RegAdmin");
-			myService.setUserCredentials("sysreg1@gmail.com","agricultura.1");
+			myService.setUserCredentials(usuario,contrasenya);
+			//myService.setUserCredentials("sysreg1@gmail.com","agricultura.1");
 			//Obtener todos los calendarios
 			//			URL feedUrl = new URL("https://www.google.com/calendar/feeds/default/allcalendars/full");
 			//			CalendarFeed resultFeed = myService.getFeed(feedUrl, CalendarFeed.class);
@@ -263,6 +272,41 @@ public class Negocio {
 		else
 			pararRiego();
 		return sortedEvents;
+	}
+
+	private void cargarConfiguracion(){
+		try {
+			SAXBuilder builder=new SAXBuilder(true);//Parser Xerces y validar documento
+			Document conf=builder.build("src/configuracion/RegAdmin.xml");
+	        Element raiz=conf.getRootElement();
+	        //Sensores
+	        //TODAVIA NO LOS UTLIZAMOS PARA NADA
+	        Element raiz_sensores = raiz.getChild("Sensores");
+	        List sensores = raiz_sensores.getChildren();
+	        Iterator i = sensores.iterator();
+	        while (i.hasNext()){
+	            Element e= (Element)i.next();
+	            String id = e.getChildText("id");
+	            String alias = e.getChildText("alias");
+	            //System.out.println("Sensor: " + id + " \t" + alias);
+	        }
+	        //Calendario
+	        Element raiz_calendario = raiz.getChild("Calendario");
+	        String tipo = raiz_calendario.getAttributeValue("tipo");
+	        usuario = raiz_calendario.getChildText("usuario");
+	        contrasenya = raiz_calendario.getChildText("contraseña");
+	        if(tipo.compareTo("gmail") == 0)
+	        	usuario += "@gmail.com";
+	        //System.out.println("Usuario: " + usuario + " \tContraseña:" + contrasenya);
+
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
 
