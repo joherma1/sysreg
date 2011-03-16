@@ -192,7 +192,7 @@ public class Interfaz {
 			gridBagConstraints3.gridwidth = 4;
 			gridBagConstraints3.insets = new Insets(5, 5, 0, 5);
 			gridBagConstraints3.ipady = 80;
-			gridBagConstraints3.ipadx = 44;
+			gridBagConstraints3.ipadx = 130;
 			gridBagConstraints3.gridy = 6;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 1;
@@ -681,7 +681,7 @@ public class Interfaz {
 	private JPanel getCp_acercade() {
 		if (cp_acercade == null) {
 			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
-			gridBagConstraints61.insets = new Insets(0, 10, 0, 5);
+			gridBagConstraints61.insets = new Insets(0, 15, 0, 5);
 			gridBagConstraints61.gridy = 0;
 			gridBagConstraints61.ipady = 63;
 			gridBagConstraints61.gridx = 0;
@@ -778,7 +778,7 @@ public class Interfaz {
 			gridBagConstraints19.anchor = GridBagConstraints.WEST;
 			gridBagConstraints19.ipady = 15;
 			gridBagConstraints19.ipadx = 7;
-			gridBagConstraints19.insets = new Insets(0, 5, 0, 0);
+			gridBagConstraints19.insets = new Insets(0, 8, 0, 0);
 			gridBagConstraints19.gridy = 0;
 			l_mailto = new JLabel();
 			l_mailto.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -808,7 +808,7 @@ public class Interfaz {
 			gridBagConstraints18.ipady = 15;
 			gridBagConstraints18.ipadx = 2;
 			gridBagConstraints18.anchor = GridBagConstraints.CENTER;
-			gridBagConstraints18.insets = new Insets(0, 45, 0, 40);
+			gridBagConstraints18.insets = new Insets(0, 35, 0, 30);
 			gridBagConstraints18.gridy = 0;
 			l_homepage = new JLabel();
 			l_homepage.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -964,7 +964,7 @@ public class Interfaz {
 		l_value.get(l_value.size()-1).setText(temp.toString());
 		b_refresh.add(new JButton());
 		//b_refresh.get(b_refresh.size()-1).setText("REF");
-		b_refresh.get(b_refresh.size()-1).setIcon(new ImageIcon(getClass().getResource("/imagenes/iconoForosActualizar.png")));
+		b_refresh.get(b_refresh.size()-1).setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/reload24.png")));
 		b_refresh.get(b_refresh.size()-1).addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				int indice = b_refresh.indexOf((JButton)e.getSource());
