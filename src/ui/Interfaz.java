@@ -7,6 +7,8 @@ import javax.swing.SwingWorker;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -17,7 +19,10 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.io.IOException;
 import java.lang.Thread.State;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +47,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.event.KeyEvent;
 import javax.swing.JMenuItem;
+import javax.swing.JDialog;
+import javax.swing.BorderFactory;
+import javax.swing.WindowConstants;
 
 public class Interfaz {
 
@@ -60,7 +68,7 @@ public class Interfaz {
 	private JPanel p_sensor = null;
 	private JLabel l_tipoSensor = null;
 	private JPanel p_botones = null;
-	private JButton b_todos = null;
+	private JButton b_modificar = null;
 	private JButton b_anyadir = null;
 	private JButton b_eliminar = null;
 	private JScrollPane sp_listado = null;
@@ -86,6 +94,16 @@ public class Interfaz {
 	private JMenuItem mi_importar = null;
 	private JMenuItem mi_temperatura = null;
 	private JMenuItem mi_cuenta = null;
+	private JDialog d_acercade = null;  //  @jve:decl-index=0:visual-constraint="801,345"
+	private JPanel cp_acercade = null;
+	private JPanel p_superior = null;
+	private JScrollPane sp_descripcion = null;
+	private JTextArea ta_descripcion = null;
+	private JPanel p_inferior = null;
+	private JLabel l_licencia = null;
+	private JLabel l_icono = null;
+	private JLabel l_homepage = null;
+	private JLabel l_mailto = null;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -94,10 +112,11 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(459, 433));
+			f_interfaz.setSize(new Dimension(495, 451));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
+			f_interfaz.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
 			f_interfaz.setJMenuBar(getMb_menu());
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -121,29 +140,33 @@ public class Interfaz {
 			gridBagConstraints14.gridx = 1;
 			gridBagConstraints14.anchor = GridBagConstraints.WEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
-			gridBagConstraints14.gridy = 4;
+			gridBagConstraints14.gridy = 5;
 			l_hora = new JLabel();
 			l_hora.setText("Hora:");
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 3;
-			gridBagConstraints13.gridwidth = 2;
-			gridBagConstraints13.anchor = GridBagConstraints.EAST;
-			gridBagConstraints13.insets = new Insets(0, 0, 0, 60);
-			gridBagConstraints13.gridy = 4;
+			gridBagConstraints13.gridwidth = 1;
+			gridBagConstraints13.anchor = GridBagConstraints.CENTER;
+			gridBagConstraints13.insets = new Insets(0, 10, 0, 0);
+			gridBagConstraints13.gridy = 5;
 			l_ultimaact = new JLabel();
 			l_ultimaact.setText("Última actualización:");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			gridBagConstraints10.gridx = 4;
 			gridBagConstraints10.anchor = GridBagConstraints.EAST;
-			gridBagConstraints10.insets = new Insets(0, 10, 1, 10);
-			gridBagConstraints10.gridy = 3;
+			gridBagConstraints10.insets = new Insets(0, 10, 0, 10);
+			gridBagConstraints10.fill = GridBagConstraints.NONE;
+			gridBagConstraints10.ipadx = 0;
+			gridBagConstraints10.weightx = 0.0;
+			gridBagConstraints10.ipady = 0;
+			gridBagConstraints10.gridy = 5;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.gridy = 1;
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.gridheight = 3;
-			gridBagConstraints12.insets = new Insets(10, 5, 0, 10);
+			gridBagConstraints12.insets = new Insets(10, 5, 5, 10);
 			gridBagConstraints12.gridwidth = 3;
 			gridBagConstraints12.gridx = 2;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
@@ -151,7 +174,7 @@ public class Interfaz {
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
 			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints7.gridy = 6;
+			gridBagConstraints7.gridy = 7;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -163,14 +186,14 @@ public class Interfaz {
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridwidth = 1;
 			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 6;
+			gridBagConstraints6.gridy = 7;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
 			gridBagConstraints3.gridwidth = 4;
 			gridBagConstraints3.insets = new Insets(5, 5, 0, 5);
 			gridBagConstraints3.ipady = 80;
-			gridBagConstraints3.ipadx = 10;
-			gridBagConstraints3.gridy = 5;
+			gridBagConstraints3.ipadx = 44;
+			gridBagConstraints3.gridy = 6;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 1;
 			gridBagConstraints5.anchor = GridBagConstraints.NORTH;
@@ -278,26 +301,43 @@ public class Interfaz {
 	 */
 	private JPanel getP_botones() {
 		if (p_botones == null) {
+			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+			gridBagConstraints17.gridx = 1;
+			gridBagConstraints17.ipadx = 0;
+			gridBagConstraints17.insets = new Insets(0, 0, 5, 0);
+			gridBagConstraints17.gridy = 0;
+			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+			gridBagConstraints16.gridx = 0;
+			gridBagConstraints16.anchor = GridBagConstraints.CENTER;
+			gridBagConstraints16.ipadx = 0;
+			gridBagConstraints16.gridwidth = 1;
+			gridBagConstraints16.insets = new Insets(0, 0, 5, 0);
+			gridBagConstraints16.gridy = 0;
+			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+			gridBagConstraints15.gridx = 2;
+			gridBagConstraints15.insets = new Insets(0, 0, 5, 0);
+			gridBagConstraints15.gridy = 0;
 			p_botones = new JPanel();
-			p_botones.setLayout(new BorderLayout());
-			p_botones.add(getB_todos(), java.awt.BorderLayout.WEST);
-			p_botones.add(getB_anyadir(), java.awt.BorderLayout.CENTER);
-			p_botones.add(getB_eliminar(), java.awt.BorderLayout.EAST);
+			p_botones.setLayout(new GridBagLayout());
+			p_botones.add(getB_modificar(), gridBagConstraints15);
+			p_botones.add(getB_anyadir(), gridBagConstraints16);
+			p_botones.add(getB_eliminar(), gridBagConstraints17);
 		}
 		return p_botones;
 	}
 
 	/**
-	 * This method initializes b_todos	
+	 * This method initializes b_modificar	
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
-	private JButton getB_todos() {
-		if (b_todos == null) {
-			b_todos = new JButton();
-			b_todos.setText("Todos");
+	private JButton getB_modificar() {
+		if (b_modificar == null) {
+			b_modificar = new JButton();
+			b_modificar.setText("");
+			b_modificar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/pen16.png")));
 		}
-		return b_todos;
+		return b_modificar;
 	}
 
 	/**
@@ -308,7 +348,8 @@ public class Interfaz {
 	private JButton getB_anyadir() {
 		if (b_anyadir == null) {
 			b_anyadir = new JButton();
-			b_anyadir.setText("Añadir");
+			b_anyadir.setText("");
+			b_anyadir.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/plus_alt16.png")));
 		}
 		return b_anyadir;
 	}
@@ -321,7 +362,8 @@ public class Interfaz {
 	private JButton getB_eliminar() {
 		if (b_eliminar == null) {
 			b_eliminar = new JButton();
-			b_eliminar.setText("Eliminar");
+			b_eliminar.setText("");
+			b_eliminar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/minus_alt16.png")));
 		}
 		return b_eliminar;
 	}
@@ -376,6 +418,7 @@ public class Interfaz {
 			f_iniciando = new JFrame();
 			f_iniciando.setSize(new Dimension(228, 132));
 			f_iniciando.setTitle("RegAdmin");
+			f_iniciando.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
 			f_iniciando.setContentPane(getCp_iniciando());
 			f_iniciando.setLocationRelativeTo(null);
 		}
@@ -454,7 +497,7 @@ public class Interfaz {
 	private JButton getB_recargar() {
 		if (b_recargar == null) {
 			b_recargar = new JButton();
-			b_recargar.setIcon(new ImageIcon(getClass().getResource("/imagenes/icon_refresh_captcha.png")));
+			b_recargar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/reload24.png")));
 			b_recargar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					actualizarCalendario();
@@ -560,6 +603,12 @@ public class Interfaz {
 		if (mi_acercade == null) {
 			mi_acercade = new JMenuItem();
 			mi_acercade.setText("Acerca de");
+			mi_acercade.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					getD_acercade();//Así la primera vez lo crea
+					d_acercade.setVisible(true);
+				}
+			});
 		}
 		return mi_acercade;
 	}
@@ -604,6 +653,227 @@ public class Interfaz {
 	}
 
 	/**
+	 * This method initializes d_acercade	
+	 * 	
+	 * @return javax.swing.JDialog	
+	 */
+	private JDialog getD_acercade() {
+		if (d_acercade == null) {
+			d_acercade = new JDialog();
+			d_acercade.setResizable(false);
+			d_acercade.setSize(new Dimension(444, 190));
+			d_acercade.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			d_acercade.setModal(true);
+			d_acercade.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
+			d_acercade.setResizable(false);
+			d_acercade.setContentPane(getCp_acercade());
+			d_acercade.setTitle("Acerca de RegAdmin");
+			d_acercade.setLocationRelativeTo(null);
+		}
+		return d_acercade;
+	}
+
+	/**
+	 * This method initializes cp_acercade	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getCp_acercade() {
+		if (cp_acercade == null) {
+			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+			gridBagConstraints61.insets = new Insets(0, 10, 0, 5);
+			gridBagConstraints61.gridy = 0;
+			gridBagConstraints61.ipady = 63;
+			gridBagConstraints61.gridx = 0;
+			l_icono = new JLabel();
+			l_icono.setIcon(new ImageIcon(getClass().getResource("/imagenes/Naranjito/Naranjito 64.png")));
+			l_icono.setText("");
+			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+			gridBagConstraints41.anchor = GridBagConstraints.CENTER;
+			gridBagConstraints41.gridwidth = 2;
+			gridBagConstraints41.gridx = 0;
+			gridBagConstraints41.gridy = 2;
+			gridBagConstraints41.ipadx = 0;
+			gridBagConstraints41.ipady = 0;
+			gridBagConstraints41.fill = GridBagConstraints.HORIZONTAL;
+			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+			gridBagConstraints21.insets = new Insets(0, 5, 0, 0);
+			gridBagConstraints21.gridy = 0;
+			gridBagConstraints21.ipady = 0;
+			gridBagConstraints21.gridx = 1;
+			cp_acercade = new JPanel();
+			cp_acercade.setLayout(new GridBagLayout());
+			cp_acercade.setBackground(new Color(238, 238, 238));
+			cp_acercade.add(getP_superior(), gridBagConstraints21);
+			cp_acercade.add(getP_inferior(), gridBagConstraints41);
+			cp_acercade.add(l_icono, gridBagConstraints61);
+		}
+		return cp_acercade;
+	}
+
+	/**
+	 * This method initializes p_superior	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getP_superior() {
+		if (p_superior == null) {
+			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+			gridBagConstraints51.fill = GridBagConstraints.BOTH;
+			gridBagConstraints51.ipadx = 334;
+			gridBagConstraints51.ipady = 102;
+			gridBagConstraints51.weightx = 1.0;
+			gridBagConstraints51.weighty = 1.0;
+			gridBagConstraints51.insets = new Insets(10, 5, 5, 5);
+			p_superior = new JPanel();
+			p_superior.setLayout(new GridBagLayout());
+			p_superior.setBackground(Color.white);
+			p_superior.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.lightGray));
+			p_superior.add(getSp_descripcion(), gridBagConstraints51);
+		}
+		return p_superior;
+	}
+
+	/**
+	 * This method initializes sp_descripcion	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getSp_descripcion() {
+		if (sp_descripcion == null) {
+			sp_descripcion = new JScrollPane();
+			sp_descripcion.setBackground(Color.white);
+			sp_descripcion.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.lightGray));
+			sp_descripcion.setViewportView(getTa_descripcion());
+		}
+		return sp_descripcion;
+	}
+
+	/**
+	 * This method initializes ta_descripcion	
+	 * 	
+	 * @return javax.swing.JTextArea	
+	 */
+	private JTextArea getTa_descripcion() {
+		if (ta_descripcion == null) {
+			ta_descripcion = new JTextArea();
+			ta_descripcion.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			ta_descripcion.setEditable(false);
+			ta_descripcion.setLineWrap(true);
+			ta_descripcion.setWrapStyleWord(true);//Para que busque espacios al final y corte ahí
+			ta_descripcion.setText("Software para trabajar con una placa Arduino con el sketch AlReg para controlar un sistema remoto agrario con la arquitectura SysReg\nAutor: Jose Antonio Hernández Martínez\nAgradecimientos:\n\tIconos \"iconic\" ");
+		}
+		return ta_descripcion;
+	}
+
+	/**
+	 * This method initializes p_inferior	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getP_inferior() {
+		if (p_inferior == null) {
+			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+			gridBagConstraints19.gridx = 0;
+			gridBagConstraints19.anchor = GridBagConstraints.WEST;
+			gridBagConstraints19.ipady = 15;
+			gridBagConstraints19.ipadx = 7;
+			gridBagConstraints19.insets = new Insets(0, 5, 0, 0);
+			gridBagConstraints19.gridy = 0;
+			l_mailto = new JLabel();
+			l_mailto.setFont(new Font("Dialog", Font.BOLD, 12));
+			l_mailto.setText("joherma1@gmail.com");
+			l_mailto.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseExited(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getDefaultCursor());
+				}   
+				public void mouseEntered(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					try {
+		                URI uriMailTo = new URI("mailto", "joherma1@gmail.com", null);
+		                Desktop.getDesktop().mail(uriMailTo);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+			gridBagConstraints18.gridx = 2;
+			gridBagConstraints18.ipady = 15;
+			gridBagConstraints18.ipadx = 2;
+			gridBagConstraints18.anchor = GridBagConstraints.CENTER;
+			gridBagConstraints18.insets = new Insets(0, 45, 0, 40);
+			gridBagConstraints18.gridy = 0;
+			l_homepage = new JLabel();
+			l_homepage.setFont(new Font("Dialog", Font.BOLD, 12));
+			l_homepage.setText("Página Principal");
+			l_homepage.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseExited(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getDefaultCursor());
+				}   
+				public void mouseEntered(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					try {
+						Desktop.getDesktop().browse(new java.net.URI("http://code.google.com/p/sysreg/"));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+			gridBagConstraints31.anchor = GridBagConstraints.EAST;
+			gridBagConstraints31.insets = new Insets(0, 0, 0, 10);
+			gridBagConstraints31.gridwidth = 1;
+			gridBagConstraints31.gridx = 3;
+			gridBagConstraints31.gridy = 0;
+			gridBagConstraints31.ipadx = 2;
+			gridBagConstraints31.ipady = 15;
+			gridBagConstraints31.fill = GridBagConstraints.BOTH;
+			l_licencia = new JLabel();
+			l_licencia.setFont(new Font("Dialog", Font.BOLD, 12));
+			l_licencia.setText("Licencia GNU GPL v3");
+			l_licencia.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseExited(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getDefaultCursor());
+				}   
+				public void mouseEntered(java.awt.event.MouseEvent e) {    
+					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					try {
+						Desktop.getDesktop().browse(new java.net.URI("http://www.gnu.org/licenses/gpl.html"));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+			p_inferior = new JPanel();
+			p_inferior.setLayout(new GridBagLayout());
+			p_inferior.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.lightGray));
+			p_inferior.add(l_licencia, gridBagConstraints31);
+			p_inferior.add(l_homepage, gridBagConstraints18);
+			p_inferior.add(l_mailto, gridBagConstraints19);
+		}
+		return p_inferior;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -613,9 +883,9 @@ public class Interfaz {
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
-		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
-		frame_main.setIconImage(icono);
-		frame_iniciando.setIconImage(icono);
+//		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
+//		frame_main.setIconImage(icono);
+//		frame_iniciando.setIconImage(icono);
 		frame_iniciando.setVisible(true);
 		main.inicializar();
 	}
