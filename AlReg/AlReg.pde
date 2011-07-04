@@ -1,4 +1,6 @@
 #include <OneWire.h>
+#include <Wire.h>
+#include <BMP085.h>
 
 const int motor1Pin = 3;    // H-bridge leg 1 (pin 2, 1A)
 const int motor2Pin = 4;    // H-bridge leg 2 (pin 7, 2A)
@@ -11,6 +13,16 @@ int present = 0;
 byte data[12];
 int HighByte, LowByte, TReading, SignBit, Tc_100, Whole, Fract;
 
+BMP085 dps = BMP085();
+long Temperature = 0, Pressure = 0, Altitude = 0;
+const float currentAltitude = 34; // current altitude in METERS in Alcasser
+const float p0 = 101325;     // Pressure at sea level (Pa)
+const float ePressure = p0 * pow((1-currentAltitude/44330), 5.255);  // expected pressure (in Pa) at altitude
+float weatherDiff;
+const int Sunny = 1;
+const int Partly_Cloudy = 2;
+const int Rain = 3;
+
 void setup(void){
   //Inicializamos las salidas digitales
   pinMode(motor1Pin, OUTPUT); 
@@ -19,6 +31,12 @@ void setup(void){
   pinMode(13, OUTPUT);
   //Inicializamos el puerto de serie
   Serial.begin(9600);
+  //Activamos comunicacion I2C 
+  Wire.begin();
+  delay(1000);
+  //Conexion con el sensor de presion BMP085
+  dps.init(MODE_ULTRA_HIGHRES, currentAltitude*100, true);
+  //dps.init(MODE_ULTRA_HIGHRES,0, true);
   //Activamos el puente H
   digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high  
   //Inicializacion por conexion
@@ -34,7 +52,7 @@ void loop(void){
   if(count > 0){
     command=Serial.read();
     switch (command){ 
-    //Inicializaion por peticion
+      //Inicializaion por peticion
     case 0x05: //Solicitud de conexion: ENQ
       Serial.print(6, BYTE);//Codigo de inicializacion, ACK
       Serial.print(4,BYTE);//EndOfTransmission (ASCII)
@@ -134,6 +152,49 @@ void loop(void){
       Serial.print(Fract);
       Serial.print(4,BYTE);
       break;
+    case 0x70: //Obtener Tª del sensor de presion I2C: p 112 0x70
+      dps.getTemperature(&Temperature);
+      Whole = Temperature / 10;
+      Fract = Temperature % 10;
+      Serial.print(Whole);
+      Serial.print(".");
+      Serial.print(Fract);
+      Serial.print(4,BYTE);
+      break;
+    case 0x71: //Obtener Presion del sensor I2C: q 113 0x71
+      dps.getPressure(&Pressure);   
+      Serial.print(Pressure);
+      Serial.print(4,BYTE);
+      break;
+    case 0x72: //Obtener Altura del sensor I2C: r 114 0x72 
+      dps.getAltitude(&Altitude);
+      Serial.print(Altitude);
+      Serial.print(4,BYTE);
+      break;
+    case 0x73: //Obtener estimacion del tiempo del sensor I2C: s 115 0x43
+      //Tiene que leer antes la presion y la temperatura
+      dps.getTemperature(&Temperature);
+      dps.getPressure(&Pressure);  
+      weatherDiff = Pressure - ePressure;
+      if(weatherDiff > 250)
+        Serial.print(Sunny);
+      else if ((weatherDiff <= 250) || (weatherDiff >= -250))
+        Serial.print(Partly_Cloudy);
+      else if (weatherDiff > -250)
+        Serial.print(Rain);
+      Serial.print(4,BYTE);
+      break;
+    case 0x74:
+      dps.getTemperature(&Temperature); 
+      dps.getPressure(&Pressure);
+      dps.getAltitude(&Altitude);
+      Serial.print("Temp(C):");
+      Serial.print(Temperature);
+      Serial.print("  Alt(cm):");
+      Serial.print(Altitude);
+      Serial.print("  Pressure(Pa):");
+      Serial.println(Pressure);
+      break;
     }
   }
   command=0; 
@@ -149,15 +210,4 @@ int contarSensores(void){
   ds.reset_search();
   return count;
 }
-
-
-
-
-
-
-
-
-
-
-
 
