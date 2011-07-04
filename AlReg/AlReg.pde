@@ -1,3 +1,4 @@
+
 #include <OneWire.h>
 #include <Wire.h>
 #include <BMP085.h>
@@ -193,7 +194,9 @@ void loop(void){
       Serial.print("  Alt(cm):");
       Serial.print(Altitude);
       Serial.print("  Pressure(Pa):");
-      Serial.println(Pressure);
+      Serial.print(Pressure);
+      Serial.print("  ePressure(Pa):");
+      Serial.println(ePressure);
       break;
     }
   }
