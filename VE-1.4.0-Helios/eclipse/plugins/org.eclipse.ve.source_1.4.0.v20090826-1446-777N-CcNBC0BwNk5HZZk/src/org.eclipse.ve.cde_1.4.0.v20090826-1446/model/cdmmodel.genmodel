@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ASCII"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText=""
+    modelDirectory="/org.eclipse.ve.cde/cdm" editDirectory="/org.eclipse.ve.cde.edit/src"
+    editorDirectory="/org.eclipse.ve.cde.editor/src" modelPluginID="" modelName="Cdm"
+    editPluginClass="org.eclipse.ve.internal.cdm.provider.CdmEditPlugin" editorPluginClass="org.eclipse.ve.internal.cdm.presentation.CdmEditorPlugin"
+    updateClasspath="false" booleanFlagsField="eFlags" booleanFlagsReservedBits="8"
+    complianceLevel="5.0" suppressGenModelAnnotations="false" usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore">
+  <foreignModel>../rose/cdmmodel.mdl</foreignModel>
+  <foreignModel>WorkspaceRoot</foreignModel>
+  <foreignModel>../..</foreignModel>
+  <genPackages prefix="CDM" basePackage="org.eclipse.ve.internal" adapterFactory="false"
+      ecorePackage="cdm.ecore#/">
+    <genDataTypes ecoreDataType="cdm.ecore#//ViewDimension"/>
+    <genDataTypes ecoreDataType="cdm.ecore#//ViewPoint"/>
+    <genDataTypes ecoreDataType="cdm.ecore#//ViewRectangle"/>
+    <genClasses ecoreClass="cdm.ecore#//DiagramData">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//DiagramData/diagrams"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//DiagramData/annotations"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//Diagram">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//Diagram/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//Diagram/id"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cdm.ecore#//Diagram/diagramData"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cdm.ecore#//Diagram/visualInfos"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//Diagram/figures"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//VisualInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference cdm.ecore#//VisualInfo/diagram"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedValueHolder">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//KeyedValueHolder/keyedValues"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedLocation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedLocation/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedLocation/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedSize">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedSize/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedSize/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedConstraint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedConstraint/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedConstraint/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//Annotation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//Annotation/visualInfos"/>
+      <genOperations ecoreOperation="cdm.ecore#//Annotation/getVisualInfo">
+        <genParameters ecoreParameter="cdm.ecore#//Annotation/getVisualInfo/aDiagram"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedPoints">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedPoints/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedPoints/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//AnnotationEMF">
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference cdm.ecore#//AnnotationEMF/annotates"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//AnnotationGeneric">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//AnnotationGeneric/annotatesID"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//DiagramFigure">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//DiagramFigure/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//DiagramFigure/childFigures"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedGeneric">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedGeneric/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cdm.ecore#//KeyedGeneric/value"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedInteger">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedInteger/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedInteger/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//MapEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//MapEntry/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//MapEntry/value"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedDynamic">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedDynamic/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedDynamic/value"/>
+    </genClasses>
+    <genClasses ecoreClass="cdm.ecore#//KeyedBoolean">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedBoolean/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cdm.ecore#//KeyedBoolean/value"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
