@@ -1,3 +1,0 @@
-vm/javaremotevm.jar=/org.eclipse.ve.java.core/vm_bin/
-vm/vcelauncher.jar=/org.eclipse.ve.java.core/vm_bin/
-common.jar=/org.eclipse.ve.java.core/common_bin/

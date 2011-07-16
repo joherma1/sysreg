@@ -1,4 +1,0 @@
-error al ejecutar la libreria en entorno de 64 bits
-
-VM arguments
--d32
