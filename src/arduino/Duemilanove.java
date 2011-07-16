@@ -272,6 +272,57 @@ public class Duemilanove implements SerialPortEventListener{
 			return null;
 		}	
 	}
+
+	public Long obtenerPresionBMP085(){
+		try {
+			output.write(0x71);
+			String res= leerArduino();
+			long res_l= Long.parseLong(res);
+			return res_l;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	}
+
+	public Float obtenerTemperaturaBMP085(){
+		try {
+			output.write(0x70);
+			String res= leerArduino();
+			Float res_f= Float.parseFloat(res);
+			return res_f;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	}
+	public Float obtenerAlturaBMP085(){
+		try {
+			output.write(0x72);
+			String res= leerArduino();
+			Float res_f= Float.parseFloat(res);
+			return res_f;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	}
+	public Float obtenerHumedadHH10D(){
+		try {
+			output.write(0x75);
+			String res= leerArduino();
+			Float res_f= Float.parseFloat(res);
+			return res_f;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	}
+
 	public class Monitor {
 		private byte[] buffer;
 		private boolean vacio = true;
@@ -287,8 +338,8 @@ public class Duemilanove implements SerialPortEventListener{
 			vacio=true;
 			byte[] res = buffer;
 			buffer=null;;
-//			for(int i=0;i<res.length;i++)
-//				System.out.println("|"+res[i]+"|");
+			//			for(int i=0;i<res.length;i++)
+			//				System.out.println("|"+res[i]+"|");
 			return res;
 		}
 
@@ -298,23 +349,23 @@ public class Duemilanove implements SerialPortEventListener{
 			notify();
 		}
 	}
-	
+
 	public static void main(String[] args){
 		Duemilanove d= new Duemilanove();
 		d.initialize();
-//		System.out.println("1-Contar sensores");
-//		System.out.println("2-Listar sensores");
-//		System.out.println("3-Obtener temperatura del 1r sensor");
-//		System.out.println("4-Obtener temperatura del 2o sensor");
+		//		System.out.println("1-Contar sensores");
+		//		System.out.println("2-Listar sensores");
+		//		System.out.println("3-Obtener temperatura del 1r sensor");
+		//		System.out.println("4-Obtener temperatura del 2o sensor");
 		int opcion;
 		for(int ii=0;ii<1;ii++){
 			//int n=d.contarSensoresT();
 			//System.out.println("Numero de sensores "+ n);
-//			byte[][] l=d.listarSensoresT();
-//			for(int i=0;i<d.n_sensores_t;i++){
-//				String aux= new String(l[i]);
-//				System.out.println(aux);
-//			}
+			//			byte[][] l=d.listarSensoresT();
+			//			for(int i=0;i<d.n_sensores_t;i++){
+			//				String aux= new String(l[i]);
+			//				System.out.println(aux);
+			//			}
 			//System.out.println("Temperatura Sensor 1");
 			//d.obtenerTemperatura(l[0]);
 			//System.out.println("Ya listados");
@@ -333,30 +384,30 @@ public class Duemilanove implements SerialPortEventListener{
 		int n=d.contarSensoresT();
 		d.close();
 		System.exit(0);
-			
-//		try {
-//			opcion = System.in.read();
-//			while(opcion!=-1){
-//				switch (opcion) {
-//				case 49://1 ASCII
-//					int n=d.contarSensoresT();
-//					System.out.println("Numero de sensores "+ n);
-//					break;
-//				case 50:
-//					byte[][] l=d.listarSensoresT();
-//					for(int i=0;i<d.n_sensores_t;i++){
-//						String aux= new String(l[i]);
-//						System.out.println(aux);
-//					}							
-//				default:
-//					break;
-//				}
-//				opcion = System.in.read();
-//			}
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
+		//		try {
+		//			opcion = System.in.read();
+		//			while(opcion!=-1){
+		//				switch (opcion) {
+		//				case 49://1 ASCII
+		//					int n=d.contarSensoresT();
+		//					System.out.println("Numero de sensores "+ n);
+		//					break;
+		//				case 50:
+		//					byte[][] l=d.listarSensoresT();
+		//					for(int i=0;i<d.n_sensores_t;i++){
+		//						String aux= new String(l[i]);
+		//						System.out.println(aux);
+		//					}							
+		//				default:
+		//					break;
+		//				}
+		//				opcion = System.in.read();
+		//			}
+		//			
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 }

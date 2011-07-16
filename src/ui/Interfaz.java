@@ -50,6 +50,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JDialog;
 import javax.swing.BorderFactory;
 import javax.swing.WindowConstants;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.factories.FormFactory;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.border.LineBorder;
 
 public class Interfaz {
 
@@ -104,6 +111,20 @@ public class Interfaz {
 	private JLabel l_icono = null;
 	private JLabel l_homepage = null;
 	private JLabel l_mailto = null;
+	private JPanel p_BMP085;
+	private JLabel l_SensorMP085;
+	private JLabel l_TextTemperatura;
+	private JLabel l_TextoPresion;
+	private JLabel l_Presion;
+	private JLabel l_Temperatura;
+	private JLabel l_TextoAltura;
+	private JLabel l_Altura;
+	private JButton b_RecargarBMP085;
+	private JPanel p_HH10D;
+	private JLabel l_HH10D;
+	private JLabel l_textHumedad;
+	private JLabel l_humedad;
+	private JButton b_recargarHumedad;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -112,7 +133,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(495, 451));
+			f_interfaz.setSize(new Dimension(675, 462));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -137,81 +158,56 @@ public class Interfaz {
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
 			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.gridx = 1;
+			gridBagConstraints14.gridx = 0;
 			gridBagConstraints14.anchor = GridBagConstraints.WEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
-			gridBagConstraints14.gridy = 5;
+			gridBagConstraints14.gridy = 3;
 			l_hora = new JLabel();
 			l_hora.setText("Hora:");
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 3;
-			gridBagConstraints13.gridwidth = 1;
-			gridBagConstraints13.anchor = GridBagConstraints.CENTER;
-			gridBagConstraints13.insets = new Insets(0, 10, 0, 0);
-			gridBagConstraints13.gridy = 5;
-			l_ultimaact = new JLabel();
-			l_ultimaact.setText("Última actualización:");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			gridBagConstraints10.gridx = 4;
+			gridBagConstraints10.gridx = 3;
 			gridBagConstraints10.anchor = GridBagConstraints.EAST;
-			gridBagConstraints10.insets = new Insets(0, 10, 0, 10);
+			gridBagConstraints10.insets = new Insets(0, 10, 5, 10);
 			gridBagConstraints10.fill = GridBagConstraints.NONE;
 			gridBagConstraints10.ipadx = 0;
 			gridBagConstraints10.weightx = 0.0;
 			gridBagConstraints10.ipady = 0;
-			gridBagConstraints10.gridy = 5;
+			gridBagConstraints10.gridy = 3;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
-			gridBagConstraints12.gridy = 1;
+			gridBagConstraints12.gridy = 0;
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.gridheight = 3;
 			gridBagConstraints12.insets = new Insets(10, 5, 5, 10);
 			gridBagConstraints12.gridwidth = 3;
-			gridBagConstraints12.gridx = 2;
+			gridBagConstraints12.gridx = 1;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			gridBagConstraints7.gridx = 1;
+			gridBagConstraints7.gridx = 0;
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
-			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints7.gridy = 7;
+			gridBagConstraints7.insets = new Insets(5, 5, 0, 5);
+			gridBagConstraints7.gridy = 6;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 3;
-			gridBagConstraints6.insets = new Insets(0, 5, 5, 5);
-			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints6.ipadx = 150;
-			gridBagConstraints6.anchor = GridBagConstraints.EAST;
-			gridBagConstraints6.ipady = 0;
-			gridBagConstraints6.gridwidth = 1;
-			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 7;
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.gridx = 1;
-			gridBagConstraints3.gridwidth = 4;
-			gridBagConstraints3.insets = new Insets(5, 5, 0, 5);
-			gridBagConstraints3.ipady = 80;
-			gridBagConstraints3.ipadx = 130;
-			gridBagConstraints3.gridy = 6;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 1;
+			gridBagConstraints5.gridx = 0;
 			gridBagConstraints5.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints5.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints5.fill = GridBagConstraints.NONE;
-			gridBagConstraints5.gridy = 3;
+			gridBagConstraints5.gridy = 2;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 1;
+			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints4.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints4.gridy = 2;
+			gridBagConstraints4.gridy = 1;
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.gridheight = 1;
 			gridBagConstraints11.anchor = GridBagConstraints.CENTER;
 			gridBagConstraints11.gridwidth = 1;
 			gridBagConstraints11.insets = new Insets(10, 10, 5, 5);
-			gridBagConstraints11.gridy = 1;
+			gridBagConstraints11.gridy = 0;
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
 			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
@@ -222,17 +218,58 @@ public class Interfaz {
 			gridBagConstraints0.gridy = 2;
 
 			p_interfaz = new JPanel();
-			p_interfaz.setLayout(new GridBagLayout());
+			GridBagLayout gbl_p_interfaz = new GridBagLayout();
+			gbl_p_interfaz.columnWidths = new int[]{268, 0, 193, 57};
+			gbl_p_interfaz.rowHeights = new int[]{0, 0, 27, 0, 132, 0, 0};
+			gbl_p_interfaz.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+			gbl_p_interfaz.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
 			p_interfaz.add(getB_desactivarRiego(), gridBagConstraints5);
+			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			gridBagConstraints13.gridx = 2;
+			gridBagConstraints13.anchor = GridBagConstraints.WEST;
+			gridBagConstraints13.insets = new Insets(0, 10, 5, 5);
+			gridBagConstraints13.gridy = 3;
+			l_ultimaact = new JLabel();
+			l_ultimaact.setText("Última actualización:");
+			p_interfaz.add(l_ultimaact, gridBagConstraints13);
+			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			gridBagConstraints3.gridwidth = 2;
+			gridBagConstraints3.gridheight = 2;
+			gridBagConstraints3.fill = GridBagConstraints.BOTH;
+			gridBagConstraints3.gridx = 0;
+			gridBagConstraints3.insets = new Insets(5, 30, 5, 5);
+			gridBagConstraints3.gridy = 4;
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
-			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
+			GridBagConstraints gbc_p_BMP085 = new GridBagConstraints();
+			gbc_p_BMP085.insets = new Insets(5, 5, 5, 5);
+			gbc_p_BMP085.fill = GridBagConstraints.BOTH;
+			gbc_p_BMP085.gridx = 2;
+			gbc_p_BMP085.gridy = 4;
+			p_interfaz.add(getP_BMP085(), gbc_p_BMP085);
+			GridBagConstraints gbc_p_HH10D = new GridBagConstraints();
+			gbc_p_HH10D.anchor = GridBagConstraints.WEST;
+			gbc_p_HH10D.insets = new Insets(5, 5, 5, 0);
+			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
+			gbc_p_HH10D.gridx = 3;
+			gbc_p_HH10D.gridy = 4;
+			p_interfaz.add(getPanel_1(), gbc_p_HH10D);
 			p_interfaz.add(esp_progresbar, gridBagConstraints7);
 			p_interfaz.add(getCp_horario(), gridBagConstraints12);
 			p_interfaz.add(getB_recargar(), gridBagConstraints10);
-			p_interfaz.add(l_ultimaact, gridBagConstraints13);
 			p_interfaz.add(l_hora, gridBagConstraints14);
+			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+			gridBagConstraints6.gridx = 2;
+			gridBagConstraints6.insets = new Insets(0, 5, 0, 5);
+			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints6.ipadx = 150;
+			gridBagConstraints6.anchor = GridBagConstraints.EAST;
+			gridBagConstraints6.ipady = 0;
+			gridBagConstraints6.gridheight = 1;
+			gridBagConstraints6.gridy = 6;
+			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
 		}
 		return p_interfaz;
 	}
@@ -286,6 +323,7 @@ public class Interfaz {
 			borderLayout.setHgap(0);
 			borderLayout.setVgap(0);
 			p_sensor = new JPanel();
+			p_sensor.setBorder(new LineBorder(new Color(0, 0, 0)));
 			p_sensor.setLayout(borderLayout);
 			p_sensor.add(l_tipoSensor, java.awt.BorderLayout.NORTH);
 			p_sensor.add(getP_botones(), java.awt.BorderLayout.SOUTH);
@@ -1098,6 +1136,18 @@ public class Interfaz {
 				Float res=logica.obtenerTemperatura(sensor);
 				anyardirSensor(sensor, res);
 			}
+			//Sensor BMP085
+			Long presion = logica.obtenerPresionBMP085();
+			l_Presion.setText(presion.toString());
+			Float temp = logica.obtenerTemperaturaBMP085();
+			l_Temperatura.setText(temp.toString());
+			Float alt =  logica.obtenerAlturaBMP085();
+			l_Altura.setText(alt.toString());
+			
+			//Sensor HH10D
+			Float humedad = logica.obtenerHumedadHH10D();
+			l_humedad.setText(humedad.toString());
+			
 			actualizarCalendario();
 			return null;		
 		}
@@ -1145,5 +1195,199 @@ public class Interfaz {
 				e.printStackTrace();
 			}
 		}
+	}
+	private JPanel getP_BMP085() {
+		if (p_BMP085 == null) {
+			p_BMP085 = new JPanel();
+			p_BMP085.setBorder(new LineBorder(new Color(0, 0, 0)));
+			GridBagLayout gbl_p_BMP085 = new GridBagLayout();
+			gbl_p_BMP085.columnWidths = new int[]{106, 55, 0};
+			gbl_p_BMP085.rowHeights = new int[]{16, 0, 16, 0, 0, 0};
+			gbl_p_BMP085.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+			gbl_p_BMP085.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+			p_BMP085.setLayout(gbl_p_BMP085);
+			GridBagConstraints gbc_l_SensorMP085 = new GridBagConstraints();
+			gbc_l_SensorMP085.gridwidth = 2;
+			gbc_l_SensorMP085.anchor = GridBagConstraints.NORTHWEST;
+			gbc_l_SensorMP085.insets = new Insets(5, 5, 5, 0);
+			gbc_l_SensorMP085.gridx = 0;
+			gbc_l_SensorMP085.gridy = 0;
+			p_BMP085.add(getL_SensorMP085(), gbc_l_SensorMP085);
+			GridBagConstraints gbc_l_TextoPresion = new GridBagConstraints();
+			gbc_l_TextoPresion.anchor = GridBagConstraints.WEST;
+			gbc_l_TextoPresion.insets = new Insets(5, 5, 5, 5);
+			gbc_l_TextoPresion.gridx = 0;
+			gbc_l_TextoPresion.gridy = 1;
+			p_BMP085.add(getL_TextoPresion(), gbc_l_TextoPresion);
+			GridBagConstraints gbc_l_Presion = new GridBagConstraints();
+			gbc_l_Presion.anchor = GridBagConstraints.WEST;
+			gbc_l_Presion.insets = new Insets(5, 5, 5, 0);
+			gbc_l_Presion.gridx = 1;
+			gbc_l_Presion.gridy = 1;
+			p_BMP085.add(getL_Presion(), gbc_l_Presion);
+			GridBagConstraints gbc_l_TextTemperatura = new GridBagConstraints();
+			gbc_l_TextTemperatura.insets = new Insets(0, 5, 5, 5);
+			gbc_l_TextTemperatura.anchor = GridBagConstraints.NORTHWEST;
+			gbc_l_TextTemperatura.gridx = 0;
+			gbc_l_TextTemperatura.gridy = 2;
+			p_BMP085.add(getL_TextTemperatura(), gbc_l_TextTemperatura);
+			GridBagConstraints gbc_l_Temperatura = new GridBagConstraints();
+			gbc_l_Temperatura.anchor = GridBagConstraints.WEST;
+			gbc_l_Temperatura.insets = new Insets(0, 5, 5, 0);
+			gbc_l_Temperatura.gridx = 1;
+			gbc_l_Temperatura.gridy = 2;
+			p_BMP085.add(getL_Temperatura(), gbc_l_Temperatura);
+			GridBagConstraints gbc_l_TextoAltura = new GridBagConstraints();
+			gbc_l_TextoAltura.anchor = GridBagConstraints.WEST;
+			gbc_l_TextoAltura.insets = new Insets(0, 5, 5, 5);
+			gbc_l_TextoAltura.gridx = 0;
+			gbc_l_TextoAltura.gridy = 3;
+			p_BMP085.add(getL_TextoAltura(), gbc_l_TextoAltura);
+			GridBagConstraints gbc_l_Altura = new GridBagConstraints();
+			gbc_l_Altura.anchor = GridBagConstraints.WEST;
+			gbc_l_Altura.insets = new Insets(0, 5, 5, 0);
+			gbc_l_Altura.gridx = 1;
+			gbc_l_Altura.gridy = 3;
+			p_BMP085.add(getL_Altura(), gbc_l_Altura);
+			GridBagConstraints gbc_b_RecargarBMP085 = new GridBagConstraints();
+			gbc_b_RecargarBMP085.anchor = GridBagConstraints.SOUTHEAST;
+			gbc_b_RecargarBMP085.gridx = 1;
+			gbc_b_RecargarBMP085.gridy = 4;
+			p_BMP085.add(getB_RecargarBMP085(), gbc_b_RecargarBMP085);
+		}
+		return p_BMP085;
+	}
+	private JLabel getL_SensorMP085() {
+		if (l_SensorMP085 == null) {
+			l_SensorMP085 = new JLabel("Sensor BMP085");
+		}
+		return l_SensorMP085;
+	}
+	private JLabel getL_TextTemperatura() {
+		if (l_TextTemperatura == null) {
+			l_TextTemperatura = new JLabel("Temperatura (ªC)");
+		}
+		return l_TextTemperatura;
+	}
+	private JLabel getL_TextoPresion() {
+		if (l_TextoPresion == null) {
+			l_TextoPresion = new JLabel("Presión (Pa)");
+			l_TextoPresion.setAlignmentY(0.0f);
+			l_TextoPresion.setAlignmentX(1.0f);
+		}
+		return l_TextoPresion;
+	}
+	private JLabel getL_Presion() {
+		if (l_Presion == null) {
+			l_Presion = new JLabel("101196");
+		}
+		return l_Presion;
+	}
+	private JLabel getL_Temperatura() {
+		if (l_Temperatura == null) {
+			l_Temperatura = new JLabel("28.5");
+		}
+		return l_Temperatura;
+	}
+	private JLabel getL_TextoAltura() {
+		if (l_TextoAltura == null) {
+			l_TextoAltura = new JLabel("Altura (m)");
+		}
+		return l_TextoAltura;
+	}
+	private JLabel getL_Altura() {
+		if (l_Altura == null) {
+			l_Altura = new JLabel("34");
+		}
+		return l_Altura;
+	}
+	private JButton getB_RecargarBMP085() {
+		if (b_RecargarBMP085 == null) {
+			b_RecargarBMP085 = new JButton();
+			b_RecargarBMP085.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					Long presion = logica.obtenerPresionBMP085();
+					l_Presion.setText(presion.toString());
+					Float temp = logica.obtenerTemperaturaBMP085();
+					l_Temperatura.setText(temp.toString());
+					Float alt =  logica.obtenerAlturaBMP085();
+					l_Altura.setText(alt.toString());
+				}
+			});
+			b_RecargarBMP085.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+		}
+		return b_RecargarBMP085;
+	}
+	private JPanel getPanel_1() {
+		if (p_HH10D == null) {
+			p_HH10D = new JPanel();
+			p_HH10D.setBorder(new LineBorder(new Color(0, 0, 0)));
+			GridBagLayout gbl_p_HH10D = new GridBagLayout();
+			gbl_p_HH10D.columnWidths = new int[]{106, 55, 0};
+			gbl_p_HH10D.rowHeights = new int[]{16, 0, 0, 0};
+			gbl_p_HH10D.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+			gbl_p_HH10D.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+			p_HH10D.setLayout(gbl_p_HH10D);
+			GridBagConstraints gbc_l_HH10D = new GridBagConstraints();
+			gbc_l_HH10D.anchor = GridBagConstraints.NORTHWEST;
+			gbc_l_HH10D.gridwidth = 2;
+			gbc_l_HH10D.insets = new Insets(5, 5, 5, 0);
+			gbc_l_HH10D.gridx = 0;
+			gbc_l_HH10D.gridy = 0;
+			p_HH10D.add(getL_HH10D(), gbc_l_HH10D);
+			GridBagConstraints gbc_l_textHumedad = new GridBagConstraints();
+			gbc_l_textHumedad.anchor = GridBagConstraints.WEST;
+			gbc_l_textHumedad.insets = new Insets(5, 5, 5, 5);
+			gbc_l_textHumedad.gridx = 0;
+			gbc_l_textHumedad.gridy = 1;
+			p_HH10D.add(getL_textHumedad(), gbc_l_textHumedad);
+			GridBagConstraints gbc_l_humedad = new GridBagConstraints();
+			gbc_l_humedad.anchor = GridBagConstraints.WEST;
+			gbc_l_humedad.insets = new Insets(5, 5, 5, 0);
+			gbc_l_humedad.gridx = 1;
+			gbc_l_humedad.gridy = 1;
+			p_HH10D.add(getL_humedad(), gbc_l_humedad);
+			GridBagConstraints gbc_b_recargarHumedad = new GridBagConstraints();
+			gbc_b_recargarHumedad.anchor = GridBagConstraints.SOUTHEAST;
+			gbc_b_recargarHumedad.gridx = 1;
+			gbc_b_recargarHumedad.gridy = 2;
+			p_HH10D.add(getB_recargarHumedad(), gbc_b_recargarHumedad);
+		}
+		return p_HH10D;
+	}
+	private JLabel getL_HH10D() {
+		if (l_HH10D == null) {
+			l_HH10D = new JLabel("Sensor HH10D");
+		}
+		return l_HH10D;
+	}
+	private JLabel getL_textHumedad() {
+		if (l_textHumedad == null) {
+			l_textHumedad = new JLabel("Humedad (%)");
+			l_textHumedad.setAlignmentY(0.0f);
+			l_textHumedad.setAlignmentX(1.0f);
+		}
+		return l_textHumedad;
+	}
+	private JLabel getL_humedad() {
+		if (l_humedad == null) {
+			l_humedad = new JLabel("55.0");
+		}
+		return l_humedad;
+	}
+	private JButton getB_recargarHumedad() {
+		if (b_recargarHumedad == null) {
+			b_recargarHumedad = new JButton();
+			b_recargarHumedad.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					Float humedad = logica.obtenerHumedadHH10D();
+					l_humedad.setText(humedad.toString());
+				}
+			});
+			b_recargarHumedad.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+		}
+		return b_recargarHumedad;
 	}
 }

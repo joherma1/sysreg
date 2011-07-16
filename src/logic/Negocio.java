@@ -119,41 +119,19 @@ public class Negocio {
 			return res;
 		}
 	}
-	private void pintarMenu(){
-		System.out.println("------------------");
-		System.out.println("1-Activar riego");
-		System.out.println("j-Parar riego");
-		System.out.println("3-Contar sensores");
-		System.out.println("4-Listar sensores");
-		System.out.println("-------------------");
+	public Long obtenerPresionBMP085(){
+		return due.obtenerPresionBMP085();
 	}
-	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio();
-		//		main.pintarMenu();
-		//		while(true){
-		//			int value = System.in.read();
-		//			switch (value) {
-		//			case 0x6A:
-		//				System.out.println("Hay "+main.contarSensoresT());
-		//				break;
-		//
-		//			default:
-		//				break;
-		//			}
-		//			main.pintarMenu();
-		//		}
-		//TIEMPOS
-		//Inicio 1450
-		//contarSensoresT 40
-		//ListarSensoresT 40
-
-		//		System.out.println(main.contarSensoresT());
-		//		main.listarSensoresT();
-		//		System.out.println(main.obtenerTemperatura(main.sensores_t[0]));
-		main.cargarConfiguracion();
-		main.cargarCalendario();
-		System.exit(0);
+	public Float obtenerTemperaturaBMP085(){
+		return due.obtenerTemperaturaBMP085();
 	}
+	public Float obtenerAlturaBMP085(){
+		return due.obtenerAlturaBMP085();
+	}
+	public Float obtenerHumedadHH10D(){
+		return due.obtenerHumedadHH10D();
+	}
+	
 
 
 	//--------CALENDAR-----------
@@ -308,5 +286,45 @@ public class Negocio {
 		}
 
 	}
+	
+	private void pintarMenu(){
+		System.out.println("------------------");
+		System.out.println("1-Activar riego");
+		System.out.println("j-Parar riego");
+		System.out.println("3-Contar sensores");
+		System.out.println("4-Listar sensores");
+		System.out.println("-------------------");
+	}
+	public static void main(String[] args) throws Exception {
+		Negocio main = new Negocio();
+		main.inicializar();
+		//		main.pintarMenu();
+		//		while(true){
+		//			int value = System.in.read();
+		//			switch (value) {
+		//			case 0x6A:
+		//				System.out.println("Hay "+main.contarSensoresT());
+		//				break;
+		//
+		//			default:
+		//				break;
+		//			}
+		//			main.pintarMenu();
+		//		}
+		//TIEMPOS
+		//Inicio 1450
+		//contarSensoresT 40
+		//ListarSensoresT 40
+
+		//		System.out.println(main.contarSensoresT());
+		//		main.listarSensoresT();
+		//		System.out.println(main.obtenerTemperatura(main.sensores_t[0]));
+		main.cargarConfiguracion();
+		main.cargarCalendario();
+		System.out.println(main.obtenerPresionBMP085());
+		System.out.println(main.obtenerTemperaturaBMP085());
+		System.exit(0);
+	}
+
 }
 
