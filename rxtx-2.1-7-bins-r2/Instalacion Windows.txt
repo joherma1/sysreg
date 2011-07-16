@@ -1,0 +1,19 @@
+Buscar el directorio del jre:
+	c:\Program Files\Java\jre1.6.0_01\ ó C:\Archivos de programa\Java\jre6\
+
+Par ejecutar:
+	Copiar rxtxParallel.dll a c:\Program Files\Java\jre1.6.0_01\bin\
+	Copiar rxtxSerial.dll a c:\Program Files\Java\jre1.6.0_01\bin\
+	Copiar RXTXcomm.jar a c:\Program Files\Java\jre1.6.0_01\lib\ext\ 
+	
+Para compilar:
+    Copiar rxtxParallel.dll a c:\Program Files\Java\jdk1.6.0_01\jre\bin\
+    Copiar rxtxSerial.dll a c:\Program Files\Java\jdk1.6.0_01\jre\bin\
+    Copiar RXTXcomm.jar a c:\Program Files\Java\jdk1.6.0_01\jre\lib\ext\ 
+	
+Si en el Eclipse IDE muestra un error al importar las librerias:
+	Windows -> Preferences -> Java -> Compiler -> Errors/Warnings
+    (Project) Properties -> Java Compiler -> Errors/Warnings
+			Deprecated and restricted API
+				Forbidden reference (access rules)
+					Error -> Warning or remove

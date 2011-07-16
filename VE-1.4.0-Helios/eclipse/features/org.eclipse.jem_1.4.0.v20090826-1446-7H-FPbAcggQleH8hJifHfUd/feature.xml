@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.jem"
+      label="%featureName"
+      version="1.4.0.v20090826-1446-7H-FPbAcggQleH8hJifHfUd"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://download.eclipse.org/tools/ve/updates/1.4/"/>
+      <discovery label="WTP 3.0.5 Updates" url="http://archive.eclipse.org/webtools/downloads/drops/R3.0/R-3.0.5-20090521045405/updateSite/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.emf.ecore.xmi" version="2.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jem.proxy" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore.xmi" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore.change" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.core" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.4.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore.xmi" version="2.4.0" match="compatible"/>
+      <import plugin="com.ibm.icu" version="3.8.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.jem"
+         download-size="0"
+         install-size="0"
+         version="2.0.300.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.beaninfo"
+         download-size="0"
+         install-size="0"
+         version="2.0.300.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.beaninfo.vm"
+         download-size="0"
+         install-size="0"
+         version="2.0.200.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.beaninfo.vm.common"
+         download-size="0"
+         install-size="0"
+         version="2.0.201.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.proxy"
+         download-size="0"
+         install-size="0"
+         version="2.0.201.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.ui"
+         download-size="0"
+         install-size="0"
+         version="2.0.100.R3_0_4"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.util"
+         download-size="0"
+         install-size="0"
+         version="2.0.200.R3_1_maintenance"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jem.workbench"
+         download-size="0"
+         install-size="0"
+         version="2.0.201.R3_1_maintenance"
+         unpack="false"/>
+
+</feature>
