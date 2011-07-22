@@ -1,6 +1,8 @@
 package logic;
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +17,12 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+
+//import org.jdom.Document;
+//import org.jdom.Element;
+//import org.jdom.JDOMException;
+//import org.jdom.input.SAXBuilder;
 
 import logic.Evento.State;
 
@@ -131,7 +139,7 @@ public class Negocio {
 	public Float obtenerHumedadHH10D(){
 		return due.obtenerHumedadHH10D();
 	}
-	
+
 
 
 	//--------CALENDAR-----------
@@ -254,39 +262,45 @@ public class Negocio {
 
 	private void cargarConfiguracion(){
 		try {
-			SAXBuilder builder=new SAXBuilder(true);//Parser Xerces y validar documento
-			Document conf=builder.build("src/configuracion/RegAdmin.xml");
-	        Element raiz=conf.getRootElement();
-	        //Sensores
-	        //TODAVIA NO LOS UTLIZAMOS PARA NADA
-	        Element raiz_sensores = raiz.getChild("Sensores");
-	        List sensores = raiz_sensores.getChildren();
-	        Iterator i = sensores.iterator();
-	        while (i.hasNext()){
-	            Element e= (Element)i.next();
-	            String id = e.getChildText("id");
-	            String alias = e.getChildText("alias");
-	            //System.out.println("Sensor: " + id + " \t" + alias);
-	        }
-	        //Calendario
-	        Element raiz_calendario = raiz.getChild("Calendario");
-	        String tipo = raiz_calendario.getAttributeValue("tipo");
-	        usuario = raiz_calendario.getChildText("usuario");
-	        contrasenya = raiz_calendario.getChildText("contraseña");
-	        if(tipo.compareTo("gmail") == 0)
-	        	usuario += "@gmail.com";
-	        //System.out.println("Usuario: " + usuario + " \tContraseña:" + contrasenya);
+			SAXBuilder builder=new SAXBuilder(true);////JDOM no tiene un parser nativo. Utiliza SAX2 como Xerces y validar documento
+			Document conf=builder.build(getClass().getResource("/configuracion/RegAdmin.xml"));
+			Element raiz=conf.getRootElement();
+			//Sensores
+			//TODAVIA NO LOS UTLIZAMOS PARA NADA
+			Element raiz_sensores = raiz.getChild("Sensores");
+			List sensores = raiz_sensores.getChildren();
+			Iterator i = sensores.iterator();
+			while (i.hasNext()){
+				Element e= (Element)i.next();
+				String id = e.getChildText("id");
+				String alias = e.getChildText("alias");
+				//System.out.println("Sensor: " + id + " \t" + alias);
+				e.setText("Hola");
+			}
+			//Calendario
+			Element raiz_calendario = raiz.getChild("Calendario");
+			String tipo = raiz_calendario.getAttributeValue("tipo");
+			usuario = raiz_calendario.getChildText("usuario");
+			contrasenya = raiz_calendario.getChildText("contraseña");
+			if(tipo.compareTo("gmail") == 0)
+				usuario += "@gmail.com";
+			//System.out.println("Usuario: " + usuario + " \tContraseña:" + contrasenya);
 
+//			//Escribir
+//			XMLOutputter outputter = new XMLOutputter();
+//			FileOutputStream file = new FileOutputStream(getClass().getResource("RegAdmin.xml").toExternalForm());
+//			outputter.output(conf,file);
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+
+
 	}
-	
+
 	private void pintarMenu(){
 		System.out.println("------------------");
 		System.out.println("1-Activar riego");
