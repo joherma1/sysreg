@@ -1,0 +1,18 @@
+Copiar en /Library/Java/Extensions
+
+Es una versión compilada para que funciones correctamente en las versiones de 64bits
+
+
+Luego hay que crear la carpeta del lock
+
+
+sudo mkdir /var/lock
+sudo chmod a+wrx /var/lock
+
+
+
+Resultado
+02/08/11 17:19:51,078 [0x0-0x48048].org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader: Stable Library
+02/08/11 17:19:51,078 [0x0-0x48048].org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader: =========================================
+02/08/11 17:19:51,078 [0x0-0x48048].org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader: Native lib Version = RXTX-2.1-7
+02/08/11 17:19:51,078 [0x0-0x48048].org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader: Java lib Version   = RXTX-2.1-7
