@@ -50,10 +50,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JDialog;
 import javax.swing.BorderFactory;
 import javax.swing.WindowConstants;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
@@ -133,7 +129,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(675, 462));
+			f_interfaz.setSize(new Dimension(656, 490));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -159,7 +155,7 @@ public class Interfaz {
 		if (p_interfaz == null) {
 			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
 			gridBagConstraints14.gridx = 0;
-			gridBagConstraints14.anchor = GridBagConstraints.WEST;
+			gridBagConstraints14.anchor = GridBagConstraints.NORTHWEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
 			gridBagConstraints14.gridy = 3;
 			l_hora = new JLabel();
@@ -187,7 +183,7 @@ public class Interfaz {
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 30;
 			gridBagConstraints7.insets = new Insets(5, 5, 0, 5);
-			gridBagConstraints7.gridy = 6;
+			gridBagConstraints7.gridy = 5;
 			esp_progresbar = new JLabel();
 			esp_progresbar.setText("");
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
@@ -219,9 +215,9 @@ public class Interfaz {
 
 			p_interfaz = new JPanel();
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
-			gbl_p_interfaz.columnWidths = new int[]{268, 0, 193, 57};
-			gbl_p_interfaz.rowHeights = new int[]{0, 0, 27, 0, 132, 0, 0};
-			gbl_p_interfaz.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+			gbl_p_interfaz.columnWidths = new int[]{268, 0, 185, 57};
+			gbl_p_interfaz.rowHeights = new int[]{0, 0, 27, 0, 174, 0};
+			gbl_p_interfaz.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 			gbl_p_interfaz.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
 			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
@@ -237,10 +233,9 @@ public class Interfaz {
 			p_interfaz.add(l_ultimaact, gridBagConstraints13);
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridwidth = 2;
-			gridBagConstraints3.gridheight = 2;
 			gridBagConstraints3.fill = GridBagConstraints.BOTH;
 			gridBagConstraints3.gridx = 0;
-			gridBagConstraints3.insets = new Insets(5, 30, 5, 5);
+			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
 			gridBagConstraints3.gridy = 4;
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
 			GridBagConstraints gbc_p_BMP085 = new GridBagConstraints();
@@ -250,9 +245,9 @@ public class Interfaz {
 			gbc_p_BMP085.gridy = 4;
 			p_interfaz.add(getP_BMP085(), gbc_p_BMP085);
 			GridBagConstraints gbc_p_HH10D = new GridBagConstraints();
+			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
 			gbc_p_HH10D.anchor = GridBagConstraints.WEST;
 			gbc_p_HH10D.insets = new Insets(5, 5, 5, 0);
-			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
 			gbc_p_HH10D.gridx = 3;
 			gbc_p_HH10D.gridy = 4;
 			p_interfaz.add(getPanel_1(), gbc_p_HH10D);
@@ -261,14 +256,11 @@ public class Interfaz {
 			p_interfaz.add(getB_recargar(), gridBagConstraints10);
 			p_interfaz.add(l_hora, gridBagConstraints14);
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 2;
-			gridBagConstraints6.insets = new Insets(0, 5, 0, 5);
-			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints6.ipadx = 150;
 			gridBagConstraints6.anchor = GridBagConstraints.EAST;
+			gridBagConstraints6.gridx = 3;
+			gridBagConstraints6.insets = new Insets(0, 5, 0, 5);
 			gridBagConstraints6.ipady = 0;
-			gridBagConstraints6.gridheight = 1;
-			gridBagConstraints6.gridy = 6;
+			gridBagConstraints6.gridy = 5;
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
 		}
 		return p_interfaz;
