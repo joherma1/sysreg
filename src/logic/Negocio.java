@@ -35,10 +35,12 @@ import com.google.gdata.data.extensions.*;
 import com.google.gdata.util.*;
 
 
+import arduino.Arduino;
 import arduino.Duemilanove;
+import arduino.Fake;
 
 public class Negocio {
-	private Duemilanove due;
+	private Arduino due;
 	private String[] sensores_t;
 	private byte[][] sensores_t_raw;
 	private String usuario;
@@ -47,6 +49,11 @@ public class Negocio {
 	private boolean riego_maestro = false; //Solo se puede desactivar manalmente
 	public Negocio(){
 		due=new Duemilanove();
+	}
+	public Negocio(boolean debug){
+		if(debug == true)
+			due = new Fake();
+		else due = new Duemilanove();
 	}
 	public int inicializar(){
 		int value_due = due.initialize();
@@ -62,29 +69,10 @@ public class Negocio {
 	public byte[][] getSensoresTRaw() {
 		return sensores_t_raw;
 	}
-	public boolean iniciarRiego(boolean manual){
-		if(manual == true)
-			riego_maestro = true;
-		return due.startReg();
-	}
 	public boolean iniciarRiego(){
 		return due.startReg();
 	}
-	public boolean pararRiego(boolean manual){
-		if(manual == true){
-			riego_maestro = false;
-			return due.stopReg();
-		} else { //Si no es una parada manual
-			if(riego_maestro == true)
-				return false; //Si es un riego maestro no lo podemos parar
-			else 
-				return due.stopReg();
-		}
-	}
 	public boolean pararRiego(){
-		if(riego_maestro == true)
-			return false;
-		else
 			return due.stopReg();
 	}
 	public int contarSensoresT(){

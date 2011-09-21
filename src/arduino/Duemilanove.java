@@ -12,7 +12,7 @@ import java.util.Enumeration;
 //MEJORA
 
 @SuppressWarnings("restriction")
-public class Duemilanove implements SerialPortEventListener{
+public class Duemilanove implements SerialPortEventListener, Arduino{
 	//--------------
 	//Variables RXTX
 	//--------------

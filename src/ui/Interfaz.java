@@ -53,6 +53,13 @@ import javax.swing.WindowConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
+import javax.swing.JCheckBox;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class Interfaz {
 
@@ -64,6 +71,8 @@ public class Interfaz {
 	private Negocio logica = null;  //  @jve:decl-index=0:
 	private String [] sensores = null;
 	private List<Evento> eventos = null;
+	private RelojCalendar r_cal = null;
+	private RelojRiego r_riego = null;
 	//Panel Tª
 	private ArrayList<JLabel> l_id = new ArrayList<JLabel>();
 	private ArrayList<JLabel> l_value = new ArrayList<JLabel>();  //  @jve:decl-index=0:
@@ -121,6 +130,7 @@ public class Interfaz {
 	private JLabel l_textHumedad;
 	private JLabel l_humedad;
 	private JButton b_recargarHumedad;
+	private JCheckBox cb_Desactivar;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -215,7 +225,7 @@ public class Interfaz {
 
 			p_interfaz = new JPanel();
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
-			gbl_p_interfaz.columnWidths = new int[]{268, 0, 185, 57};
+			gbl_p_interfaz.columnWidths = new int[]{202, 0, 185, 57};
 			gbl_p_interfaz.rowHeights = new int[]{0, 0, 27, 0, 174, 0};
 			gbl_p_interfaz.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 			gbl_p_interfaz.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
@@ -223,6 +233,11 @@ public class Interfaz {
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
 			p_interfaz.add(getB_desactivarRiego(), gridBagConstraints5);
+			GridBagConstraints gbc_cb_Desactivar = new GridBagConstraints();
+			gbc_cb_Desactivar.insets = new Insets(0, 0, 5, 5);
+			gbc_cb_Desactivar.gridx = 1;
+			gbc_cb_Desactivar.gridy = 3;
+			p_interfaz.add(getCb_Desactivar(), gbc_cb_Desactivar);
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 2;
 			gridBagConstraints13.anchor = GridBagConstraints.WEST;
@@ -258,7 +273,7 @@ public class Interfaz {
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.anchor = GridBagConstraints.EAST;
 			gridBagConstraints6.gridx = 3;
-			gridBagConstraints6.insets = new Insets(0, 5, 0, 5);
+			gridBagConstraints6.insets = new Insets(0, 5, 0, 0);
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridy = 5;
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
@@ -277,7 +292,10 @@ public class Interfaz {
 			b_activarRiego.setText("Iniciar riego");
 			b_activarRiego.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					logica.iniciarRiego(true);
+					//Si activamos el riego manual y no está desactivado la sincronización
+					if(!cb_Desactivar.isSelected())
+						cb_Desactivar.doClick();//Desactivamos y luego regamos
+					logica.iniciarRiego();
 				}
 			});
 		}
@@ -295,7 +313,10 @@ public class Interfaz {
 			b_desactivarRiego.setText("Finalizar riego");
 			b_desactivarRiego.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					logica.pararRiego(true);
+					//Si desactamos el riego manual y no está desactivado la sincronización
+					if(!cb_Desactivar.isSelected())
+						cb_Desactivar.doClick();//Desactivamos y luego paramos
+					logica.pararRiego();
 				}
 			});
 		}
@@ -822,8 +843,8 @@ public class Interfaz {
 				}
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					try {
-		                URI uriMailTo = new URI("mailto", "joherma1@gmail.com", null);
-		                Desktop.getDesktop().mail(uriMailTo);
+						URI uriMailTo = new URI("mailto", "joherma1@gmail.com", null);
+						Desktop.getDesktop().mail(uriMailTo);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -913,36 +934,38 @@ public class Interfaz {
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
-//		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
-//		frame_main.setIconImage(icono);
-//		frame_iniciando.setIconImage(icono);
+		//		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
+		//		frame_main.setIconImage(icono);
+		//		frame_iniciando.setIconImage(icono);
 		frame_iniciando.setVisible(true);
-		main.inicializar();
+		if(args.length > 0 && args[0].compareTo("debug")==0)
+			main.inicializar(true);
+		else main.inicializar(false);
 	}
-	
-	 
+
+
 	private static boolean isWindows(){
 		String os = System.getProperty("os.name").toLowerCase();
 		//windows
-	    return (os.indexOf( "win" ) >= 0); 
- 
+		return (os.indexOf( "win" ) >= 0); 
+
 	}
- 
+
 	private static boolean isMac(){
 		String os = System.getProperty("os.name").toLowerCase();
 		//Mac
-	    return (os.indexOf( "mac" ) >= 0); 
- 
+		return (os.indexOf( "mac" ) >= 0); 
+
 	}
- 
+
 	private static boolean isUnix(){
 		String os = System.getProperty("os.name").toLowerCase();
 		//linux or unix
-	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
+		return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
 	}
- 
-	void inicializar(){
-		logica = new Negocio();
+
+	void inicializar(boolean debug){
+		logica = new Negocio(debug);
 		int ini= logica.inicializar();
 		if(ini == -1){
 			JOptionPane.showMessageDialog(this.f_iniciando, "No se ha encontrado el puerto de comunicación", "Error", JOptionPane.ERROR_MESSAGE);
@@ -957,10 +980,12 @@ public class Interfaz {
 		}else{
 			TareaInicializar tarea = new TareaInicializar();
 			tarea.execute();
-			Thread r_cal = new Thread(new RelojCalendar(),"Cuenta5min");
+			//Iniciamos el hilo del calendario
+			r_cal = new RelojCalendar();
 			r_cal.start();
-			Thread r_reg = new Thread(new RelojRiego(),"Cuenta1min");
-			r_reg.start();
+			//y el hilo del reloj de comprobación del riego
+			r_riego = new RelojRiego();
+			r_riego.start();
 		}
 	}
 
@@ -1121,7 +1146,7 @@ public class Interfaz {
 		 */
 		@Override
 		public Void doInBackground() {			
-			//System.out.println("Obteniendo temperatura de: " + l_id.get(indice).getText());
+			//System.out.println("Obteniendo temperatura de: "+ l_id.get(indice).getText());
 			//Sensores Tª
 			String[] sensores = logica.listarSensoresT();
 			for(String sensor: sensores){
@@ -1135,11 +1160,11 @@ public class Interfaz {
 			l_Temperatura.setText(temp.toString());
 			Float alt =  logica.obtenerAlturaBMP085();
 			l_Altura.setText(alt.toString());
-			
+
 			//Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
-			
+
 			actualizarCalendario();
 			return null;		
 		}
@@ -1153,26 +1178,47 @@ public class Interfaz {
 			f_interfaz.setVisible(true);
 		}
 	}
-	private class RelojCalendar implements Runnable{
+	private class RelojCalendar extends Thread{
+		private boolean activo = true;
+		public RelojCalendar(){
+			this.setName("Cuenta5min");
+		}
+		public void detener(){
+			this.activo = false;
+			if(!this.isInterrupted())
+				this.interrupt();
+		}
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-				while(true){
-					Thread.sleep(300000);
+				System.out.println("Inicio hilo actualizar calendario");	
+				while(activo){
+					Thread.sleep(30000);
 					System.out.println("Hilo actualizar calendario");
 					actualizarCalendario();
 				}
+				System.out.println("Fin hilo actualizar calendario");				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Sincronización desactivada (hilo calendario)");
+				//e.printStackTrace();
 			}
 		}
 	}
-	private class RelojRiego implements Runnable{
+	private class RelojRiego extends Thread{
+		private boolean activo = true;
+		public RelojRiego(){
+			this.setName("Cuenta1min");
+		}
+		public void detener(){
+			this.activo = false;
+			if(!this.isInterrupted())
+				this.interrupt();
+		}
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-				while(true){
+				while(activo){
+					System.out.println("Inicio hilo actualizar reloj");
 					Thread.sleep(60000);
 					System.out.println("Hilo comprobar riego");
 					eventos=logica.comprobarRiego();
@@ -1182,9 +1228,9 @@ public class Interfaz {
 					Calendar now= Calendar.getInstance();
 					l_hora.setText("Hora: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));					
 				}
+				System.out.println("Fin hilo actualizar reloj");
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Sincronización desactivada (hilo reloj)");
 			}
 		}
 	}
@@ -1381,5 +1427,30 @@ public class Interfaz {
 			b_recargarHumedad.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
 		}
 		return b_recargarHumedad;
+	}
+	private JCheckBox getCb_Desactivar() {
+		if (cb_Desactivar == null) {
+			cb_Desactivar = new JCheckBox("Desactivar");
+			cb_Desactivar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					boolean desactivar = cb_Desactivar.isSelected();
+					if(desactivar == false){ //Activamos la sincronización
+						tp_horario.setEnabled(true);
+						//Iniciamos el hilo del calendario
+						r_cal = new RelojCalendar();
+						r_cal.start();
+						//y el del riego
+						r_riego = new RelojRiego();
+						r_riego.start();
+					}else{//Desactivamos la sincronizacion
+						tp_horario.setEnabled(false);
+						//Paramos el hilo del calendario y del riego
+						r_cal.detener();
+						r_riego.detener();
+					}
+				}
+			});
+		}
+		return cb_Desactivar;
 	}
 }
