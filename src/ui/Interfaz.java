@@ -131,6 +131,9 @@ public class Interfaz {
 	private JLabel l_humedad;
 	private JButton b_recargarHumedad;
 	private JCheckBox cb_Desactivar;
+	private JMenu m_valvula;
+	private JMenuItem mi_forzarInicio;
+	private JMenuItem mi_forzarParar;
 	/**
 	 * This method initializes f_interfaz	
 	 * 	
@@ -139,7 +142,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(656, 490));
+			f_interfaz.setSize(new Dimension(665, 490));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -567,6 +570,7 @@ public class Interfaz {
 		if (mb_menu == null) {
 			mb_menu = new JMenuBar();
 			mb_menu.add(getM_configuracion());
+			mb_menu.add(getM_valvula());
 			mb_menu.add(getM_sensores());
 			mb_menu.add(getM_calendario());
 			mb_menu.add(getM_ayuda());
@@ -1452,5 +1456,35 @@ public class Interfaz {
 			});
 		}
 		return cb_Desactivar;
+	}
+	private JMenu getM_valvula() {
+		if (m_valvula == null) {
+			m_valvula = new JMenu("Válvula");
+			m_valvula.add(getMi_forzarInicio());
+			m_valvula.add(getMi_forzarParar());
+		}
+		return m_valvula;
+	}
+	private JMenuItem getMi_forzarInicio() {
+		if (mi_forzarInicio == null) {
+			mi_forzarInicio = new JMenuItem("Forzar inicio riego");
+			mi_forzarInicio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					logica.forzarIniciarRiego();
+				}
+			});
+		}
+		return mi_forzarInicio;
+	}
+	private JMenuItem getMi_forzarParar() {
+		if (mi_forzarParar == null) {
+			mi_forzarParar = new JMenuItem("Forzar paro riego");
+			mi_forzarParar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				logica.forzarPararRiego();
+				}
+			});
+		}
+		return mi_forzarParar;
 	}
 }

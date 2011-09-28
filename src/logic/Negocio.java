@@ -91,10 +91,12 @@ public class Negocio {
 	}
 	public boolean forzarIniciarRiego(){
 		System.out.println("Señal activar riego");
+		regando = true;
 		return ino.startReg();
 	}
 	public boolean forzarPararRiego(){
 		System.out.println("Señal desactivar riego");
+		regando = false;
 		return ino.stopReg();
 	}
 	public int contarSensoresT(){
