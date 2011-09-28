@@ -7,6 +7,7 @@
 const int motor1Pin = 3;    // H-bridge leg 1 (pin 2, 1A)
 const int motor2Pin = 4;    // H-bridge leg 2 (pin 7, 2A)
 const int enable = 2;
+int riego;		//0-> No se está regando, 1 -> Regando
 OneWire ds(12); 	    // Pin protocolo 1-wire
 int command;
 byte sensor_id[8];
@@ -66,8 +67,10 @@ void setup(void){
   bmp085Calibration();
   //Obtenemos los datos para calibrar el sensor de humedad HH10D
   hh10dCalibration();
-  //Activamos el puente H
-  digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high  
+  //Desactivamos el puente H
+  digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
+  //Marcamos como apagado el  riego
+  riego = 0;
   //Inicializacion por conexion
   Serial.print(6, BYTE);//Codigo de inicializacion, ACK
   Serial.print(4, BYTE);//EndOfTransmission (ASCII);
@@ -90,6 +93,7 @@ void loop(void){
       Serial.print(4,BYTE);//EndOfTransmission (ASCII)
       break;
     case 0x64: //activarRiego: d 100 0x64
+	  riego = 1;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
       digitalWrite(motor2Pin, HIGH);  // set leg 2 of the H-bridge high
@@ -98,6 +102,7 @@ void loop(void){
       digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
       break;
     case 0x65:  //desactivarRiego: e 101 0x65
+	  riego = 0;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor1Pin, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor2Pin, LOW);   // set leg 2 of the H-bridge low
@@ -105,6 +110,13 @@ void loop(void){
       delay(300);
       digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
       break;
+	case 0x66:	//comprobarRiego: f 102 0x66
+	  if(riego == 1)
+		Serial.print(1);
+	  else
+		Serial.print(0);
+	  Serial.print(4,BYTE);
+	  break;	
     case 0x6A: //contarSensores: j 106 0x6A
       //Lo enviamos como texto, si lo enviamos como Byte (RAW) solo podremos enviar 1 Byte en Ca2
       Serial.print(contarSensores());
