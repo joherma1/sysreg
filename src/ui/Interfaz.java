@@ -1193,8 +1193,8 @@ public class Interfaz {
 			try {
 				System.out.println("Inicio hilo actualizar calendario");	
 				while(activo){
-					Thread.sleep(30000);
-					System.out.println("Hilo actualizar calendario");
+					Thread.sleep(300000);
+					System.out.println("Iteración hilo actualizar calendario");
 					actualizarCalendario();
 				}
 				System.out.println("Fin hilo actualizar calendario");				
@@ -1217,10 +1217,10 @@ public class Interfaz {
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
+				System.out.println("Inicio hilo actualizar reloj");
 				while(activo){
-					System.out.println("Inicio hilo actualizar reloj");
 					Thread.sleep(60000);
-					System.out.println("Hilo comprobar riego");
+					System.out.println("Iteración hilo comprobar riego");
 					eventos=logica.comprobarRiego();
 					pintarEventos();
 					//Actualizar la hora

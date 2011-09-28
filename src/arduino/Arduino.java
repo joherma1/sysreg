@@ -5,6 +5,7 @@ public interface Arduino {
 	public void close();
 	public boolean startReg();
 	public boolean stopReg();
+	public boolean comprobarReg();
 	public int contarSensoresT();
 	public byte[][] listarSensoresT();
 	public Float obtenerTemperatura(byte[] sensor);

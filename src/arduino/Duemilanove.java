@@ -214,6 +214,26 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 			return false;
 		}
 	}
+	public boolean comprobarReg(){
+		try {
+			output.write(0x66);
+			String res = leerArduino();
+			if(res!=null){
+				int estado =  Integer.parseInt(res);
+				if(estado == 1)
+					return true;
+				else
+					return false;
+			}
+			else{
+				return false;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 
 	public int contarSensoresT(){

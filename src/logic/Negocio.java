@@ -40,28 +40,30 @@ import arduino.Duemilanove;
 import arduino.Fake;
 
 public class Negocio {
-	private Arduino due;
+	private Arduino ino;
 	private String[] sensores_t;
 	private byte[][] sensores_t_raw;
 	private String usuario;
 	private String contrasenya;
 	private List<Evento> sortedEvents;
-	private boolean riego_maestro = false; //Solo se puede desactivar manalmente
+	private boolean regando;
 	public Negocio(){
-		due=new Duemilanove();
+		ino=new Duemilanove();
 	}
 	public Negocio(boolean debug){
 		if(debug == true)
-			due = new Fake();
-		else due = new Duemilanove();
+			ino = new Fake();
+		else ino = new Duemilanove();
 	}
 	public int inicializar(){
-		int value_due = due.initialize();
+		int value_due = ino.initialize();
+		//Comprobamos el estado actual del riego
+		regando = ino.comprobarReg();
 		cargarConfiguracion();
 		return value_due;
 	}
 	public void cerrar(){
-		due.close();
+		ino.close();
 	}
 	public String[] getSensoresT() {
 		return sensores_t;
@@ -70,17 +72,37 @@ public class Negocio {
 		return sensores_t_raw;
 	}
 	public boolean iniciarRiego(){
-		return due.startReg();
+		if(!regando){
+			System.out.println("Señal activar riego");
+			regando = true;
+			return ino.startReg();
+		}
+		else
+			return true;
 	}
 	public boolean pararRiego(){
-			return due.stopReg();
+		if(regando){
+			System.out.println("Señal desactivar riego");
+			regando = false;
+			return ino.stopReg();
+		}
+		else
+			return true;
+	}
+	public boolean forzarIniciarRiego(){
+		System.out.println("Señal activar riego");
+		return ino.startReg();
+	}
+	public boolean forzarPararRiego(){
+		System.out.println("Señal desactivar riego");
+		return ino.stopReg();
 	}
 	public int contarSensoresT(){
-		return due.contarSensoresT();
+		return ino.contarSensoresT();
 	}
 	public String[] listarSensoresT(){
 		//Los indices son los mismos para sensores y sensores_raw
-		sensores_t_raw = due.listarSensoresT();
+		sensores_t_raw = ino.listarSensoresT();
 		sensores_t = new String[sensores_t_raw.length];
 		for(int i=0;i<sensores_t_raw.length;i++)
 			sensores_t[i] = toHexadecimal(sensores_t_raw[i]);
@@ -111,21 +133,21 @@ public class Negocio {
 		if(i==sensores_t.length)//No se ha encontrado el sensor
 			return null;
 		else{
-			Float res=due.obtenerTemperatura(sensores_t_raw[i]);//Los dos indices coinciden
+			Float res=ino.obtenerTemperatura(sensores_t_raw[i]);//Los dos indices coinciden
 			return res;
 		}
 	}
 	public Long obtenerPresionBMP085(){
-		return due.obtenerPresionBMP085();
+		return ino.obtenerPresionBMP085();
 	}
 	public Float obtenerTemperaturaBMP085(){
-		return due.obtenerTemperaturaBMP085();
+		return ino.obtenerTemperaturaBMP085();
 	}
 	public Float obtenerAlturaBMP085(){
-		return due.obtenerAlturaBMP085();
+		return ino.obtenerAlturaBMP085();
 	}
 	public Float obtenerHumedadHH10D(){
-		return due.obtenerHumedadHH10D();
+		return ino.obtenerHumedadHH10D();
 	}
 
 

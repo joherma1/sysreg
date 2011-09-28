@@ -10,13 +10,21 @@ public class Fake implements Arduino{
 	//-----------------
 	int n_sensores_t=0;
 	public byte sensores_t[][]=null;
+	boolean regando = false;
 
 	public boolean startReg(){
+		regando = true;
 		return true;
 	}
 
 	public boolean stopReg(){
+		regando = false;
 		return false;
+	}
+	public boolean comprobarReg(){
+		//Con regando simulamos el ultimo estado que hayamos puesto
+		//iniciando la placa en off
+		return regando; //Siempre off
 	}
 
 	public int contarSensoresT(){
