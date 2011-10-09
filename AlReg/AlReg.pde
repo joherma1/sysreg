@@ -42,7 +42,7 @@ long pressure;
 const float p0 = 101325;     // Pressure at sea level (Pa)
 float altitude;
 const float currentAltitude = 34; // current altitude in METERS in Alcasser
-const float ePressure = p0 * pow((1-currentAltitude/44330), 5.255);  // expected pressure (in Pa) at altitude
+const float ePressure = p0 * pow((1-currentAltitude/44330), 5.255);  //100917,669916678 = expected pressure (in Pa) at altitude
 float weatherDiff;
 const int Sunny = 1;
 const int Partly_Cloudy = 2;
@@ -93,7 +93,7 @@ void loop(void){
       Serial.print(4,BYTE);//EndOfTransmission (ASCII)
       break;
     case 0x64: //activarRiego: d 100 0x64
-	  riego = 1;
+      riego = 1;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
       digitalWrite(motor2Pin, HIGH);  // set leg 2 of the H-bridge high
@@ -102,7 +102,7 @@ void loop(void){
       digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
       break;
     case 0x65:  //desactivarRiego: e 101 0x65
-	  riego = 0;
+      riego = 0;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor1Pin, HIGH);  // set leg 1 of the H-bridge high
       digitalWrite(motor2Pin, LOW);   // set leg 2 of the H-bridge low
@@ -110,13 +110,13 @@ void loop(void){
       delay(300);
       digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
       break;
-	case 0x66:	//comprobarRiego: f 102 0x66
-	  if(riego == 1)
-		Serial.print(1);
-	  else
-		Serial.print(0);
-	  Serial.print(4,BYTE);
-	  break;	
+    case 0x66:	//comprobarRiego: f 102 0x66
+      if(riego == 1)
+  	Serial.print(1);
+      else
+	Serial.print(0);
+      Serial.print(4,BYTE);
+      break;	
     case 0x6A: //contarSensores: j 106 0x6A
       //Lo enviamos como texto, si lo enviamos como Byte (RAW) solo podremos enviar 1 Byte en Ca2
       Serial.print(contarSensores());
