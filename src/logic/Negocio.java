@@ -32,6 +32,7 @@ import com.google.gdata.data.*;
 import com.google.gdata.data.acl.*;
 import com.google.gdata.data.calendar.*;
 import com.google.gdata.data.extensions.*;
+import com.google.gdata.data.extensions.BaseEventEntry.EventStatus;
 import com.google.gdata.util.*;
 
 
@@ -186,25 +187,40 @@ public class Negocio {
 			//EL BUENO
 			myQuery.setMinimumStartTime(obtenerHoy());
 			myQuery.setMaximumStartTime(obtenerManyana());
-			//myQuery.setMinimumStartTime(DateTime.parseDateTime("2011-01-29T00:00:00"));
-			//myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-02-06T23:59:59"));
+			//myQuery.setMinimumStartTime(DateTime.parseDateTime("2010-09-17T00:00:00"));
+			//myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-10-23T23:59:59"));
 			CalendarEventFeed resultFeed = myService.query(myQuery, CalendarEventFeed.class);
 			sortedEvents= new ArrayList<Evento>();
 			for (int i = 0; i < resultFeed.getEntries().size(); i++) {
 				CalendarEventEntry entry = (CalendarEventEntry)resultFeed.getEntries().get(i);
-				for(int j = 0; j < entry.getTimes().size(); j++){
-					Evento e= new Evento(entry.getTitle().getPlainText(), entry.getPlainTextContent(),
-							entry.getTimes().get(j).getStartTime(), entry.getTimes().get(j).getEndTime());
-					String lugar = "";
-					if( entry.getLocations().size() > 0 && entry.getLocations().get(0).getValueString().length() > 0)
-						lugar = entry.getLocations().get(0).getValueString();
-					e.setLugar(lugar);
-					sortedEvents.add(e);
-
-					//					System.out.print(entry.getTimes().get(j).getStartTime()+ " --> " + entry.getTimes().get(0).getEndTime().toString() + "=> ");
-					//					System.out.print(entry.getTitle().getPlainText() + ": " + entry.getPlainTextContent());
-					//					System.out.print(" en " + lugar);
-					//					System.out.println();
+				//Solo añadimos los eventos que están confirmados
+				//Google Calendar guarda otro también eventos cancelados
+				if(entry.getStatus().equals(EventStatus.CONFIRMED)){
+					for(int j = 0; j < entry.getTimes().size(); j++){
+						Evento e= new Evento(entry.getTitle().getPlainText(), entry.getPlainTextContent(),
+								entry.getTimes().get(j).getStartTime(), entry.getTimes().get(j).getEndTime(),entry.getIcalUID());
+						String lugar = "";
+						if( entry.getLocations().size() > 0 && entry.getLocations().get(0).getValueString().length() > 0)
+							lugar = entry.getLocations().get(0).getValueString();
+						e.setLugar(lugar);
+						//Mejorable con sortedEvents.contains
+						if(sortedEvents.size()>0){
+							boolean existe = false;
+							for(int h=0; h<sortedEvents.size();h++){
+								if(sortedEvents.get(h).equals(e)){
+									existe =  true;
+									break;
+								}
+							}
+							if(!existe)
+								sortedEvents.add(e);
+						}
+						else
+							sortedEvents.add(e);
+						//System.out.println(entry.getStatus().getValue()+ "\t" + 
+						//		entry.getIcalUID() + "\t" + entry.getId());
+						//e.imprimir();
+					}
 				}
 			}
 			//Ordenamos los eventos
@@ -221,6 +237,7 @@ public class Negocio {
 				//EL BUENO
 				DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
+				e.imprimir();
 			}
 			return sortedEvents;
 
@@ -298,10 +315,10 @@ public class Negocio {
 				usuario += "@gmail.com";
 			//System.out.println("Usuario: " + usuario + " \tContraseña:" + contrasenya);
 
-//			//Escribir
-//			XMLOutputter outputter = new XMLOutputter();
-//			FileOutputStream file = new FileOutputStream(getClass().getResource("RegAdmin.xml").toExternalForm());
-//			outputter.output(conf,file);
+			//			//Escribir
+			//			XMLOutputter outputter = new XMLOutputter();
+			//			FileOutputStream file = new FileOutputStream(getClass().getResource("RegAdmin.xml").toExternalForm());
+			//			outputter.output(conf,file);
 		} catch (JDOMException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -323,7 +340,7 @@ public class Negocio {
 	}
 	public static void main(String[] args) throws Exception {
 		Negocio main = new Negocio();
-		main.inicializar();
+		//main.inicializar();
 		//		main.pintarMenu();
 		//		while(true){
 		//			int value = System.in.read();
@@ -347,8 +364,8 @@ public class Negocio {
 		//		System.out.println(main.obtenerTemperatura(main.sensores_t[0]));
 		main.cargarConfiguracion();
 		main.cargarCalendario();
-		System.out.println(main.obtenerPresionBMP085());
-		System.out.println(main.obtenerTemperaturaBMP085());
+		//		System.out.println(main.obtenerPresionBMP085());
+		//		System.out.println(main.obtenerTemperaturaBMP085());
 		System.exit(0);
 	}
 

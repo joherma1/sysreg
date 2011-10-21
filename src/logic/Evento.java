@@ -14,20 +14,23 @@ public class Evento implements Comparable<Evento>{
 	private DateTime fin;
 	private String lugar;
 	private State estado; 
-	public Evento(String titulo, String descripcion, DateTime comienzo, DateTime fin, String lugar) {
+	private String iCalUID;
+	public Evento(String titulo, String descripcion, DateTime comienzo, DateTime fin, String lugar,String UID) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.inicio = comienzo;
 		this.fin = fin;
 		this.lugar = lugar;
 		this.estado = State.NEGRO;
+		this.iCalUID = UID;
 	}	
-	public Evento(String titulo, String descripcion, DateTime comienzo, DateTime fin) {
+	public Evento(String titulo, String descripcion, DateTime comienzo, DateTime fin, String UID) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.inicio = comienzo;
 		this.fin = fin;
 		this.estado = State.NEGRO;
+		this.iCalUID = UID;
 	}
 	public Evento(){		
 	}
@@ -61,10 +64,22 @@ public class Evento implements Comparable<Evento>{
 	public void setLugar(String lugar) {
 		this.lugar = lugar;
 	}
+	public String getiCalUID() {
+		return iCalUID;
+	}
+	public void setiCalUID(String iCalUID) {
+		this.iCalUID = iCalUID;
+	}
 	@Override
 	public int compareTo(Evento o) {
 		// TODO Auto-generated method stub
 	    return this.getInicio().compareTo(o.getInicio());
+	}	
+	public boolean equals(Evento o) {
+		if(this.iCalUID.compareTo(o.iCalUID)==0 && this.getInicio().equals(o.getInicio()) && this.getFin().equals(o.getFin()))
+				return true;
+		else
+			return false;
 	}
 	public State getEstado() {
 		return estado;
