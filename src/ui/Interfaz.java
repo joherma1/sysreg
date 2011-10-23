@@ -1,26 +1,22 @@
 package ui;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
-
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.lang.Thread.State;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
@@ -28,38 +24,32 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-
-import logic.Evento;
-import logic.Negocio;
-import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.JToolBar;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import java.awt.event.KeyEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JDialog;
-import javax.swing.BorderFactory;
-import javax.swing.WindowConstants;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.border.LineBorder;
-import javax.swing.JCheckBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+
+import logic.Evento;
+import logic.Negocio;
 
 public class Interfaz {
 
@@ -69,7 +59,6 @@ public class Interfaz {
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
 	private Negocio logica = null;  //  @jve:decl-index=0:
-	private String [] sensores = null;
 	private List<Evento> eventos = null;
 	private RelojCalendar r_cal = null;
 	private RelojRiego r_riego = null;
@@ -146,7 +135,7 @@ public class Interfaz {
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
-			f_interfaz.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
+			f_interfaz.setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png")));
 			f_interfaz.setJMenuBar(getMb_menu());
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -933,14 +922,21 @@ public class Interfaz {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		if(isMac())
+		if(isMac()){
 			System.setProperty("apple.laf.useScreenMenuBar", "true"); //Barra de menu Mac OS
+		}
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
 		//		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
 		//		frame_main.setIconImage(icono);
 		//		frame_iniciando.setIconImage(icono);
+//		Image icono = Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png"));
+//		frame_main.setIconImage(icono);
+//		frame_iniciando.setIconImage(icono);
+		frame_main.setName("RegAdmin");
+		frame_main.setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png")));
+
 		frame_iniciando.setVisible(true);
 		if(args.length > 0 && args[0].compareTo("debug")==0)
 			main.inicializar(true);

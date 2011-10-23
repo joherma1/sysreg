@@ -1,7 +1,6 @@
 package logic;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Date;
 
 import com.google.gdata.data.DateTime;
@@ -73,11 +72,12 @@ public class Evento implements Comparable<Evento>{
 	@Override
 	public int compareTo(Evento o) {
 		// TODO Auto-generated method stub
-	    return this.getInicio().compareTo(o.getInicio());
+		return this.getInicio().compareTo(o.getInicio());
 	}	
 	public boolean equals(Evento o) {
+		//Dos eventos serán iguales si tienen el mismo periodo de tiempo i el mismo CalUID
 		if(this.iCalUID.compareTo(o.iCalUID)==0 && this.getInicio().equals(o.getInicio()) && this.getFin().equals(o.getFin()))
-				return true;
+			return true;
 		else
 			return false;
 	}
@@ -108,8 +108,8 @@ public class Evento implements Comparable<Evento>{
 		DecimalFormat entero = new DecimalFormat("00");
 		@SuppressWarnings("deprecation")
 		String res =entero.format(ini.getDate()) + "/" + entero.format(ini.getMonth() + 1) + "/" + (ini.getYear() + 1900)  + ": "
-			+ entero.format(ini.getHours())+":" + entero.format(ini.getMinutes()) + " -> "
-			+ entero.format(fin.getHours())+":" + entero.format(fin.getMinutes()) + " => " + titulo;
+				+ entero.format(ini.getHours())+":" + entero.format(ini.getMinutes()) + " -> "
+				+ entero.format(fin.getHours())+":" + entero.format(fin.getMinutes()) + " => " + titulo;
 		if(descripcion.length()>0)
 			res += ": " + descripcion;
 		if(lugar.length()>0)

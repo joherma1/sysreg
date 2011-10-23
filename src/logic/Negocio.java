@@ -1,8 +1,6 @@
 package logic;
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,32 +11,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import logic.Evento.State;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-
-//import org.jdom.Document;
-//import org.jdom.Element;
-//import org.jdom.JDOMException;
-//import org.jdom.input.SAXBuilder;
-
-import logic.Evento.State;
-
-import com.google.gdata.client.*;
-import com.google.gdata.client.calendar.*;
-import com.google.gdata.data.*;
-import com.google.gdata.data.acl.*;
-import com.google.gdata.data.calendar.*;
-import com.google.gdata.data.extensions.*;
-import com.google.gdata.data.extensions.BaseEventEntry.EventStatus;
-import com.google.gdata.util.*;
-
 
 import arduino.Arduino;
 import arduino.Duemilanove;
 import arduino.Fake;
+
+import com.google.gdata.client.calendar.CalendarQuery;
+import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
+import com.google.gdata.data.calendar.CalendarEventEntry;
+import com.google.gdata.data.calendar.CalendarEventFeed;
+import com.google.gdata.data.extensions.BaseEventEntry.EventStatus;
+import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
+
 
 public class Negocio {
 	private Arduino ino;
@@ -49,7 +41,7 @@ public class Negocio {
 	private List<Evento> sortedEvents;
 	private boolean regando;
 	public Negocio(){
-		ino=new Duemilanove();
+		ino = new Duemilanove();
 	}
 	public Negocio(boolean debug){
 		if(debug == true)
@@ -164,37 +156,18 @@ public class Negocio {
 			//Autenticacion
 			CalendarService myService = new CalendarService("RegAdmin");
 			myService.setUserCredentials(usuario,contrasenya);
-			//myService.setUserCredentials("sysreg1@gmail.com","agricultura.1");
-			//Obtener todos los calendarios
-			//			URL feedUrl = new URL("https://www.google.com/calendar/feeds/default/allcalendars/full");
-			//			CalendarFeed resultFeed = myService.getFeed(feedUrl, CalendarFeed.class);
-			//			System.out.println("Your calendars:");
-			//			System.out.println();
-			//			for (int i = 0; i < resultFeed.getEntries().size(); i++) {
-			//			  CalendarEntry entry = resultFeed.getEntries().get(i);
-			//			  System.out.println("\t" + entry.getTitle().getPlainText());
-			//			}
 			URL feedUrl = new URL("https://www.google.com/calendar/feeds/default/private/full");
-
-
-			//The metafeed is a private, read-only feed that contains an entry for each calendar that a user has access to
-			//URL feedUrl = new URL("https://www.google.com/calendar/feeds/default");
-			//The allcalendars feed is a private read/write feed that is used for managing subscriptions and personalization settings of a user's calendars
-			//URL feedUrl = new URL("https://www.google.com/calendar/feeds/default/allcalendars/full");
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
-			DateTime ahora = obtenerHoy();
-			DateTime mañana = obtenerManyana();
-			//EL BUENO
 			myQuery.setMinimumStartTime(obtenerHoy());
 			myQuery.setMaximumStartTime(obtenerManyana());
 			//myQuery.setMinimumStartTime(DateTime.parseDateTime("2010-09-17T00:00:00"));
 			//myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-10-23T23:59:59"));
 			CalendarEventFeed resultFeed = myService.query(myQuery, CalendarEventFeed.class);
 			sortedEvents= new ArrayList<Evento>();
-			for (int i = 0; i < resultFeed.getEntries().size(); i++) {
+			//System.out.println("Total entradas: " + resultFeed.getEntries().size());
+			for (int i = 0; i < resultFeed.getEntries().size(); i++) { 
 				CalendarEventEntry entry = (CalendarEventEntry)resultFeed.getEntries().get(i);
-				//Solo añadimos los eventos que están confirmados
-				//Google Calendar guarda otro también eventos cancelados
+				//Solo añadimos los eventos que están confirmados (Google Calendar guarda otro también eventos cancelados)
 				if(entry.getStatus().equals(EventStatus.CONFIRMED)){
 					for(int j = 0; j < entry.getTimes().size(); j++){
 						Evento e= new Evento(entry.getTitle().getPlainText(), entry.getPlainTextContent(),
@@ -228,16 +201,9 @@ public class Negocio {
 			//Coloreamos los estados
 			for(int i = 0; i < sortedEvents.size(); i++){
 				Evento e = sortedEvents.get(i);
-				//verde			
-				//e.colorear(DateTime.parseDateTime("2011-01-30T19:10:00.000+01:00"));
-				//rojo			
-				//e.colorear(DateTime.parseDateTime("2011-02-09T11:10:00.000+01:00"));
-				//negro			
-				//e.colorear(DateTime.parseDateTime("2001-01-29T11:10:00.000+01:00"));
-				//EL BUENO
 				DateTime now = new DateTime(new Date(), TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
-				e.imprimir();
+				//e.imprimir();
 			}
 			return sortedEvents;
 

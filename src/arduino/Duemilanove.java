@@ -1,28 +1,29 @@
 package arduino;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import gnu.io.CommPortIdentifier; 
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent; 
-import gnu.io.SerialPortEventListener; 
 import java.util.Enumeration;
 
-//MEJORA
-
+/**
+ * Implementación de la clase que establece la comunicación entre una placa
+ * Duemilanove y el Software RegAdmin.
+ * 
+ * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
+ */
 @SuppressWarnings("restriction")
-public class Duemilanove implements SerialPortEventListener, Arduino{
-	//--------------
-	//Variables RXTX
-	//--------------
+public class Duemilanove implements SerialPortEventListener, Arduino {
+	// Variables RXTX
 	SerialPort serialPort;
 	/** The port we're normally going to use. */
-	private static final String PORT_NAMES[] = { 
-		"/dev/tty.usbserial-A700e0xk", // Mac OS X
-		"/dev/tty.usbmodem1d11",
-		"/dev/ttyUSB0", // Linux
-		"COM11", // Windows
+	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk", // Mac
+			"/dev/tty.usbmodem1d11", "/dev/ttyUSB0", // Linux
+			"COM11", // Windows
 	};
 	/** Buffered input stream from the port */
 	private InputStream input;
@@ -33,27 +34,27 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
 
-	//-----------------
-	//Variables Arduino
-	//-----------------
-	int n_sensores_t=0;
-	public byte sensores_t[][]=null;
-	Monitor m=new Monitor();
+	// Variables Arduino
+	int n_sensores_t = 0;
+	public byte sensores_t[][] = null;
+	Monitor m = new Monitor();
 
-	//------------
-	//Métodos RXTX
-	//------------
+	/**
+	 * Inicializa la librería RXTX. Sigue el protocolo implementado en AlReg,
+	 * esperando la confirmación (ACK).
+	 * 
+	 * @return 0 -> OK; -1 -> No se ha encontrado el puerto; -2 -> Error al
+	 *         abrir el puerto
+	 */
 	public int initialize() {
-		//0 OK
-		//-1 No se ha encontrado puerto
-		//-2 Error Abrir el puerto
-		//Inicializacion libreria RXTX
+		// Inicialización librería RXTX
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
 		// iterate through, looking for the port
 		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
+			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
+					.nextElement();
 			for (String portName : PORT_NAMES) {
 				if (currPortId.getName().equals(portName)) {
 					portId = currPortId;
@@ -69,13 +70,12 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 
 		try {
 			// open serial port, and use class name for the appName.
-			serialPort = (SerialPort) portId.open(this.getClass().getName(),TIME_OUT);
+			serialPort = (SerialPort) portId.open(this.getClass().getName(),
+					TIME_OUT);
 
 			// set port parameters
-			serialPort.setSerialPortParams(DATA_RATE,
-					SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE);
+			serialPort.setSerialPortParams(DATA_RATE, SerialPort.DATABITS_8,
+					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
 			// open the streams
 			input = serialPort.getInputStream();
@@ -84,21 +84,24 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 			// add event listeners
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
-			//Tiempo de arranque, unos 1450
-			//Le enviamos una peticion de enlace
-			//Inicializamos por peticion aunque aceptamos la inicializacion por conexion
+			// Tiempo de arranque, unos 1450
+			// Le enviamos una petición de enlace
+			// Inicializamos por petición aunque aceptamos la inicialización por
+			// conexión
 			output.write(0x05);
-			if(this.leerArduinoBytes()[0]==6)//Arduino nos responde con ACK
+			if (this.leerArduinoBytes()[0] == 6)// Arduino nos responde con ACK
 				return 0;
-			else return -2;
+			else
+				return -2;
 		} catch (Exception e) {
 			System.err.println(e.toString());
 			return -2;
 		}
 	}
+
 	/**
-	 * This should be called when you stop using the port.
-	 * This will prevent port locking on platforms like Linux.
+	 * Cierra la conexión correctamente. Es recomendable utilizarla en
+	 * plataformas UNIX para evitar bloqueos del puerto.
 	 */
 	public synchronized void close() {
 		if (serialPort != null) {
@@ -106,65 +109,83 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 			serialPort.close();
 		}
 	}
+
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				int available = input.available();
 				byte chunk[] = new byte[available];
 				input.read(chunk, 0, available);
-				//Cuando llegue información la depositamos en el buffer del monitor
+				// Cuando llegue información la depositamos en el buffer del
+				// monitor
 				m.depositar(chunk);
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
 		}
-		// Ignore all the other eventTypes, but you should consider the other ones.
+		//Ignoramos el resto de eventos
 	}
 
-	//---------------------------
-	//Métodos privados al paquete
-	//---------------------------
-	String leerArduino(){
+	// ---------------------------
+	// Métodos privados al paquete
+	// ---------------------------
+	/**
+	 * Lee de Arduino una cadena de caracteres. Se ha implementado con un
+	 * monitor, de manera que cuando llegue la información se lanzará un evento
+	 * que despertara el hilo.
+	 * 
+	 * @return La cadena leída
+	 */
+	String leerArduino() {
 		byte[] data = m.recoger();
-		while(data[data.length -1]!=4){//Mientras no nos diga fin de transmision seguimos esperando
+		while (data[data.length - 1] != 4) {// Mientras no nos diga fin de
+			// Transmisión seguimos esperando
 			byte[] data2 = m.recoger();
-			//creamos el nuevo vector y lo rellenamos
-			byte[] aux= new byte[data.length+data2.length];
-			for(int i=0;i<aux.length;i++){
-				if(i<data.length)
-					aux[i]=data[i];
+			// creamos el nuevo vector y lo rellenamos
+			byte[] aux = new byte[data.length + data2.length];
+			for (int i = 0; i < aux.length; i++) {
+				if (i < data.length)
+					aux[i] = data[i];
 				else
-					aux[i]=data2[i-data.length];
+					aux[i] = data2[i - data.length];
 			}
-			data=aux;
+			data = aux;
 		}
-		//ya tenemos todo el mensaje, lo pasamos a string elminando el caracter EOT
-		String res= new String(data,0,data.length-1);
+		// ya tenemos todo el mensaje, lo pasamos a string eliminando el carácter
+		// EOT
+		String res = new String(data, 0, data.length - 1);
 		return res;
 	}
 
-	byte[] leerArduinoBytes(){
+	/**
+	 *Lee de Arduino una vector de Bytes. Se ha implementado con un
+	 * monitor, de manera que cuando llegue la información se lanzará un evento
+	 * que despertara el hilo.
+	 * @return Los Bytes leídos
+	 */
+	byte[] leerArduinoBytes() {
 		byte[] data = m.recoger();
-		while(data[data.length -1]!=4){//Mientras no nos diga fin de transmision seguimos esperando
+		while (data[data.length - 1] != 4) {// Mientras no nos diga fin de
+			// Transmisión seguimos esperando
 			byte[] data2 = m.recoger();
-			//creamos el nuevo vector y lo rellenamos
-			byte[] aux= new byte[data.length+data2.length];
-			for(int i=0;i<aux.length;i++){
-				if(i<data.length)
-					aux[i]=data[i];
+			// creamos el nuevo vector y lo rellenamos
+			byte[] aux = new byte[data.length + data2.length];
+			for (int i = 0; i < aux.length; i++) {
+				if (i < data.length)
+					aux[i] = data[i];
 				else
-					aux[i]=data2[i-data.length];
+					aux[i] = data2[i - data.length];
 			}
-			data=aux;
+			data = aux;
 		}
-		//ya tenemos todo el mensaje,elminamos el caracter EOT
-		byte[] res = new byte[data.length-1];
-		for(int i=0;i<res.length;i++)
-			res[i]=data[i];
+		// ya tenemos todo el mensaje,eliminamos el carácter EOT
+		byte[] res = new byte[data.length - 1];
+		for (int i = 0; i < res.length; i++)
+			res[i] = data[i];
 		return res;
 	}
 
-	void resetearBusquedaT(){
+	void resetearBusquedaT() {
 		try {
 			output.write(0x6B);
 		} catch (IOException e) {
@@ -173,15 +194,16 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		}
 	}
 
-	int seleccionarSensorT(byte[] sensor){ 
-		//0: CRC NO VALIDO		1: OK	-1:No se han pasado 8 B		-2:Excepcion
+	int seleccionarSensorT(byte[] sensor) {
+		// 0: CRC NO VALIDO 1: OK -1:No se han pasado 8 B -2:Excepcion
 		try {
-			//el comando es mXXXXXXXX
-			byte[] comando= {0x6D,sensor[0],sensor[1],sensor[2],sensor[3],sensor[4],sensor[5],sensor[6],sensor[7]};
+			// el comando es mXXXXXXXX
+			byte[] comando = { 0x6D, sensor[0], sensor[1], sensor[2],
+					sensor[3], sensor[4], sensor[5], sensor[6], sensor[7] };
 			output.write(comando);
-			//Tiempo seleccionar cursor, 6ms
+			// Tiempo seleccionar cursor, 6ms
 			String res1 = leerArduino();
-			int res= Integer.parseInt(res1);
+			int res = Integer.parseInt(res1);
 			return res;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -190,10 +212,10 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		return -2;
 	}
 
-	//------------------------
-	//Métodos públicos
-	//------------------------
-	public boolean startReg(){
+	// ------------------------
+	// Métodos públicos
+	// ------------------------
+	public boolean startReg() {
 		try {
 			output.write(0x64);
 			return true;
@@ -204,7 +226,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		}
 	}
 
-	public boolean stopReg(){
+	public boolean stopReg() {
 		try {
 			output.write(0x65);
 			return true;
@@ -214,18 +236,18 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 			return false;
 		}
 	}
-	public boolean comprobarReg(){
+
+	public boolean comprobarReg() {
 		try {
 			output.write(0x66);
 			String res = leerArduino();
-			if(res!=null){
-				int estado =  Integer.parseInt(res);
-				if(estado == 1)
+			if (res != null) {
+				int estado = Integer.parseInt(res);
+				if (estado == 1)
 					return true;
 				else
 					return false;
-			}
-			else{
+			} else {
 				return false;
 			}
 		} catch (IOException e) {
@@ -235,15 +257,14 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		}
 	}
 
-
-	public int contarSensoresT(){
+	public int contarSensoresT() {
 		try {
 			output.write(0x6A);
 			String res = leerArduino();
-			if(res!=null)
+			if (res != null)
 				this.n_sensores_t = Integer.parseInt(res);
-			else{
-				this.n_sensores_t = -1;	
+			else {
+				this.n_sensores_t = -1;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -253,16 +274,15 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		return this.n_sensores_t;
 	}
 
-
-	public byte[][] listarSensoresT(){
+	public byte[][] listarSensoresT() {
 		try {
 			this.contarSensoresT();
 			this.resetearBusquedaT();
-			this.sensores_t= new byte[this.n_sensores_t][8];
-			for(int i=0;i<this.n_sensores_t;i++){
+			this.sensores_t = new byte[this.n_sensores_t][8];
+			for (int i = 0; i < this.n_sensores_t; i++) {
 				output.write(0x6C);
-				byte res[] =  leerArduinoBytes();
-				this.sensores_t[i]=res;
+				byte res[] = leerArduinoBytes();
+				this.sensores_t[i] = res;
 			}
 			this.resetearBusquedaT();
 			return this.sensores_t;
@@ -274,124 +294,127 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		return null;
 	}
 
-	public Float obtenerTemperatura(byte[] sensor){
+	public Float obtenerTemperatura(byte[] sensor) {
 		try {
-			//Seleccionamos el sensor
-			if(seleccionarSensorT(sensor) != 1)
+			// Seleccionamos el sensor
+			if (seleccionarSensorT(sensor) != 1)
 				return null;
 			else {
 				output.write(0x6E);
-				//Tiempo necesario para la conversion, unos 1000¡
-				String res= leerArduino();
-				Float res_f= Float.parseFloat(res);
+				// Tiempo necesario para la conversion, unos 1000¡
+				String res = leerArduino();
+				Float res_f = Float.parseFloat(res);
 				return res_f;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
 
-	public Long obtenerPresionBMP085(){
+	public Long obtenerPresionBMP085() {
 		try {
 			output.write(0x71);
-			String res= leerArduino();
-			long res_l= Long.parseLong(res);
+			String res = leerArduino();
+			long res_l = Long.parseLong(res);
 			return res_l;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
 
-	public Float obtenerTemperaturaBMP085(){
+	public Float obtenerTemperaturaBMP085() {
 		try {
 			output.write(0x70);
-			String res= leerArduino();
-			Float res_f= Float.parseFloat(res);
+			String res = leerArduino();
+			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
-	public Float obtenerAlturaBMP085(){
+
+	public Float obtenerAlturaBMP085() {
 		try {
 			output.write(0x72);
-			String res= leerArduino();
-			Float res_f= Float.parseFloat(res);
+			String res = leerArduino();
+			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
-	public Float obtenerHumedadHH10D(){
+
+	public Float obtenerHumedadHH10D() {
 		try {
 			output.write(0x75);
-			String res= leerArduino();
-			Float res_f= Float.parseFloat(res);
+			String res = leerArduino();
+			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
 
 	public class Monitor {
 		private byte[] buffer;
 		private boolean vacio = true;
 
-		public synchronized byte[] recoger(){
-			while(vacio==true){
+		public synchronized byte[] recoger() {
+			while (vacio == true) {
 				try {
 					wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			vacio=true;
+			vacio = true;
 			byte[] res = buffer;
-			buffer=null;;
-			//			for(int i=0;i<res.length;i++)
-			//				System.out.println("|"+res[i]+"|");
+			buffer = null;
+			;
+			// for(int i=0;i<res.length;i++)
+			// System.out.println("|"+res[i]+"|");
 			return res;
 		}
 
-		public synchronized void depositar(byte[] data){
-			buffer=data;
-			vacio=false;
+		public synchronized void depositar(byte[] data) {
+			buffer = data;
+			vacio = false;
 			notify();
 		}
 	}
 
-	public static void main(String[] args){
-		Duemilanove d= new Duemilanove();
+	public static void main(String[] args) {
+		Duemilanove d = new Duemilanove();
 		d.initialize();
-		//		System.out.println("1-Contar sensores");
-		//		System.out.println("2-Listar sensores");
-		//		System.out.println("3-Obtener temperatura del 1r sensor");
-		//		System.out.println("4-Obtener temperatura del 2o sensor");
+		// System.out.println("1-Contar sensores");
+		// System.out.println("2-Listar sensores");
+		// System.out.println("3-Obtener temperatura del 1r sensor");
+		// System.out.println("4-Obtener temperatura del 2o sensor");
 		int opcion;
-		for(int ii=0;ii<1;ii++){
-			//int n=d.contarSensoresT();
-			//System.out.println("Numero de sensores "+ n);
-			//			byte[][] l=d.listarSensoresT();
-			//			for(int i=0;i<d.n_sensores_t;i++){
-			//				String aux= new String(l[i]);
-			//				System.out.println(aux);
-			//			}
-			//System.out.println("Temperatura Sensor 1");
-			//d.obtenerTemperatura(l[0]);
-			//System.out.println("Ya listados");
-			//d.obtenerTemperatura(l[1]);
+		for (int ii = 0; ii < 1; ii++) {
+			// int n=d.contarSensoresT();
+			// System.out.println("Numero de sensores "+ n);
+			// byte[][] l=d.listarSensoresT();
+			// for(int i=0;i<d.n_sensores_t;i++){
+			// String aux= new String(l[i]);
+			// System.out.println(aux);
+			// }
+			// System.out.println("Temperatura Sensor 1");
+			// d.obtenerTemperatura(l[0]);
+			// System.out.println("Ya listados");
+			// d.obtenerTemperatura(l[1]);
 		}
-		byte[] sensor= new byte[8];
+		byte[] sensor = new byte[8];
 		sensor[0] = 40;
 		sensor[1] = -11;
 		sensor[2] = -23;
@@ -401,33 +424,33 @@ public class Duemilanove implements SerialPortEventListener, Arduino{
 		sensor[6] = 0;
 		sensor[7] = -46;
 		d.seleccionarSensorT(sensor);
-		int n=d.contarSensoresT();
+		int n = d.contarSensoresT();
 		d.close();
 		System.exit(0);
 
-		//		try {
-		//			opcion = System.in.read();
-		//			while(opcion!=-1){
-		//				switch (opcion) {
-		//				case 49://1 ASCII
-		//					int n=d.contarSensoresT();
-		//					System.out.println("Numero de sensores "+ n);
-		//					break;
-		//				case 50:
-		//					byte[][] l=d.listarSensoresT();
-		//					for(int i=0;i<d.n_sensores_t;i++){
-		//						String aux= new String(l[i]);
-		//						System.out.println(aux);
-		//					}							
-		//				default:
-		//					break;
-		//				}
-		//				opcion = System.in.read();
-		//			}
-		//			
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
+		// try {
+		// opcion = System.in.read();
+		// while(opcion!=-1){
+		// switch (opcion) {
+		// case 49://1 ASCII
+		// int n=d.contarSensoresT();
+		// System.out.println("Numero de sensores "+ n);
+		// break;
+		// case 50:
+		// byte[][] l=d.listarSensoresT();
+		// for(int i=0;i<d.n_sensores_t;i++){
+		// String aux= new String(l[i]);
+		// System.out.println(aux);
+		// }
+		// default:
+		// break;
+		// }
+		// opcion = System.in.read();
+		// }
+		//
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
 }
