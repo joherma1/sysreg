@@ -123,7 +123,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 				System.err.println(e.toString());
 			}
 		}
-		//Ignoramos el resto de eventos
+		// Ignoramos el resto de eventos
 	}
 
 	// ---------------------------
@@ -151,16 +151,18 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			}
 			data = aux;
 		}
-		// ya tenemos todo el mensaje, lo pasamos a string eliminando el carácter
+		// ya tenemos todo el mensaje, lo pasamos a string eliminando el
+		// carácter
 		// EOT
 		String res = new String(data, 0, data.length - 1);
 		return res;
 	}
 
 	/**
-	 *Lee de Arduino una vector de Bytes. Se ha implementado con un
-	 * monitor, de manera que cuando llegue la información se lanzará un evento
-	 * que despertara el hilo.
+	 * Lee de Arduino una vector de Bytes. Se ha implementado con un monitor, de
+	 * manera que cuando llegue la información se lanzará un evento que
+	 * despertara el hilo.
+	 * 
 	 * @return Los Bytes leídos
 	 */
 	byte[] leerArduinoBytes() {
