@@ -53,19 +53,19 @@ import logic.Negocio;
 
 public class Interfaz {
 
-	private JFrame f_interfaz = null;  //  @jve:decl-index=0:visual-constraint="165,50"
+	private JFrame f_interfaz = null; // @jve:decl-index=0:visual-constraint="165,50"
 	private JPanel p_interfaz = null;
 	private JButton b_activarRiego = null;
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
-	private Negocio logica = null;  //  @jve:decl-index=0:
+	private Negocio logica = null; // @jve:decl-index=0:
 	private List<Evento> eventos = null;
-	private RelojCalendar r_cal = null;
+	// private RelojCalendar r_cal = null;
 	private RelojRiego r_riego = null;
-	//Panel Tª
+	// Panel Tª
 	private ArrayList<JLabel> l_id = new ArrayList<JLabel>();
-	private ArrayList<JLabel> l_value = new ArrayList<JLabel>();  //  @jve:decl-index=0:
-	private ArrayList<JButton> b_refresh = new ArrayList<JButton>();  //  @jve:decl-index=0:
+	private ArrayList<JLabel> l_value = new ArrayList<JLabel>(); // @jve:decl-index=0:
+	private ArrayList<JButton> b_refresh = new ArrayList<JButton>(); // @jve:decl-index=0:
 	private JPanel p_sensor = null;
 	private JLabel l_tipoSensor = null;
 	private JPanel p_botones = null;
@@ -76,7 +76,7 @@ public class Interfaz {
 	private JPanel p_listado = null;
 	private JProgressBar pb_procesando = null;
 	private JLabel esp_progresbar = null;
-	private JFrame f_iniciando = null;  //  @jve:decl-index=0:visual-constraint="953,138"
+	private JFrame f_iniciando = null; // @jve:decl-index=0:visual-constraint="953,138"
 	private JPanel cp_iniciando = null;
 	private JLabel l_iniciando = null;
 	private JProgressBar pb_iniciando = null;
@@ -95,7 +95,7 @@ public class Interfaz {
 	private JMenuItem mi_importar = null;
 	private JMenuItem mi_temperatura = null;
 	private JMenuItem mi_cuenta = null;
-	private JDialog d_acercade = null;  //  @jve:decl-index=0:visual-constraint="801,345"
+	private JDialog d_acercade = null; // @jve:decl-index=0:visual-constraint="801,345"
 	private JPanel cp_acercade = null;
 	private JPanel p_superior = null;
 	private JScrollPane sp_descripcion = null;
@@ -123,10 +123,11 @@ public class Interfaz {
 	private JMenu m_valvula;
 	private JMenuItem mi_forzarInicio;
 	private JMenuItem mi_forzarParar;
+
 	/**
-	 * This method initializes f_interfaz	
-	 * 	
-	 * @return javax.swing.JFrame	
+	 * This method initializes f_interfaz
+	 * 
+	 * @return javax.swing.JFrame
 	 */
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
@@ -135,7 +136,12 @@ public class Interfaz {
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
-			f_interfaz.setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png")));
+			f_interfaz
+					.setIconImage(Toolkit
+							.getDefaultToolkit()
+							.getImage(
+									Interfaz.class
+											.getResource("/imagenes/Naranjito/Naranjito 128.png")));
 			f_interfaz.setJMenuBar(getMb_menu());
 			f_interfaz.setContentPane(getP_interfaz());
 			f_interfaz.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -149,9 +155,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes p_interfaz	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_interfaz
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
@@ -208,19 +214,21 @@ public class Interfaz {
 			gridBagConstraints11.gridy = 0;
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
-			l_solenoide.setIcon(new ImageIcon(getClass().getResource("/imagenes/thumb-PGV-100G.jpg")));
+			l_solenoide.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/thumb-PGV-100G.jpg")));
 
-			//Panel Tª
+			// Panel Tª
 			GridBagConstraints gridBagConstraints0 = new GridBagConstraints();
 			gridBagConstraints0.gridx = 1;
 			gridBagConstraints0.gridy = 2;
 
 			p_interfaz = new JPanel();
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
-			gbl_p_interfaz.columnWidths = new int[]{202, 0, 185, 57};
-			gbl_p_interfaz.rowHeights = new int[]{0, 0, 27, 0, 174, 0};
-			gbl_p_interfaz.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-			gbl_p_interfaz.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+			gbl_p_interfaz.columnWidths = new int[] { 202, 0, 185, 57 };
+			gbl_p_interfaz.rowHeights = new int[] { 0, 0, 27, 0, 174, 0 };
+			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0 };
+			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
@@ -274,51 +282,57 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes b_activarRiego	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_activarRiego
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_activarRiego() {
 		if (b_activarRiego == null) {
 			b_activarRiego = new JButton();
 			b_activarRiego.setText("Iniciar riego");
-			b_activarRiego.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//Si activamos el riego manual y no está desactivado la sincronización
-					if(!cb_Desactivar.isSelected())
-						cb_Desactivar.doClick();//Desactivamos y luego regamos
-					logica.iniciarRiego();
-				}
-			});
+			b_activarRiego
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							// Si activamos el riego manual y no está
+							// desactivado la sincronización
+							if (!cb_Desactivar.isSelected())
+								cb_Desactivar.doClick();// Desactivamos y luego
+														// regamos
+							logica.iniciarRiego();
+						}
+					});
 		}
 		return b_activarRiego;
 	}
 
 	/**
-	 * This method initializes b_desactivarRiego	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_desactivarRiego
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_desactivarRiego() {
 		if (b_desactivarRiego == null) {
 			b_desactivarRiego = new JButton();
 			b_desactivarRiego.setText("Finalizar riego");
-			b_desactivarRiego.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//Si desactamos el riego manual y no está desactivado la sincronización
-					if(!cb_Desactivar.isSelected())
-						cb_Desactivar.doClick();//Desactivamos y luego paramos
-					logica.pararRiego();
-				}
-			});
+			b_desactivarRiego
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							// Si desactamos el riego manual y no está
+							// desactivado la sincronización
+							if (!cb_Desactivar.isSelected())
+								cb_Desactivar.doClick();// Desactivamos y luego
+														// paramos
+							logica.pararRiego();
+						}
+					});
 		}
 		return b_desactivarRiego;
 	}
 
 	/**
-	 * This method initializes p_sensor	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_sensor
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_sensor() {
 		if (p_sensor == null) {
@@ -338,9 +352,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes p_botones	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_botones
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_botones() {
 		if (p_botones == null) {
@@ -370,51 +384,54 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes b_modificar	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_modificar
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_modificar() {
 		if (b_modificar == null) {
 			b_modificar = new JButton();
 			b_modificar.setText("");
-			b_modificar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/pen16.png")));
+			b_modificar.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/iconic/pen16.png")));
 		}
 		return b_modificar;
 	}
 
 	/**
-	 * This method initializes b_anyadir	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_anyadir
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_anyadir() {
 		if (b_anyadir == null) {
 			b_anyadir = new JButton();
 			b_anyadir.setText("");
-			b_anyadir.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/plus_alt16.png")));
+			b_anyadir.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/iconic/plus_alt16.png")));
 		}
 		return b_anyadir;
 	}
 
 	/**
-	 * This method initializes b_eliminar	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_eliminar
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_eliminar() {
 		if (b_eliminar == null) {
 			b_eliminar = new JButton();
 			b_eliminar.setText("");
-			b_eliminar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/minus_alt16.png")));
+			b_eliminar.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/iconic/minus_alt16.png")));
 		}
 		return b_eliminar;
 	}
 
 	/**
-	 * This method initializes sp_listado	
-	 * 	
-	 * @return javax.swing.JScrollPane	
+	 * This method initializes sp_listado
+	 * 
+	 * @return javax.swing.JScrollPane
 	 */
 	private JScrollPane getSp_listado() {
 		if (sp_listado == null) {
@@ -425,9 +442,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes p_listado	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_listado
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_listado() {
 		if (p_listado == null) {
@@ -438,9 +455,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes pb_procesando	
-	 * 	
-	 * @return javax.swing.JProgressBar	
+	 * This method initializes pb_procesando
+	 * 
+	 * @return javax.swing.JProgressBar
 	 */
 	private JProgressBar getPb_procesando() {
 		if (pb_procesando == null) {
@@ -452,16 +469,18 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes f_iniciando	
-	 * 	
-	 * @return javax.swing.JFrame	
+	 * This method initializes f_iniciando
+	 * 
+	 * @return javax.swing.JFrame
 	 */
 	private JFrame getF_iniciando() {
 		if (f_iniciando == null) {
 			f_iniciando = new JFrame();
 			f_iniciando.setSize(new Dimension(228, 132));
 			f_iniciando.setTitle("RegAdmin");
-			f_iniciando.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
+			f_iniciando.setIconImage(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource(
+							"/imagenes/Naranjito/Naranjito 16.png")));
 			f_iniciando.setContentPane(getCp_iniciando());
 			f_iniciando.setLocationRelativeTo(null);
 		}
@@ -469,9 +488,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes cp_iniciando	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes cp_iniciando
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getCp_iniciando() {
 		if (cp_iniciando == null) {
@@ -492,9 +511,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes pb_iniciando	
-	 * 	
-	 * @return javax.swing.JProgressBar	
+	 * This method initializes pb_iniciando
+	 * 
+	 * @return javax.swing.JProgressBar
 	 */
 	private JProgressBar getPb_iniciando() {
 		if (pb_iniciando == null) {
@@ -505,9 +524,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes cp_horario	
-	 * 	
-	 * @return javax.swing.JScrollPane	
+	 * This method initializes cp_horario
+	 * 
+	 * @return javax.swing.JScrollPane
 	 */
 	private JScrollPane getCp_horario() {
 		if (cp_horario == null) {
@@ -518,29 +537,33 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes tp_horario	
-	 * 	
-	 * @return javax.swing.JTextPane	
+	 * This method initializes tp_horario
+	 * 
+	 * @return javax.swing.JTextPane
 	 */
 	private JTextPane getTp_horario() {
 		if (tp_horario == null) {
 			tp_horario = new JTextPane();
 			tp_horario.setEditable(false);
-			//Para que aparezca el scroll horizontal hemos metido el jtextpane en un jpane y este a su vez en un jscrollpane
-			//Si queremos que aparezca con su comportamiento por defecto (sin scroll horizontal pero con wrap line) solo hay que meter el jtextpane en un jscrollpane
+			// Para que aparezca el scroll horizontal hemos metido el jtextpane
+			// en un jpane y este a su vez en un jscrollpane
+			// Si queremos que aparezca con su comportamiento por defecto (sin
+			// scroll horizontal pero con wrap line) solo hay que meter el
+			// jtextpane en un jscrollpane
 		}
 		return tp_horario;
 	}
 
 	/**
-	 * This method initializes b_recargar	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_recargar
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_recargar() {
 		if (b_recargar == null) {
 			b_recargar = new JButton();
-			b_recargar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/reload24.png")));
+			b_recargar.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/iconic/reload24.png")));
 			b_recargar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					actualizarCalendario();
@@ -551,9 +574,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mb_menu	
-	 * 	
-	 * @return javax.swing.JMenuBar	
+	 * This method initializes mb_menu
+	 * 
+	 * @return javax.swing.JMenuBar
 	 */
 	private JMenuBar getMb_menu() {
 		if (mb_menu == null) {
@@ -568,9 +591,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes m_configuracion	
-	 * 	
-	 * @return javax.swing.JMenu	
+	 * This method initializes m_configuracion
+	 * 
+	 * @return javax.swing.JMenu
 	 */
 	private JMenu getM_configuracion() {
 		if (m_configuracion == null) {
@@ -583,9 +606,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes m_sensores	
-	 * 	
-	 * @return javax.swing.JMenu	
+	 * This method initializes m_sensores
+	 * 
+	 * @return javax.swing.JMenu
 	 */
 	private JMenu getM_sensores() {
 		if (m_sensores == null) {
@@ -597,9 +620,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes m_calendario	
-	 * 	
-	 * @return javax.swing.JMenu	
+	 * This method initializes m_calendario
+	 * 
+	 * @return javax.swing.JMenu
 	 */
 	private JMenu getM_calendario() {
 		if (m_calendario == null) {
@@ -612,9 +635,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mi_exportar	
-	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * This method initializes mi_exportar
+	 * 
+	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getMi_exportar() {
 		if (mi_exportar == null) {
@@ -625,9 +648,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes m_ayuda	
-	 * 	
-	 * @return javax.swing.JMenu	
+	 * This method initializes m_ayuda
+	 * 
+	 * @return javax.swing.JMenu
 	 */
 	private JMenu getM_ayuda() {
 		if (m_ayuda == null) {
@@ -639,9 +662,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mi_acercade	
-	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * This method initializes mi_acercade
+	 * 
+	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getMi_acercade() {
 		if (mi_acercade == null) {
@@ -649,7 +672,7 @@ public class Interfaz {
 			mi_acercade.setText("Acerca de");
 			mi_acercade.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					getD_acercade();//Así la primera vez lo crea
+					getD_acercade();// Así la primera vez lo crea
 					d_acercade.setVisible(true);
 				}
 			});
@@ -658,9 +681,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mi_importar	
-	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * This method initializes mi_importar
+	 * 
+	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getMi_importar() {
 		if (mi_importar == null) {
@@ -671,9 +694,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mi_temperatura	
-	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * This method initializes mi_temperatura
+	 * 
+	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getMi_temperatura() {
 		if (mi_temperatura == null) {
@@ -684,9 +707,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes mi_cuenta	
-	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * This method initializes mi_cuenta
+	 * 
+	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getMi_cuenta() {
 		if (mi_cuenta == null) {
@@ -697,18 +720,21 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes d_acercade	
-	 * 	
-	 * @return javax.swing.JDialog	
+	 * This method initializes d_acercade
+	 * 
+	 * @return javax.swing.JDialog
 	 */
 	private JDialog getD_acercade() {
 		if (d_acercade == null) {
 			d_acercade = new JDialog();
 			d_acercade.setResizable(false);
 			d_acercade.setSize(new Dimension(444, 190));
-			d_acercade.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			d_acercade
+					.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			d_acercade.setModal(true);
-			d_acercade.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/Naranjito/Naranjito 16.png")));
+			d_acercade.setIconImage(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource(
+							"/imagenes/Naranjito/Naranjito 16.png")));
 			d_acercade.setResizable(false);
 			d_acercade.setContentPane(getCp_acercade());
 			d_acercade.setTitle("Acerca de RegAdmin");
@@ -718,9 +744,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes cp_acercade	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes cp_acercade
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getCp_acercade() {
 		if (cp_acercade == null) {
@@ -730,7 +756,8 @@ public class Interfaz {
 			gridBagConstraints61.ipady = 63;
 			gridBagConstraints61.gridx = 0;
 			l_icono = new JLabel();
-			l_icono.setIcon(new ImageIcon(getClass().getResource("/imagenes/Naranjito/Naranjito 64.png")));
+			l_icono.setIcon(new ImageIcon(getClass().getResource(
+					"/imagenes/Naranjito/Naranjito 64.png")));
 			l_icono.setText("");
 			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
 			gridBagConstraints41.anchor = GridBagConstraints.CENTER;
@@ -756,9 +783,9 @@ public class Interfaz {
 	}
 
 	/**
-	 * This method initializes p_superior	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_superior
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_superior() {
 		if (p_superior == null) {
@@ -772,31 +799,33 @@ public class Interfaz {
 			p_superior = new JPanel();
 			p_superior.setLayout(new GridBagLayout());
 			p_superior.setBackground(Color.white);
-			p_superior.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.lightGray));
+			p_superior.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0,
+					Color.lightGray));
 			p_superior.add(getSp_descripcion(), gridBagConstraints51);
 		}
 		return p_superior;
 	}
 
 	/**
-	 * This method initializes sp_descripcion	
-	 * 	
-	 * @return javax.swing.JScrollPane	
+	 * This method initializes sp_descripcion
+	 * 
+	 * @return javax.swing.JScrollPane
 	 */
 	private JScrollPane getSp_descripcion() {
 		if (sp_descripcion == null) {
 			sp_descripcion = new JScrollPane();
 			sp_descripcion.setBackground(Color.white);
-			sp_descripcion.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.lightGray));
+			sp_descripcion.setBorder(BorderFactory.createMatteBorder(0, 0, 0,
+					0, Color.lightGray));
 			sp_descripcion.setViewportView(getTa_descripcion());
 		}
 		return sp_descripcion;
 	}
 
 	/**
-	 * This method initializes ta_descripcion	
-	 * 	
-	 * @return javax.swing.JTextArea	
+	 * This method initializes ta_descripcion
+	 * 
+	 * @return javax.swing.JTextArea
 	 */
 	private JTextArea getTa_descripcion() {
 		if (ta_descripcion == null) {
@@ -804,16 +833,18 @@ public class Interfaz {
 			ta_descripcion.setFont(new Font("Tahoma", Font.PLAIN, 12));
 			ta_descripcion.setEditable(false);
 			ta_descripcion.setLineWrap(true);
-			ta_descripcion.setWrapStyleWord(true);//Para que busque espacios al final y corte ahí
-			ta_descripcion.setText("Software para trabajar con una placa Arduino con el sketch AlReg para controlar un sistema remoto agrario con la arquitectura SysReg\nAutor: Jose Antonio Hernández Martínez\nAgradecimientos:\n\tIconos \"iconic\" ");
+			ta_descripcion.setWrapStyleWord(true);// Para que busque espacios al
+													// final y corte ahí
+			ta_descripcion
+					.setText("Software para trabajar con una placa Arduino con el sketch AlReg para controlar un sistema remoto agrario con la arquitectura SysReg\nAutor: Jose Antonio Hernández Martínez\nAgradecimientos:\n\tIconos \"iconic\" ");
 		}
 		return ta_descripcion;
 	}
 
 	/**
-	 * This method initializes p_inferior	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes p_inferior
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getP_inferior() {
 		if (p_inferior == null) {
@@ -828,15 +859,19 @@ public class Interfaz {
 			l_mailto.setFont(new Font("Dialog", Font.BOLD, 12));
 			l_mailto.setText("joherma1@gmail.com");
 			l_mailto.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseExited(java.awt.event.MouseEvent e) {    
+				public void mouseExited(java.awt.event.MouseEvent e) {
 					e.getComponent().setCursor(Cursor.getDefaultCursor());
-				}   
-				public void mouseEntered(java.awt.event.MouseEvent e) {    
-					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				}
+
+				public void mouseEntered(java.awt.event.MouseEvent e) {
+					e.getComponent().setCursor(
+							Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					try {
-						URI uriMailTo = new URI("mailto", "joherma1@gmail.com", null);
+						URI uriMailTo = new URI("mailto", "joherma1@gmail.com",
+								null);
 						Desktop.getDesktop().mail(uriMailTo);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -858,15 +893,20 @@ public class Interfaz {
 			l_homepage.setFont(new Font("Dialog", Font.BOLD, 12));
 			l_homepage.setText("Página Principal");
 			l_homepage.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseExited(java.awt.event.MouseEvent e) {    
+				public void mouseExited(java.awt.event.MouseEvent e) {
 					e.getComponent().setCursor(Cursor.getDefaultCursor());
-				}   
-				public void mouseEntered(java.awt.event.MouseEvent e) {    
-					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				}
+
+				public void mouseEntered(java.awt.event.MouseEvent e) {
+					e.getComponent().setCursor(
+							Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					try {
-						Desktop.getDesktop().browse(new java.net.URI("http://code.google.com/p/sysreg/"));
+						Desktop.getDesktop().browse(
+								new java.net.URI(
+										"http://code.google.com/p/sysreg/"));
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -889,15 +929,20 @@ public class Interfaz {
 			l_licencia.setFont(new Font("Dialog", Font.BOLD, 12));
 			l_licencia.setText("Licencia GNU GPL v3");
 			l_licencia.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseExited(java.awt.event.MouseEvent e) {    
+				public void mouseExited(java.awt.event.MouseEvent e) {
 					e.getComponent().setCursor(Cursor.getDefaultCursor());
-				}   
-				public void mouseEntered(java.awt.event.MouseEvent e) {    
-					e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				}
+
+				public void mouseEntered(java.awt.event.MouseEvent e) {
+					e.getComponent().setCursor(
+							Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					try {
-						Desktop.getDesktop().browse(new java.net.URI("http://www.gnu.org/licenses/gpl.html"));
+						Desktop.getDesktop()
+								.browse(new java.net.URI(
+										"http://www.gnu.org/licenses/gpl.html"));
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -909,7 +954,8 @@ public class Interfaz {
 			});
 			p_inferior = new JPanel();
 			p_inferior.setLayout(new GridBagLayout());
-			p_inferior.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.lightGray));
+			p_inferior.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
+					Color.lightGray));
 			p_inferior.add(l_licencia, gridBagConstraints31);
 			p_inferior.add(l_homepage, gridBagConstraints18);
 			p_inferior.add(l_mailto, gridBagConstraints19);
@@ -922,90 +968,98 @@ public class Interfaz {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		if(isMac()){
-			System.setProperty("apple.laf.useScreenMenuBar", "true"); //Barra de menu Mac OS
+		if (isMac()) {
+			System.setProperty("apple.laf.useScreenMenuBar", "true"); // Barra
+																		// de
+																		// menu
+																		// Mac
+																		// OS
 		}
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
-		//		Image icono = new ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
-		//		frame_main.setIconImage(icono);
-		//		frame_iniciando.setIconImage(icono);
-//		Image icono = Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png"));
-//		frame_main.setIconImage(icono);
-//		frame_iniciando.setIconImage(icono);
+		// Image icono = new
+		// ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
+		// frame_main.setIconImage(icono);
+		// frame_iniciando.setIconImage(icono);
+		// Image icono =
+		// Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png"));
+		// frame_main.setIconImage(icono);
+		// frame_iniciando.setIconImage(icono);
 		frame_main.setName("RegAdmin");
-		frame_main.setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaz.class.getResource("/imagenes/Naranjito/Naranjito 128.png")));
+		frame_main.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				Interfaz.class
+						.getResource("/imagenes/Naranjito/Naranjito 128.png")));
 
 		frame_iniciando.setVisible(true);
-		if(args.length > 0 && args[0].compareTo("debug")==0)
+		if (args.length > 0 && args[0].compareTo("debug") == 0)
 			main.inicializar(true);
-		else main.inicializar(false);
+		else
+			main.inicializar(false);
 	}
 
-
-	private static boolean isWindows(){
+	private static boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//windows
-		return (os.indexOf( "win" ) >= 0); 
+		// windows
+		return (os.indexOf("win") >= 0);
 
 	}
 
-	private static boolean isMac(){
+	private static boolean isMac() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//Mac
-		return (os.indexOf( "mac" ) >= 0); 
+		// Mac
+		return (os.indexOf("mac") >= 0);
 
 	}
 
-	private static boolean isUnix(){
+	private static boolean isUnix() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//linux or unix
-		return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
+		// linux or unix
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
 	}
 
-	void inicializar(boolean debug){
+	void inicializar(boolean debug) {
+
+		System.out.println("----Inicializar");
 		logica = new Negocio(debug);
-		int ini= logica.inicializar();
-		if(ini == -1){
-			JOptionPane.showMessageDialog(this.f_iniciando, "No se ha encontrado el puerto de comunicación", "Error", JOptionPane.ERROR_MESSAGE);
+		int ini = logica.inicializar();
+		if (ini == -1) {
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"No se ha encontrado el puerto de comunicación", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			f_iniciando.dispose();
 			f_interfaz.dispose();
 			System.exit(-1);
-		}else if(ini == -2){
-			JOptionPane.showMessageDialog(this.f_iniciando, "Error al inicializar el puerto", "Error", JOptionPane.ERROR_MESSAGE);
+		} else if (ini == -2) {
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"Error al inicializar el puerto", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			f_iniciando.dispose();
 			f_interfaz.dispose();
 			System.exit(-1);
-		}else{
+		} else {
 			TareaInicializar tarea = new TareaInicializar();
 			tarea.execute();
-			//Iniciamos el hilo del calendario
-			r_cal = new RelojCalendar();
-			r_cal.start();
-			//y el hilo del reloj de comprobación del riego
-			r_riego = new RelojRiego();
-			r_riego.start();
 		}
 	}
 
-	void anyardirSensor(String id, Float temp){
-		//Constraints
-		//id
+	void anyardirSensor(String id, Float temp) {
+		// Constraints
+		// id
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.ipadx = 0;
 		gridBagConstraints.ipady = 0;
 		gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 		gridBagConstraints.gridy = l_id.size();
-		//valor
+		// valor
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.gridx = 1;
 		gridBagConstraints1.ipadx = 0;
 		gridBagConstraints1.ipady = 0;
 		gridBagConstraints1.insets = new Insets(5, 5, 5, 5);
 		gridBagConstraints1.gridy = l_value.size();
-		//boton
+		// boton
 		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 		gridBagConstraints2.gridx = 2;
 		gridBagConstraints2.ipadx = 0;
@@ -1014,49 +1068,61 @@ public class Interfaz {
 		gridBagConstraints2.gridy = b_refresh.size();
 
 		l_id.add(new JLabel());
-		l_id.get(l_id.size()-1).setText(id);
+		l_id.get(l_id.size() - 1).setText(id);
 		l_value.add(new JLabel());
-		l_value.get(l_value.size()-1).setText(temp.toString());
+		l_value.get(l_value.size() - 1).setText(temp.toString());
 		b_refresh.add(new JButton());
-		//b_refresh.get(b_refresh.size()-1).setText("REF");
-		b_refresh.get(b_refresh.size()-1).setIcon(new ImageIcon(getClass().getResource("/imagenes/iconic/reload24.png")));
-		b_refresh.get(b_refresh.size()-1).addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent e) {
-				int indice = b_refresh.indexOf((JButton)e.getSource());
-				//la etiqueta, el valor y el boton comparten el mismo id
-				pb_procesando.setVisible(true);
-				//No se puede obtener la temperatura de mas de dos sensores a la vez
-				//Desactivamos la actualizacion de los todos
-				for (int i=0; i<b_refresh.size();i++)
-					b_refresh.get(i).setEnabled(false);
-				TareaTemperatura tarea = new TareaTemperatura(indice);
-				tarea.execute();
-			}
-		});
+		// b_refresh.get(b_refresh.size()-1).setText("REF");
+		b_refresh.get(b_refresh.size() - 1).setIcon(
+				new ImageIcon(getClass().getResource(
+						"/imagenes/iconic/reload24.png")));
+		b_refresh.get(b_refresh.size() - 1).addActionListener(
+				new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						int indice = b_refresh.indexOf((JButton) e.getSource());
+						// la etiqueta, el valor y el boton comparten el mismo
+						// id
+						pb_procesando.setVisible(true);
+						// No se puede obtener la temperatura de mas de dos
+						// sensores a la vez
+						// Desactivamos la actualizacion de los todos
+						for (int i = 0; i < b_refresh.size(); i++)
+							b_refresh.get(i).setEnabled(false);
+						TareaTemperatura tarea = new TareaTemperatura(indice);
+						tarea.execute();
+					}
+				});
 
-		p_listado.add(l_id.get(l_id.size()-1), gridBagConstraints);
-		p_listado.add(l_value.get(l_value.size()-1), gridBagConstraints1);
-		p_listado.add(b_refresh.get(b_refresh.size()-1), gridBagConstraints2);
+		p_listado.add(l_id.get(l_id.size() - 1), gridBagConstraints);
+		p_listado.add(l_value.get(l_value.size() - 1), gridBagConstraints1);
+		p_listado.add(b_refresh.get(b_refresh.size() - 1), gridBagConstraints2);
 	}
-	private void actualizarCalendario(){
-		eventos = logica.cargarCalendario();
-		//Pintamos los eventos
-		pintarEventos();
-		//Actualizar la hora
-		DecimalFormat entero = new DecimalFormat("00");
-		Calendar now= Calendar.getInstance();
-		l_ultimaact.setText("Última actualización: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));
-		//Comprobamos como tiene que estar el riego
-		eventos = logica.comprobarRiego();
-		//Actualizar la hora
-		l_hora.setText("Hora: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));			
 
-	}	
-	private void pintarEventos(){
+	private void actualizarCalendario() {
+		System.out.println("-----Actualizar calendario");
+		eventos = logica.cargarCalendario();
+		// Actualizar la hora
+		DecimalFormat entero = new DecimalFormat("00");
+		Calendar now = Calendar.getInstance();
+		l_ultimaact.setText("Última actualización: "
+				+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":"
+				+ entero.format(now.get(Calendar.MINUTE)));
+		// Comprobamos como tiene que estar el riego
+		// eventos = logica.comprobarRiego();
+		// Pintamos los eventos
+		// pintarEventos();
+		// Actualizar la hora
+		// l_hora.setText("Hora: " +
+		// entero.format(now.get(Calendar.HOUR_OF_DAY))
+		// + ":" + entero.format(now.get(Calendar.MINUTE)));
+
+	}
+
+	private void pintarEventos() {
 		try {
 			tp_horario.setText("");
 			StyledDocument doc = tp_horario.getStyledDocument();
-			//ROJO
+			// ROJO
 			// Create a style object and then set the style attributes
 			Style styleRed = doc.addStyle("StyleRed", null);
 			// Italic -> cursiva
@@ -1071,7 +1137,7 @@ public class Interfaz {
 			StyleConstants.setBackground(styleRed, Color.white);
 			// Foreground color
 			StyleConstants.setForeground(styleRed, Color.red);
-			//NEGRO
+			// NEGRO
 			Style styleBlack = doc.addStyle("StyleBlack", null);
 			StyleConstants.setItalic(styleBlack, false);
 			StyleConstants.setBold(styleBlack, false);
@@ -1079,7 +1145,7 @@ public class Interfaz {
 			StyleConstants.setFontSize(styleBlack, 12);
 			StyleConstants.setBackground(styleBlack, Color.white);
 			StyleConstants.setForeground(styleBlack, Color.black);
-			//VERDE
+			// VERDE
 			Style styleGreen = doc.addStyle("StyleGreen", null);
 			StyleConstants.setItalic(styleGreen, true);
 			StyleConstants.setBold(styleGreen, true);
@@ -1089,19 +1155,28 @@ public class Interfaz {
 			StyleConstants.setForeground(styleGreen, Color.green);
 
 			// Append to document
-			for(int i = 0; i < eventos.size(); i++){
-				Evento e = eventos.get(i);
-				Evento.State es = e.getEstado();
-				switch(es){
-				case NEGRO:
-					doc.insertString(doc.getLength(), e.toString() + "\n", styleBlack);
-					break;
-				case ROJO:
-					doc.insertString(doc.getLength(), e.toString() + "\n", styleRed);
-					break;
-				case VERDE:
-					doc.insertString(doc.getLength(), e.toString() + "\n", styleGreen);
-					break;						
+			if (eventos != null) {
+				for (int i = 0; i < eventos.size(); i++) {
+					Evento e = eventos.get(i);
+					Evento.State es = e.getEstado();
+					String e_des = e.toString() + "\n";
+					int longitud = doc.getLength();
+					switch (es) {
+					case NEGRO:
+						doc.insertString(longitud, e_des, styleBlack);
+						// System.out.println(doc.getLength() + e.toString() +
+						// "\n"+
+						// styleBlack);
+						break;
+					case ROJO:
+						doc.insertString(doc.getLength(), e.toString() + "\n",
+								styleRed);
+						break;
+					case VERDE:
+						doc.insertString(doc.getLength(), e.toString() + "\n",
+								styleGreen);
+						break;
+					}
 				}
 			}
 		} catch (BadLocationException e) {
@@ -1116,16 +1191,20 @@ public class Interfaz {
 		 */
 		Float nuevo_valor = null;
 		int indice;
-		TareaTemperatura(int indice){
+
+		TareaTemperatura(int indice) {
 			this.indice = indice;
 		}
+
 		@Override
-		public Void doInBackground() {			
-			//System.out.println("Obteniendo temperatura de: " + l_id.get(indice).getText());
+		public Void doInBackground() {
+			// System.out.println("Obteniendo temperatura de: " +
+			// l_id.get(indice).getText());
 			nuevo_valor = logica.obtenerTemperatura(l_id.get(indice).getText());
 			l_value.get(indice).setText(nuevo_valor.toString());
-			//System.out.println( l_id.get(indice).getText() + ": " + nuevo_valor);
-			return null;		
+			// System.out.println( l_id.get(indice).getText() + ": " +
+			// nuevo_valor);
+			return null;
 		}
 
 		/*
@@ -1134,39 +1213,53 @@ public class Interfaz {
 		@Override
 		public void done() {
 			pb_procesando.setVisible(false);
-			//Volvemos a permitir actualizar los sensores
-			for (int i=0; i<b_refresh.size();i++)
+			// Volvemos a permitir actualizar los sensores
+			for (int i = 0; i < b_refresh.size(); i++)
 				b_refresh.get(i).setEnabled(true);
 			b_refresh.get(indice).setFocusPainted(true);
 		}
-	}	
+	}
+
 	class TareaInicializar extends SwingWorker<Void, Void> {
 		/*
 		 * Main task. Executed in background thread.
 		 */
 		@Override
-		public Void doInBackground() {			
-			//System.out.println("Obteniendo temperatura de: "+ l_id.get(indice).getText());
-			//Sensores Tª
+		public Void doInBackground() {
+			// System.out.println("Obteniendo temperatura de: "+
+			// l_id.get(indice).getText());
+			// Sensores Tª
 			String[] sensores = logica.listarSensoresT();
-			for(String sensor: sensores){
-				Float res=logica.obtenerTemperatura(sensor);
+			for (String sensor : sensores) {
+				Float res = logica.obtenerTemperatura(sensor);
 				anyardirSensor(sensor, res);
 			}
-			//Sensor BMP085
+			// Sensor BMP085
 			Long presion = logica.obtenerPresionBMP085();
 			l_Presion.setText(presion.toString());
 			Float temp = logica.obtenerTemperaturaBMP085();
 			l_Temperatura.setText(temp.toString());
-			Float alt =  logica.obtenerAlturaBMP085();
+			Float alt = logica.obtenerAlturaBMP085();
 			l_Altura.setText(alt.toString());
 
-			//Sensor HH10D
+			// Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
-
+			
+			//Actualizamos el calendario y activamos el hilo
 			actualizarCalendario();
-			return null;		
+			eventos = logica.comprobarRiego();
+			pintarEventos();
+			// Actualizar la hora
+			DecimalFormat entero = new DecimalFormat("00");
+			Calendar now = Calendar.getInstance();
+			l_hora.setText("Hora: "
+					+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":"
+					+ entero.format(now.get(Calendar.MINUTE)));
+			r_riego = new RelojRiego();
+			r_riego.start();
+			// actualizarCalendario(); //Ya lo hacemos al iniciar el hilo
+			return null;
 		}
 
 		/*
@@ -1178,55 +1271,78 @@ public class Interfaz {
 			f_interfaz.setVisible(true);
 		}
 	}
-	private class RelojCalendar extends Thread{
+
+	private class RelojCalendar extends Thread {
 		private boolean activo = true;
-		public RelojCalendar(){
+
+		public RelojCalendar() {
 			this.setName("Cuenta5min");
 		}
-		public void detener(){
+
+		public void detener() {
 			this.activo = false;
-			if(!this.isInterrupted())
+			if (!this.isInterrupted())
 				this.interrupt();
 		}
+
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-				System.out.println("Inicio hilo actualizar calendario");	
-				while(activo){
-					Thread.sleep(300000);
+				System.out.println("Inicio hilo actualizar calendario");
+				while (activo) {
 					System.out.println("Iteración hilo actualizar calendario");
 					actualizarCalendario();
+					Thread.sleep(300000);
 				}
-				System.out.println("Fin hilo actualizar calendario");				
+				System.out.println("Fin hilo actualizar calendario");
 			} catch (InterruptedException e) {
-				System.out.println("Sincronización desactivada (hilo calendario)");
-				//e.printStackTrace();
+				System.out
+						.println("Sincronización desactivada (hilo calendario)");
+				// e.printStackTrace();
 			}
 		}
 	}
-	private class RelojRiego extends Thread{
+
+	private class RelojRiego extends Thread {
 		private boolean activo = true;
-		public RelojRiego(){
+
+		public RelojRiego() {
 			this.setName("Cuenta1min");
 		}
-		public void detener(){
+
+		public void detener() {
 			this.activo = false;
-			if(!this.isInterrupted())
+			if (!this.isInterrupted())
 				this.interrupt();
 		}
+
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
+				// Antes de llamarlo se debe invocar la sincronización, asi
+				// evitamos 2 problemas:
+				// Que se inicie sin haber cargado
+				// Que intente escribir si no existe el texto de eventos (al
+				// activar y desactivar rapidamente)
 				System.out.println("Inicio hilo actualizar reloj");
-				while(activo){
+				int i = 0;
+				while (activo) {
 					Thread.sleep(60000);
+					if (i < 5)// Cada 5 minutos actualizamos el calendario,
+						i++;
+					else {
+						actualizarCalendario();
+						i = 0;
+					}
 					System.out.println("Iteración hilo comprobar riego");
-					eventos=logica.comprobarRiego();
+					eventos = logica.comprobarRiego();
 					pintarEventos();
-					//Actualizar la hora
+					// Actualizar la hora
 					DecimalFormat entero = new DecimalFormat("00");
-					Calendar now= Calendar.getInstance();
-					l_hora.setText("Hora: "+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":" + entero.format(now.get(Calendar.MINUTE)));					
+					Calendar now = Calendar.getInstance();
+					l_hora.setText("Hora: "
+							+ entero.format(now.get(Calendar.HOUR_OF_DAY))
+							+ ":" + entero.format(now.get(Calendar.MINUTE)));
 				}
 				System.out.println("Fin hilo actualizar reloj");
 			} catch (InterruptedException e) {
@@ -1234,15 +1350,18 @@ public class Interfaz {
 			}
 		}
 	}
+
 	private JPanel getP_BMP085() {
 		if (p_BMP085 == null) {
 			p_BMP085 = new JPanel();
 			p_BMP085.setBorder(new LineBorder(new Color(0, 0, 0)));
 			GridBagLayout gbl_p_BMP085 = new GridBagLayout();
-			gbl_p_BMP085.columnWidths = new int[]{106, 55, 0};
-			gbl_p_BMP085.rowHeights = new int[]{16, 0, 16, 0, 0, 0};
-			gbl_p_BMP085.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-			gbl_p_BMP085.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_p_BMP085.columnWidths = new int[] { 106, 55, 0 };
+			gbl_p_BMP085.rowHeights = new int[] { 16, 0, 16, 0, 0, 0 };
+			gbl_p_BMP085.columnWeights = new double[] { 0.0, 1.0,
+					Double.MIN_VALUE };
+			gbl_p_BMP085.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0,
+					Double.MIN_VALUE };
 			p_BMP085.setLayout(gbl_p_BMP085);
 			GridBagConstraints gbc_l_SensorMP085 = new GridBagConstraints();
 			gbc_l_SensorMP085.gridwidth = 2;
@@ -1295,18 +1414,21 @@ public class Interfaz {
 		}
 		return p_BMP085;
 	}
+
 	private JLabel getL_SensorMP085() {
 		if (l_SensorMP085 == null) {
 			l_SensorMP085 = new JLabel("Sensor BMP085");
 		}
 		return l_SensorMP085;
 	}
+
 	private JLabel getL_TextTemperatura() {
 		if (l_TextTemperatura == null) {
 			l_TextTemperatura = new JLabel("Temperatura (ªC)");
 		}
 		return l_TextTemperatura;
 	}
+
 	private JLabel getL_TextoPresion() {
 		if (l_TextoPresion == null) {
 			l_TextoPresion = new JLabel("Presión (Pa)");
@@ -1315,30 +1437,35 @@ public class Interfaz {
 		}
 		return l_TextoPresion;
 	}
+
 	private JLabel getL_Presion() {
 		if (l_Presion == null) {
 			l_Presion = new JLabel("101196");
 		}
 		return l_Presion;
 	}
+
 	private JLabel getL_Temperatura() {
 		if (l_Temperatura == null) {
 			l_Temperatura = new JLabel("28.5");
 		}
 		return l_Temperatura;
 	}
+
 	private JLabel getL_TextoAltura() {
 		if (l_TextoAltura == null) {
 			l_TextoAltura = new JLabel("Altura (m)");
 		}
 		return l_TextoAltura;
 	}
+
 	private JLabel getL_Altura() {
 		if (l_Altura == null) {
 			l_Altura = new JLabel("34");
 		}
 		return l_Altura;
 	}
+
 	private JButton getB_RecargarBMP085() {
 		if (b_RecargarBMP085 == null) {
 			b_RecargarBMP085 = new JButton();
@@ -1349,23 +1476,27 @@ public class Interfaz {
 					l_Presion.setText(presion.toString());
 					Float temp = logica.obtenerTemperaturaBMP085();
 					l_Temperatura.setText(temp.toString());
-					Float alt =  logica.obtenerAlturaBMP085();
+					Float alt = logica.obtenerAlturaBMP085();
 					l_Altura.setText(alt.toString());
 				}
 			});
-			b_RecargarBMP085.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+			b_RecargarBMP085.setIcon(new ImageIcon(Interfaz.class
+					.getResource("/imagenes/iconic/reload24.png")));
 		}
 		return b_RecargarBMP085;
 	}
+
 	private JPanel getPanel_1() {
 		if (p_HH10D == null) {
 			p_HH10D = new JPanel();
 			p_HH10D.setBorder(new LineBorder(new Color(0, 0, 0)));
 			GridBagLayout gbl_p_HH10D = new GridBagLayout();
-			gbl_p_HH10D.columnWidths = new int[]{106, 55, 0};
-			gbl_p_HH10D.rowHeights = new int[]{16, 0, 0, 0};
-			gbl_p_HH10D.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-			gbl_p_HH10D.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_p_HH10D.columnWidths = new int[] { 106, 55, 0 };
+			gbl_p_HH10D.rowHeights = new int[] { 16, 0, 0, 0 };
+			gbl_p_HH10D.columnWeights = new double[] { 0.0, 1.0,
+					Double.MIN_VALUE };
+			gbl_p_HH10D.rowWeights = new double[] { 0.0, 0.0, 1.0,
+					Double.MIN_VALUE };
 			p_HH10D.setLayout(gbl_p_HH10D);
 			GridBagConstraints gbc_l_HH10D = new GridBagConstraints();
 			gbc_l_HH10D.anchor = GridBagConstraints.NORTHWEST;
@@ -1394,12 +1525,14 @@ public class Interfaz {
 		}
 		return p_HH10D;
 	}
+
 	private JLabel getL_HH10D() {
 		if (l_HH10D == null) {
 			l_HH10D = new JLabel("Sensor HH10D");
 		}
 		return l_HH10D;
 	}
+
 	private JLabel getL_textHumedad() {
 		if (l_textHumedad == null) {
 			l_textHumedad = new JLabel("Humedad (%)");
@@ -1408,12 +1541,14 @@ public class Interfaz {
 		}
 		return l_textHumedad;
 	}
+
 	private JLabel getL_humedad() {
 		if (l_humedad == null) {
 			l_humedad = new JLabel("55.0");
 		}
 		return l_humedad;
 	}
+
 	private JButton getB_recargarHumedad() {
 		if (b_recargarHumedad == null) {
 			b_recargarHumedad = new JButton();
@@ -1424,28 +1559,33 @@ public class Interfaz {
 					l_humedad.setText(humedad.toString());
 				}
 			});
-			b_recargarHumedad.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+			b_recargarHumedad.setIcon(new ImageIcon(Interfaz.class
+					.getResource("/imagenes/iconic/reload24.png")));
 		}
 		return b_recargarHumedad;
 	}
+
 	private JCheckBox getCb_Desactivar() {
 		if (cb_Desactivar == null) {
 			cb_Desactivar = new JCheckBox("Desactivar");
 			cb_Desactivar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					boolean desactivar = cb_Desactivar.isSelected();
-					if(desactivar == false){ //Activamos la sincronización
-						tp_horario.setEnabled(true);
-						//Iniciamos el hilo del calendario
-						r_cal = new RelojCalendar();
-						r_cal.start();
-						//y el del riego
+					if (desactivar == false) { // Activamos la sincronización
+						actualizarCalendario();
+						eventos = logica.comprobarRiego();
+						pintarEventos();
+						// Actualizar la hora
+						DecimalFormat entero = new DecimalFormat("00");
+						Calendar now = Calendar.getInstance();
+						l_hora.setText("Hora: "
+								+ entero.format(now.get(Calendar.HOUR_OF_DAY))
+								+ ":" + entero.format(now.get(Calendar.MINUTE)));
 						r_riego = new RelojRiego();
-						r_riego.start();
-					}else{//Desactivamos la sincronizacion
+						r_riego.start();		
+						tp_horario.setEnabled(true);
+					} else {// Desactivamos la sincronizacion
 						tp_horario.setEnabled(false);
-						//Paramos el hilo del calendario y del riego
-						r_cal.detener();
 						r_riego.detener();
 					}
 				}
@@ -1453,6 +1593,7 @@ public class Interfaz {
 		}
 		return cb_Desactivar;
 	}
+
 	private JMenu getM_valvula() {
 		if (m_valvula == null) {
 			m_valvula = new JMenu("Válvula");
@@ -1461,6 +1602,7 @@ public class Interfaz {
 		}
 		return m_valvula;
 	}
+
 	private JMenuItem getMi_forzarInicio() {
 		if (mi_forzarInicio == null) {
 			mi_forzarInicio = new JMenuItem("Forzar inicio riego");
@@ -1472,12 +1614,13 @@ public class Interfaz {
 		}
 		return mi_forzarInicio;
 	}
+
 	private JMenuItem getMi_forzarParar() {
 		if (mi_forzarParar == null) {
 			mi_forzarParar = new JMenuItem("Forzar paro riego");
 			mi_forzarParar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				logica.forzarPararRiego();
+					logica.forzarPararRiego();
 				}
 			});
 		}

@@ -321,7 +321,7 @@ public class Negocio {
 				DateTime now = new DateTime(new Date(),
 						TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
-				e.imprimir();
+				// e.imprimir();
 			}
 			return sortedEvents;
 
@@ -378,18 +378,20 @@ public class Negocio {
 	 */
 	public List<Evento> comprobarRiego() {
 		boolean activo = false;
-		for (int i = 0; i < sortedEvents.size(); i++) {
-			Evento e = sortedEvents.get(i);
-			DateTime now = new DateTime(new Date(),
-					TimeZone.getTimeZone("Europe/Madrid"));
-			e.colorear(now);
-			if (e.getEstado() == State.VERDE)
-				activo = true;
+		if (sortedEvents != null) {
+			for (int i = 0; i < sortedEvents.size(); i++) {
+				Evento e = sortedEvents.get(i);
+				DateTime now = new DateTime(new Date(),
+						TimeZone.getTimeZone("Europe/Madrid"));
+				e.colorear(now);
+				if (e.getEstado() == State.VERDE)
+					activo = true;
+			}
+			if (activo)
+				iniciarRiego();
+			else
+				pararRiego();
 		}
-		if (activo)
-			iniciarRiego();
-		else
-			pararRiego();
 		return sortedEvents;
 	}
 

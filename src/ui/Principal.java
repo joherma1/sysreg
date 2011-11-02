@@ -1,4 +1,5 @@
 package ui;
+
 import logic.Negocio;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,8 +18,8 @@ import java.awt.Insets;
 
 public class Principal {
 
-	private Negocio logica = null;  //  @jve:decl-index=0:
-	private JFrame f_Principal = null;  //  @jve:decl-index=0:visual-constraint="181,23"
+	private Negocio logica = null; // @jve:decl-index=0:
+	private JFrame f_Principal = null; // @jve:decl-index=0:visual-constraint="181,23"
 	private JPanel cp_Principal = null;
 	private JButton b_start = null;
 	private JButton b_stop = null;
@@ -29,14 +30,16 @@ public class Principal {
 	private JButton b_obtenerTemperatura = null;
 	private JComboBox cb_sensoresT = null;
 	private JButton b_limpiar = null;
-	private String [] sensores =null;
-	private void inicializar(){
+	private String[] sensores = null;
+
+	private void inicializar() {
 		logica = new Negocio();
 	}
+
 	/**
-	 * This method initializes f_Principal	
-	 * 	
-	 * @return javax.swing.JFrame	
+	 * This method initializes f_Principal
+	 * 
+	 * @return javax.swing.JFrame
 	 */
 	private JFrame getF_Principal() {
 		if (f_Principal == null) {
@@ -50,9 +53,9 @@ public class Principal {
 	}
 
 	/**
-	 * This method initializes cp_Principal	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes cp_Principal
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getCp_Principal() {
 		if (cp_Principal == null) {
@@ -71,9 +74,9 @@ public class Principal {
 	}
 
 	/**
-	 * This method initializes b_start	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_start
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_start() {
 		if (b_start == null) {
@@ -90,9 +93,9 @@ public class Principal {
 	}
 
 	/**
-	 * This method initializes b_stop	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_stop
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_stop() {
 		if (b_stop == null) {
@@ -109,9 +112,9 @@ public class Principal {
 	}
 
 	/**
-	 * This method initializes b_contar	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_contar
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_contar() {
 		if (b_contar == null) {
@@ -120,16 +123,18 @@ public class Principal {
 			b_contar.setBounds(new Rectangle(210, 135, 146, 29));
 			b_contar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					a_datos.setText(a_datos.getText() + logica.contarSensoresT()+ "\n");
+					a_datos.setText(a_datos.getText()
+							+ logica.contarSensoresT() + "\n");
 				}
 			});
 		}
 		return b_contar;
 	}
+
 	/**
-	 * This method initializes b_listar_t	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_listar_t
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_listar_t() {
 		if (b_listar_t == null) {
@@ -138,20 +143,22 @@ public class Principal {
 			b_listar_t.setBounds(new Rectangle(210, 90, 139, 29));
 			b_listar_t.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String[] aux= logica.listarSensoresT();
+					String[] aux = logica.listarSensoresT();
 					cb_sensoresT.removeAllItems();
-					for (int i=0;i<aux.length;i++){
-						cb_sensoresT.addItem(aux[i]);;
+					for (int i = 0; i < aux.length; i++) {
+						cb_sensoresT.addItem(aux[i]);
+						;
 					}
 				}
 			});
 		}
 		return b_listar_t;
 	}
+
 	/**
-	 * This method initializes a_datos	
-	 * 	
-	 * @return javax.swing.JTextArea	
+	 * This method initializes a_datos
+	 * 
+	 * @return javax.swing.JTextArea
 	 */
 	private JTextArea getA_datos() {
 		if (a_datos == null) {
@@ -161,10 +168,11 @@ public class Principal {
 		}
 		return a_datos;
 	}
+
 	/**
-	 * This method initializes sc_datos	
-	 * 	
-	 * @return javax.swing.JScrollPane	
+	 * This method initializes sc_datos
+	 * 
+	 * @return javax.swing.JScrollPane
 	 */
 	private JScrollPane getSc_datos() {
 		if (sc_datos == null) {
@@ -174,34 +182,42 @@ public class Principal {
 		}
 		return sc_datos;
 	}
+
 	/**
-	 * This method initializes b_obtenerTemperatura	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_obtenerTemperatura
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_obtenerTemperatura() {
 		if (b_obtenerTemperatura == null) {
 			b_obtenerTemperatura = new JButton();
 			b_obtenerTemperatura.setText("Obtener Temperatura");
 			b_obtenerTemperatura.setBounds(new Rectangle(375, 135, 168, 29));
-			b_obtenerTemperatura.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String sensor = (String)cb_sensoresT.getSelectedItem();
-					if(sensor != null){
-						a_datos.setText(a_datos.getText() + logica.obtenerTemperatura(sensor)+ "\n");
-					}else{
-						JOptionPane.showMessageDialog(f_Principal, "Selecciona un sensor", "Error sensor", JOptionPane.ERROR_MESSAGE);
-					}
-					
-				}
-			});
+			b_obtenerTemperatura
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							String sensor = (String) cb_sensoresT
+									.getSelectedItem();
+							if (sensor != null) {
+								a_datos.setText(a_datos.getText()
+										+ logica.obtenerTemperatura(sensor)
+										+ "\n");
+							} else {
+								JOptionPane.showMessageDialog(f_Principal,
+										"Selecciona un sensor", "Error sensor",
+										JOptionPane.ERROR_MESSAGE);
+							}
+
+						}
+					});
 		}
 		return b_obtenerTemperatura;
 	}
+
 	/**
-	 * This method initializes cb_sensoresT	
-	 * 	
-	 * @return javax.swing.JComboBox	
+	 * This method initializes cb_sensoresT
+	 * 
+	 * @return javax.swing.JComboBox
 	 */
 	private JComboBox getCb_sensoresT() {
 		if (cb_sensoresT == null) {
@@ -210,10 +226,11 @@ public class Principal {
 		}
 		return cb_sensoresT;
 	}
+
 	/**
-	 * This method initializes b_limpiar	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes b_limpiar
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getB_limpiar() {
 		if (b_limpiar == null) {
@@ -228,14 +245,13 @@ public class Principal {
 		}
 		return b_limpiar;
 	}
-	/**
-	 * @param args
-	 */
-	private void inicializar_sensores(){
+
+	private void inicializar_sensores() {
 		this.sensores = logica.listarSensoresT();
-		for(int i =0; i<sensores.length; i++)
+		for (int i = 0; i < sensores.length; i++)
 			cb_sensoresT.addItem(sensores[i]);
 	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Principal main = new Principal();
