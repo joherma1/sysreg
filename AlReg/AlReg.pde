@@ -1,13 +1,15 @@
 #include <OneWire.h>
 #include <Wire.h>
 #include <FreqCounter.h>
+#include <Time.h>
+#include <TimeAlarms.h>
 
-#define BMP085_ADDRESS 0x77  // I2C address of BMP085
+#define BMP085_ADDRESS 0x77  // Direccion I2C del sensor BMP085
 
 const int motor1Pin = 3;    // H-bridge leg 1 (pin 2, 1A)
 const int motor2Pin = 4;    // H-bridge leg 2 (pin 7, 2A)
 const int enable = 2;
-int riego;		//0-> No se está regando, 1 -> Regando
+int riego;		//0-> No se esta regando, 1 -> Regando
 OneWire ds(12); 	    // Pin protocolo 1-wire
 int command;
 byte sensor_id[8];
@@ -16,6 +18,11 @@ int present = 0;
 byte data[12];
 int HighByte, LowByte, TReading, SignBit, Tc_100, Whole, Fract;
 
+//Reloj
+time_t pctime = 0;
+time_t alarmtime = 0;
+char digito;
+int n_digitos = 0;
 //I2C Pressure Sensor
 const unsigned char OSS = 3;  // Oversampling Setting
 //0 Ultra low power
@@ -92,6 +99,65 @@ void loop(void){
       Serial.print(6, BYTE);//Codigo de inicializacion, ACK
       Serial.print(4,BYTE);//EndOfTransmission (ASCII)
       break;
+    case 0x41: //establecerHora: A 65 0x41
+      //Recogemos los 10 siguientes carácteres ASCII que será la hora en tiempo UNIX mas 
+      delay(40);
+      pctime = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<10;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          //Serial.print(digito);  
+          //Serial.print("\t");
+          if( digito >= '0' && digito <= '9'){   
+            pctime = (10 * pctime) + (digito - '0') ; // convert digits to a number
+            n_digitos ++;
+            //Serial.print(pctime);
+            //Serial.print("\n");    
+          } 
+        }
+      }
+      if(n_digitos == 10){
+        setTime(pctime);   // Sync Arduino clock to the time received on the serial port
+        adjustTime(3600); //Tiempo peninsular +1
+        if(timeStatus() == timeSet){ 
+          //digitalClockDisplay();  
+          Serial.print(1,DEC); //return 1
+        }
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-1,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break; 
+    case  0x42: //establecerAlarmaON: B 66 0x42
+      //Establecemos una alarma en el tiempo indicado: -1 error  AlarmID otro caso
+      delay(40);
+      alarmtime = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<10;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          if( digito >= '0' && digito <= '9'){   
+            alarmtime = (10 * alarmtime) + (digito - '0') ; // convert digits to a number
+            n_digitos ++;
+          } 
+        }
+      }
+      //Le sumamos 1 hora para estar en la franja horaria GMT +1
+      alarmtime += 3600;
+      if(n_digitos == 10 && timeStatus() == timeSet  && alarmtime > now()){ //Condiciones para que se pueda establecer la alarma
+        //timerOnce ejecuta un trigger _n_ segundos despues, eso sera 
+        AlarmID_t a1 = Alarm.timerOnce(alarmtime - now(), alarmaOn);
+        if(a1 == dtINVALID_ALARM_ID)
+                Serial.print(-1,DEC); //return -1
+        Serial.print(a1,DEC); //return 1
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-2,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break; 
     case 0x64: //activarRiego: d 100 0x64
       riego = 1;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
@@ -112,9 +178,9 @@ void loop(void){
       break;
     case 0x66:	//comprobarRiego: f 102 0x66
       if(riego == 1)
-  	Serial.print(1);
+        Serial.print(1);
       else
-	Serial.print(0);
+        Serial.print(0);
       Serial.print(4,BYTE);
       break;	
     case 0x6A: //contarSensores: j 106 0x6A
@@ -228,7 +294,7 @@ void loop(void){
       //Por precaucion      
       delay(1000);
       break;
-    case 0x73: //Obtener estimacion del tiempo del sensor I2C: s 115 0x43
+    case 0x73: //Obtener estimacion del tiempo del sensor I2C: s 115 0x73
       //Tiene que leer antes la presion y la temperatura
       temperature = bmp085GetTemperature(bmp085ReadUT());
       pressure = bmp085GetPressure(bmp085ReadUP());  
@@ -243,7 +309,7 @@ void loop(void){
       //Por precaucion      
       delay(1000);  
       break;
-    case 0x74: //All
+    case 0x74: //Obtener datos de todos los sensores:t 116 0x74
       temperature = bmp085GetTemperature(bmp085ReadUT());
       pressure = bmp085GetPressure(bmp085ReadUP());  
       altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
@@ -278,7 +344,9 @@ void loop(void){
       break;
     }
   }
-  command=0; 
+  command=0;
+  //digitalClockDisplay();
+  Alarm.delay(0);
 }
 
 int contarSensores(void){
@@ -479,6 +547,62 @@ float hh10dReadHumidity(){
   float RH =  (offset-freq)*sens/4096; //Sure, you can use int - depending on what do you need
   return RH;
 }
+void digitalClockDisplay(){
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print(" ");
+  Serial.print(month());
+  Serial.print(" ");
+  Serial.print(year()); 
+  Serial.println(); 
+}
+void printDigits(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
+void alarmaOn(){
+  Serial.print("Activando alarma de encendido");
+  riego = 1;
+  digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
+  digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
+  digitalWrite(motor2Pin, HIGH);  // set leg 2 of the H-bridge high
+  digitalWrite(6, HIGH);  
+  delay(300);
+  digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
+}
+void alarmaOff(){
+  riego = 0;
+  digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
+  digitalWrite(motor1Pin, HIGH);  // set leg 1 of the H-bridge high
+  digitalWrite(motor2Pin, LOW);   // set leg 2 of the H-bridge low
+  digitalWrite(6, LOW);  
+  delay(300);
+  digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
