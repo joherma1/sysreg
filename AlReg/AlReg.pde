@@ -23,6 +23,8 @@ time_t pctime = 0;
 time_t alarmtime = 0;
 char digito;
 int n_digitos = 0;
+int alarma_id = 0; //255 identificador de alarma no valida
+//int alarmas_max = dtNBR_ALARMS; //tNBR_ALARMS 56  definido en TimeAlarms.h: Alarmas maximas
 //I2C Pressure Sensor
 const unsigned char OSS = 3;  // Oversampling Setting
 //0 Ultra low power
@@ -139,7 +141,7 @@ void loop(void){
         if(Serial.available()>0){
           digito = Serial.read();  
           if( digito >= '0' && digito <= '9'){   
-            alarmtime = (10 * alarmtime) + (digito - '0') ; // convert digits to a number
+            alarmtime = (10 * alarmtime) + (digito - '0') ; // convertimos el digito a numero
             n_digitos ++;
           } 
         }
@@ -150,7 +152,7 @@ void loop(void){
         //timerOnce ejecuta un trigger _n_ segundos despues, eso sera 
         AlarmID_t a1 = Alarm.timerOnce(alarmtime - now(), alarmaOn);
         if(a1 == dtINVALID_ALARM_ID)
-                Serial.print(-1,DEC); //return -1
+          Serial.print(-1,DEC); //return -1
         Serial.print(a1,DEC); //return 1
       }
       else{ //No se ha recibido correctamente el tiempo
@@ -158,6 +160,58 @@ void loop(void){
       }
       Serial.print(4,BYTE); //señal EOF
       break; 
+    case  0x43: //establecerAlarmaOff: C 67 0x43
+      //Establecemos una alarma en el tiempo indicado: -1 error  AlarmID otro caso
+      delay(40);
+      alarmtime = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<10;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          if( digito >= '0' && digito <= '9'){   
+            alarmtime = (10 * alarmtime) + (digito - '0') ; // convertimos el digito a numero
+            n_digitos ++;
+          } 
+        }
+      }
+      //Le sumamos 1 hora para estar en la franja horaria GMT +1
+      alarmtime += 3600;
+      if(n_digitos == 10 && timeStatus() == timeSet  && alarmtime > now()){ //Condiciones para que se pueda establecer la alarma
+        //timerOnce ejecuta un trigger _n_ segundos despues, eso sera 
+        AlarmID_t a1 = Alarm.timerOnce(alarmtime - now(), alarmaOff);
+        if(a1 == dtINVALID_ALARM_ID)
+          Serial.print(-1,DEC); //return -1
+        Serial.print(a1,DEC); //return 1
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-2,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break;
+    case  0x46: //eliminarAlarma(xxx): F 70 0x46
+      //1 envia la orden de eliminar la alarma, -1 en caso contrario
+      delay(40);
+      alarma_id = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<3;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          if( digito >= '0' && digito <= '9'){   
+            alarma_id = (10 * alarma_id) + (digito - '0') ; // convertimos el digito a numero
+            n_digitos ++;
+          } 
+        }
+      }
+      if(n_digitos > 0 && n_digitos <= 4  && alarma_id >= 0 && alarma_id < 255){ //Condiciones para que el ID de la alarma sea valido
+        //Debe estar definida la variable USE_SPECIALIST_METHODS para poder utilizar este metodo --> TimeAlarms.h
+        Alarm.free(alarma_id); //Este metodo deshabilita y libera el id para que se pueda utilizar
+        Serial.print(1,DEC); //return 1
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-1,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break;
     case 0x64: //activarRiego: d 100 0x64
       riego = 1;
       digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
@@ -346,7 +400,7 @@ void loop(void){
   }
   command=0;
   //digitalClockDisplay();
-  Alarm.delay(0);
+  Alarm.delay(000);
 }
 
 int contarSensores(void){
@@ -568,7 +622,6 @@ void printDigits(int digits){
   Serial.print(digits);
 }
 void alarmaOn(){
-  Serial.print("Activando alarma de encendido");
   riego = 1;
   digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
   digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
@@ -586,6 +639,7 @@ void alarmaOff(){
   delay(300);
   digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
 }
+
 
 
 
