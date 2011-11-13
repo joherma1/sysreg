@@ -24,6 +24,9 @@ time_t alarmtime = 0;
 char digito;
 int n_digitos = 0;
 int alarma_id = 0; //255 identificador de alarma no valida
+int horas = 0;
+int minutos = 0;
+int segundos = 0;
 //int alarmas_max = dtNBR_ALARMS; //tNBR_ALARMS 56  definido en TimeAlarms.h: Alarmas maximas
 //I2C Pressure Sensor
 const unsigned char OSS = 3;  // Oversampling Setting
@@ -188,6 +191,78 @@ void loop(void){
       }
       Serial.print(4,BYTE); //señal EOF
       break;
+    case  0x44: //establecerAlarmaRepOn: D 68 0x44
+      //D(HHMMSS):Establecemos una alarma todos los dias a la HH,MM,SS: -1 error  AlarmID otro caso
+      delay(40);
+      horas = 0;
+      minutos = 0;
+      segundos = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<6;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          if( digito >= '0' && digito <= '9'){
+            if( cont < 2){ //hora
+              horas = (10 * horas) + (digito - '0') ;
+            }
+            else if(cont < 4) {
+              minutos = (10 * minutos) + (digito - '0') ;
+            }
+            else if(cont < 6) {
+              segundos = (10 * segundos) + (digito - '0') ;
+            }
+            n_digitos ++;
+          } 
+        }
+      }
+      if(n_digitos == 6 && timeStatus() == timeSet && horas < 24 && minutos < 60 && segundos < 60){ //Condiciones para que se pueda establecer la alarma
+        //timerOnce ejecuta un trigger _n_ segundos despues, eso sera 
+        AlarmID_t a1 =  Alarm.alarmRepeat(horas, minutos, segundos, alarmaOn);
+        if(a1 == dtINVALID_ALARM_ID)
+          Serial.print(-1,DEC); //return -1
+        Serial.print(a1,DEC); //return 1
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-2,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break;
+    case  0x45: //establecerAlarmaRepOff: D 68 0x44
+      //D(HHMMSS):Establecemos una alarma todos los dias a la HH,MM,SS: -1 error  AlarmID otro caso
+      delay(40);
+      horas = 0;
+      minutos = 0;
+      segundos = 0;
+      n_digitos = 0;
+      for (int cont=0;cont<6;cont++){
+        if(Serial.available()>0){
+          digito = Serial.read();  
+          if( digito >= '0' && digito <= '9'){
+            if( cont < 2){ //hora
+              horas = (10 * horas) + (digito - '0') ;
+            }
+            else if(cont < 4) {
+              minutos = (10 * minutos) + (digito - '0') ;
+            }
+            else if(cont < 6) {
+              segundos = (10 * segundos) + (digito - '0') ;
+            }
+            n_digitos ++;
+          } 
+        }
+      }
+      if(n_digitos == 6 && timeStatus() == timeSet && horas < 24 && minutos < 60 && segundos < 60){ //Condiciones para que se pueda establecer la alarma
+        //timerOnce ejecuta un trigger _n_ segundos despues, eso sera 
+        AlarmID_t a1 =  Alarm.alarmRepeat(horas, minutos, segundos, alarmaOff);
+        if(a1 == dtINVALID_ALARM_ID)
+          Serial.print(-1,DEC); //return -1
+        Serial.print(a1,DEC); //return 1
+      }
+      else{ //No se ha recibido correctamente el tiempo
+        Serial.print(-2,DEC); //return -1
+      }
+      Serial.print(4,BYTE); //señal EOF
+      break;
     case  0x46: //eliminarAlarma(xxx): F 70 0x46
       //1 envia la orden de eliminar la alarma, -1 en caso contrario
       delay(40);
@@ -202,7 +277,7 @@ void loop(void){
           } 
         }
       }
-      if(n_digitos > 0 && n_digitos <= 4  && alarma_id >= 0 && alarma_id < 255){ //Condiciones para que el ID de la alarma sea valido
+      if(n_digitos > 0  && alarma_id >= 0 && alarma_id < 255){ //Condiciones para que el ID de la alarma sea valido
         //Debe estar definida la variable USE_SPECIALIST_METHODS para poder utilizar este metodo --> TimeAlarms.h
         Alarm.free(alarma_id); //Este metodo deshabilita y libera el id para que se pueda utilizar
         Serial.print(1,DEC); //return 1
@@ -211,6 +286,12 @@ void loop(void){
         Serial.print(-1,DEC); //return -1
       }
       Serial.print(4,BYTE); //señal EOF
+      break;
+    case  0x47: //eliminarAlarmas: G 71 0x47
+      //Elimina todas las alarmas
+      for (int i=0;i<dtNBR_ALARMS;i++){
+        Alarm.free(i);
+      }
       break;
     case 0x64: //activarRiego: d 100 0x64
       riego = 1;
@@ -639,6 +720,10 @@ void alarmaOff(){
   delay(300);
   digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
 }
+
+
+
+
 
 
 
