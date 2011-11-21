@@ -8,6 +8,8 @@ import gnu.io.SerialPortEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.Enumeration;
 
 /**
@@ -367,6 +369,235 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	public boolean establecerHora(Long tiempoUnix) {
+		Long tiempo;
+		if (tiempoUnix == null)
+			tiempo = System.currentTimeMillis() / 1000L;
+		else
+			tiempo = tiempoUnix;
+		try {
+			// Hay que pasarle la información en código ASCII, la placa
+			// arduino lee caracteres de texto
+			// Si queremos que enviarle la cadena A1321805111 tendremos que
+			// escribir los bytes 0x41,49,51,50,49,56,48,53,49,49,49
+			byte[] t = tiempo.toString().getBytes("US-ASCII");
+			// Tendrá de ancho 10, además la placa está programada para leer
+			// 10 caracteres
+			byte[] comando = new byte[t.length + 1];
+			comando[0] = 0x41; // A 65 0x41 establecer hora
+			for (int i = 0; i < t.length; i++)
+				comando[i + 1] = t[i];
+			output.write(comando);
+			String res = leerArduino();
+			int res_l = Integer.parseInt(res);
+			if (res_l == 1)
+				return true;
+			else
+				return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Establece una alarma de encendido de riego en la placa. El tiempo se pasa
+	 * en formato UNIX
+	 * 
+	 * @param tiempoUnix
+	 *            Instante de tiempo en el que se activará el riego
+	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
+	 *         creado correctamente, -2 excepción
+	 */
+	public int establecerAlarmaOn(Long tiempoUnix) {
+		if (tiempoUnix == null)
+			return -1;
+		try {
+			// Hay que pasarle la información en código ASCII, la placa
+			// arduino lee caracteres de texto
+			// Si queremos que enviarle la cadena B1321805121 tendremos que
+			// escribir los bytes 0x42,49,51,50,49,56,48,53,49,50,49
+			byte[] t = tiempoUnix.toString().getBytes("US-ASCII");
+			byte[] comando = new byte[t.length + 1];
+			comando[0] = 0x42; // B 66 0x42 establecerAlarmaOn
+			for (int i = 0; i < t.length; i++)
+				comando[i + 1] = t[i];
+			output.write(comando);
+			String res = leerArduino();
+			int res_l = Integer.parseInt(res);
+			if (res_l != -1)
+				return res_l;
+			else
+				// error
+				return -1;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -2;
+		}
+	}
+
+	/**
+	 * Establece una alarma de apagado de riego en la placa. El tiempo se pasa
+	 * en formato UNIX
+	 * 
+	 * @param tiempoUnix
+	 *            Instante de tiempo en el que se desactivará el riego
+	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
+	 *         creado correctamente, -2 excepción
+	 */
+	public int establecerAlarmaOff(Long tiempoUnix) {
+		if (tiempoUnix == null)
+			return -1;
+		try {
+			// Hay que pasarle la información en código ASCII, la placa
+			// arduino lee caracteres de texto
+			// Queremos que enviarle la cadena C1321805131 tendremos que
+			// escribir los bytes 0x43,49,51,50,49,56,48,53,49,51,49
+			byte[] t = tiempoUnix.toString().getBytes("US-ASCII");
+			byte[] comando = new byte[t.length + 1];
+			comando[0] = 0x43; // C 67 0x43 establecerAlarmaOff
+			for (int i = 0; i < t.length; i++)
+				comando[i + 1] = t[i];
+			output.write(comando);
+			String res = leerArduino();
+			int res_l = Integer.parseInt(res);
+			if (res_l != -1)
+				return res_l;
+			else
+				// error
+				return -1;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -2;
+		}
+	}
+
+	/**
+	 * Establece una alarma de encendido repetido de riego en la placa. La hora
+	 * exacta se pasa por parámetros
+	 * 
+	 * @param horas
+	 *            Hora, en formato 24 horas.
+	 * @param minutos
+	 * @param segundos
+	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
+	 *         creado correctamente, -2 excepción
+	 */
+	public int establecerAlarmaRepOn(int horas, int minutos, int segundos) {
+		try {
+			// Hay que pasarle la información en código ASCII
+			// Queremos enviarle una cadena del estilo D130500
+			// 0x44,49,51,48,56,8,48
+			byte[] hh = String.format("%02d", horas).getBytes("US-ASCII");
+			byte[] mm = String.format("%02d", minutos).getBytes("US-ASCII");
+			byte[] ss = String.format("%02d", segundos).getBytes("US-ASCII");
+			byte[] comando = { 0x44, hh[0], hh[1], mm[0], mm[1], ss[0], ss[1] };
+			output.write(comando);
+			String res = leerArduino();
+			int res_l = Integer.parseInt(res);
+			if (res_l != -1)
+				return res_l;
+			else
+				// error
+				return -1;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -2;
+		}
+	}
+
+	/**
+	 * Establece una alarma de apagado repetido de riego en la placa. La hora
+	 * exacta se pasa por parámetros
+	 * 
+	 * @param horas
+	 *            Hora, en formato 24 horas.
+	 * @param minutos
+	 * @param segundos
+	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
+	 *         creado correctamente, -2 excepción
+	 */
+	public int establecerAlarmaRepOff(int horas, int minutos, int segundos) {
+		try {
+			// Hay que pasarle la información en código ASCII
+			// Queremos enviarle una cadena del estilo E130500
+			// 0x45,49,51,48,56,8,48
+			byte[] hh = String.format("%02d", horas).getBytes("US-ASCII");
+			byte[] mm = String.format("%02d", minutos).getBytes("US-ASCII");
+			byte[] ss = String.format("%02d", segundos).getBytes("US-ASCII");
+			byte[] comando = { 0x45, hh[0], hh[1], mm[0], mm[1], ss[0], ss[1] };
+			output.write(comando);
+			String res = leerArduino();
+			int res_l = Integer.parseInt(res);
+			if (res_l != -1)
+				return res_l;
+			else
+				// error
+				return -1;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -2;
+		}
+	}
+
+	/**
+	 * Elimina la alarma con el identificador indicado. Actualmente no se usa.
+	 * Simplemente libera el disparador de la alarma indicada, por lo que no
+	 * comprueba si la alarma existe o no
+	 * 
+	 * @param alarmaId
+	 *            Identificador de la alarma 0 <= id < 255
+	 * @return true si se ha enviado correctamente la señal de borrado, false
+	 *         número enviado no válido
+	 */
+	public boolean eliminarAlarma(int alarmaId) {
+		try {
+			// Hay que pasarle la información en código ASCII
+			// Queremos enviarle una cadena del estilo Fx ó Fxx ó Fxxx
+			// 0x46,49
+			if (alarmaId < 255) {
+				byte[] id = Integer.toString(alarmaId).getBytes("US-ASCII");
+				byte[] comando = new byte[id.length + 1];
+				comando[0] = 0x46;
+				for (int i = 0; i < id.length; i++)
+					comando[i + 1] = id[i];
+				output.write(comando);
+				String res = leerArduino();
+				int res_l = Integer.parseInt(res);
+				if (res_l == 1)
+					return true;
+			} // error
+			return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Elimina todas las alarmas. El número máximo de alarmas viene indicado en
+	 * la librería TimeAlarms.h de Arduino, como dtNBR_ALARMS
+	 * 
+	 * @return true si se ha enviado correctamente la orden de eliminar, false
+	 *         en otro caso
+	 */
+	public boolean eliminarAlarmas() {
+		try {
+			output.write(0x47);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public class Monitor {
 		private byte[] buffer;
 		private boolean vacio = true;
@@ -382,9 +613,6 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			vacio = true;
 			byte[] res = buffer;
 			buffer = null;
-			;
-			// for(int i=0;i<res.length;i++)
-			// System.out.println("|"+res[i]+"|");
 			return res;
 		}
 
@@ -398,37 +626,44 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	public static void main(String[] args) {
 		Duemilanove d = new Duemilanove();
 		d.initialize();
+		d.establecerHora(1321873956L); // 12:12:37D
+		System.out.println(d.establecerAlarmaRepOn(12, 13, 00));
+		System.out.println(d.establecerAlarmaRepOff(12, 13, 10));
+		System.out.println(d.eliminarAlarmas());
+		// System.out.println(d.establecerAlarmaOn(1321805121L));
+		// System.out.println(d.establecerAlarmaOff(1321805131L));
+		// System.out.println(d.establecerHora(null));
 		// System.out.println("1-Contar sensores");
 		// System.out.println("2-Listar sensores");
 		// System.out.println("3-Obtener temperatura del 1r sensor");
 		// System.out.println("4-Obtener temperatura del 2o sensor");
-		int opcion;
-		for (int ii = 0; ii < 1; ii++) {
-			// int n=d.contarSensoresT();
-			// System.out.println("Numero de sensores "+ n);
-			// byte[][] l=d.listarSensoresT();
-			// for(int i=0;i<d.n_sensores_t;i++){
-			// String aux= new String(l[i]);
-			// System.out.println(aux);
-			// }
-			// System.out.println("Temperatura Sensor 1");
-			// d.obtenerTemperatura(l[0]);
-			// System.out.println("Ya listados");
-			// d.obtenerTemperatura(l[1]);
-		}
-		byte[] sensor = new byte[8];
-		sensor[0] = 40;
-		sensor[1] = -11;
-		sensor[2] = -23;
-		sensor[3] = -81;
-		sensor[4] = 2;
-		sensor[5] = 0;
-		sensor[6] = 0;
-		sensor[7] = -46;
-		d.seleccionarSensorT(sensor);
-		int n = d.contarSensoresT();
-		d.close();
-		System.exit(0);
+		// int opcion;
+		// for (int ii = 0; ii < 1; ii++) {
+		// // int n=d.contarSensoresT();
+		// System.out.println("Numero de sensores "+ n);
+		// byte[][] l=d.listarSensoresT();
+		// for(int i=0;i<d.n_sensores_t;i++){
+		// String aux= new String(l[i]);
+		// System.out.println(aux);
+		// }
+		// System.out.println("Temperatura Sensor 1");
+		// d.obtenerTemperatura(l[0]);
+		// System.out.println("Ya listados");
+		// d.obtenerTemperatura(l[1]);
+		// }
+		// byte[] sensor = new byte[8];
+		// sensor[0] = 40;
+		// sensor[1] = -11;
+		// sensor[2] = -23;
+		// sensor[3] = -81;
+		// sensor[4] = 2;
+		// sensor[5] = 0;
+		// sensor[6] = 0;
+		// sensor[7] = -46;
+		// d.seleccionarSensorT(sensor);
+		// int n = d.contarSensoresT();
+		// d.close();
+		// System.exit(0);
 
 		// try {
 		// opcion = System.in.read();
