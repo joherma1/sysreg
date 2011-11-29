@@ -8,9 +8,11 @@ public class Fake implements Arduino{
 	//-----------------
 	//Variables Arduino
 	//-----------------
-	int n_sensores_t=0;
-	public byte sensores_t[][]=null;
-	boolean regando = false;
+	int n_sensores_t;
+	public byte sensores_t[][];
+	boolean regando;
+	int n_alarmas;
+	long[] alarmas = new long[56];//Numero máximo de alarmas en la placa
 
 	public boolean startReg(){
 		regando = true;
@@ -80,5 +82,39 @@ public class Fake implements Arduino{
 		return 0;
 	}
 	public void close(){
+	}
+
+	public boolean establecerHora(Long tiempoUnix) {
+		return true;
+	}
+
+	public int establecerAlarmaOn(Long tiempoUnix) {
+		this.alarmas[n_alarmas] = tiempoUnix;
+		return n_alarmas++;
+	}
+
+	public int establecerAlarmaOff(Long tiempoUnix) {
+		this.alarmas[n_alarmas] = tiempoUnix;
+		return n_alarmas++;
+	}
+
+	public int establecerAlarmaRepOn(int horas, int minutos, int segundos) {
+		this.alarmas[n_alarmas] = horas*24 + minutos*60 + segundos;
+		return n_alarmas++;
+	}
+
+	public int establecerAlarmaRepOff(int horas, int minutos, int segundos) {
+		this.alarmas[n_alarmas] = horas*24 + minutos*60 + segundos;
+		return n_alarmas++;
+	}
+
+	public boolean eliminarAlarma(int alarmaId) {
+		n_alarmas++;
+		return true;
+	}
+
+	public boolean eliminarAlarmas() {
+		n_alarmas = 0;
+		return false;
 	}
 }

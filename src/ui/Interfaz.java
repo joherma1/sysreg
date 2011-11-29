@@ -49,7 +49,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import logic.Evento;
+import logic.Evento3;
 import logic.Negocio;
+import logic.Negocio3;
 
 public class Interfaz {
 
@@ -58,8 +60,10 @@ public class Interfaz {
 	private JButton b_activarRiego = null;
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
-	private Negocio logica = null; // @jve:decl-index=0:
-	private List<Evento> eventos = null;
+	//private Negocio logica = null; // @jve:decl-index=0:
+	private Negocio3 logica = null;
+	//private List<Evento> eventos = null;
+	private List<Evento3> eventos = null;
 	// private RelojCalendar r_cal = null;
 	private RelojRiego r_riego = null;
 	// Panel Tª
@@ -123,6 +127,10 @@ public class Interfaz {
 	private JMenu m_valvula;
 	private JMenuItem mi_forzarInicio;
 	private JMenuItem mi_forzarParar;
+	private JMenu mnPlaca;
+	private JMenuItem mntmSubirAlarmas;
+	private JMenuItem mntmEliminarAlarmas;
+	private JMenuItem mntmSincronizarReloj;
 
 	/**
 	 * This method initializes f_interfaz
@@ -273,7 +281,7 @@ public class Interfaz {
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.anchor = GridBagConstraints.EAST;
 			gridBagConstraints6.gridx = 3;
-			gridBagConstraints6.insets = new Insets(0, 5, 0, 0);
+			gridBagConstraints6.insets = new Insets(0, 5, 0, 10);
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridy = 5;
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
@@ -567,6 +575,7 @@ public class Interfaz {
 			b_recargar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					actualizarCalendario();
+					pintarEventos();
 				}
 			});
 		}
@@ -585,6 +594,7 @@ public class Interfaz {
 			mb_menu.add(getM_valvula());
 			mb_menu.add(getM_sensores());
 			mb_menu.add(getM_calendario());
+			mb_menu.add(getMnPlaca());
 			mb_menu.add(getM_ayuda());
 		}
 		return mb_menu;
@@ -1021,7 +1031,7 @@ public class Interfaz {
 	void inicializar(boolean debug) {
 
 		System.out.println("----Inicializar");
-		logica = new Negocio(debug);
+		logica = new Negocio3(debug);
 		int ini = logica.inicializar();
 		if (ini == -1) {
 			JOptionPane.showMessageDialog(this.f_iniciando,
@@ -1157,8 +1167,8 @@ public class Interfaz {
 			// Append to document
 			if (eventos != null) {
 				for (int i = 0; i < eventos.size(); i++) {
-					Evento e = eventos.get(i);
-					Evento.State es = e.getEstado();
+					Evento3 e = eventos.get(i);
+					Evento3.State es = e.getEstado();
 					String e_des = e.toString() + "\n";
 					int longitud = doc.getLength();
 					switch (es) {
@@ -1269,37 +1279,6 @@ public class Interfaz {
 		public void done() {
 			f_iniciando.setVisible(false);
 			f_interfaz.setVisible(true);
-		}
-	}
-
-	private class RelojCalendar extends Thread {
-		private boolean activo = true;
-
-		public RelojCalendar() {
-			this.setName("Cuenta5min");
-		}
-
-		public void detener() {
-			this.activo = false;
-			if (!this.isInterrupted())
-				this.interrupt();
-		}
-
-		public void run() {
-			// TODO Auto-generated method stub
-			try {
-				System.out.println("Inicio hilo actualizar calendario");
-				while (activo) {
-					System.out.println("Iteración hilo actualizar calendario");
-					actualizarCalendario();
-					Thread.sleep(300000);
-				}
-				System.out.println("Fin hilo actualizar calendario");
-			} catch (InterruptedException e) {
-				System.out
-						.println("Sincronización desactivada (hilo calendario)");
-				// e.printStackTrace();
-			}
 		}
 	}
 
@@ -1625,5 +1604,38 @@ public class Interfaz {
 			});
 		}
 		return mi_forzarParar;
+	}
+	private JMenu getMnPlaca() {
+		if (mnPlaca == null) {
+			mnPlaca = new JMenu("Placa");
+			mnPlaca.add(getMntmSubirAlarmas());
+			mnPlaca.add(getMntmEliminarAlarmas());
+			mnPlaca.add(getMntmSincronizarReloj());
+		}
+		return mnPlaca;
+	}
+	private JMenuItem getMntmSubirAlarmas() {
+		if (mntmSubirAlarmas == null) {
+			mntmSubirAlarmas = new JMenuItem("Subir alarmas");
+			mntmSubirAlarmas.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Carga carga = new Carga(logica);
+					carga.setVisible(true);
+				}
+			});
+		}
+		return mntmSubirAlarmas;
+	}
+	private JMenuItem getMntmEliminarAlarmas() {
+		if (mntmEliminarAlarmas == null) {
+			mntmEliminarAlarmas = new JMenuItem("Eliminar alarmas");
+		}
+		return mntmEliminarAlarmas;
+	}
+	private JMenuItem getMntmSincronizarReloj() {
+		if (mntmSincronizarReloj == null) {
+			mntmSincronizarReloj = new JMenuItem("Sincronizar reloj");
+		}
+		return mntmSincronizarReloj;
 	}
 }

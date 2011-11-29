@@ -1,7 +1,11 @@
 package arduino;
 
+import java.io.IOException;
+
 /**
- * Interfaz que debe cumplir todo microntrolador que quiera comunicarse con RegAdmin
+ * Interfaz que debe cumplir todo microntrolador que quiera comunicarse con
+ * RegAdmin
+ * 
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  * 
  */
@@ -29,4 +33,18 @@ public interface Arduino {
 	public Float obtenerAlturaBMP085();
 
 	public Float obtenerHumedadHH10D();
+
+	public boolean establecerHora(Long tiempoUnix);
+
+	public int establecerAlarmaOn(Long tiempoUnix);
+
+	public int establecerAlarmaOff(Long tiempoUnix);
+
+	public int establecerAlarmaRepOn(int horas, int minutos, int segundos);
+
+	public int establecerAlarmaRepOff(int horas, int minutos, int segundos);
+
+	public boolean eliminarAlarma(int alarmaId);
+
+	public boolean eliminarAlarmas();
 }

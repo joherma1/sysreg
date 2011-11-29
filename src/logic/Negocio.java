@@ -285,27 +285,21 @@ public class Negocio {
 			myQuery.setMaximumStartTime(obtenerManyana());
 			// myQuery.setMinimumStartTime(DateTime.parseDateTime("2011-10-24T00:00:00"));
 			// myQuery.setMaximumStartTime(DateTime.parseDateTime("2011-10-30T23:59:59"));
-			CalendarEventFeed resultFeed = myService.query(myQuery,
-					CalendarEventFeed.class);
+			CalendarEventFeed resultFeed = myService.query(myQuery,CalendarEventFeed.class);
 			sortedEvents = new ArrayList<Evento>();
 			for (int i = 0; i < resultFeed.getEntries().size(); i++) {
-				CalendarEventEntry entry = (CalendarEventEntry) resultFeed
-						.getEntries().get(i);
+				CalendarEventEntry entry = (CalendarEventEntry) resultFeed.getEntries().get(i);
 				// Solo añadimos los eventos que están confirmados (Google
 				// Calendar guarda otro también eventos cancelados)
 				if (entry.getStatus().equals(EventStatus.CONFIRMED)) {
 					for (int j = 0; j < entry.getTimes().size(); j++) {
 						Evento e = new Evento(entry.getTitle().getPlainText(),
-								entry.getPlainTextContent(), entry.getTimes()
-										.get(j).getStartTime(), entry
-										.getTimes().get(j).getEndTime(),
-								entry.getIcalUID());
+								entry.getPlainTextContent(), entry.getTimes().get(j).getStartTime(), 
+								entry.getTimes().get(j).getEndTime(),entry.getIcalUID());
 						String lugar = "";
 						if (entry.getLocations().size() > 0
-								&& entry.getLocations().get(0).getValueString()
-										.length() > 0)
-							lugar = entry.getLocations().get(0)
-									.getValueString();
+								&& entry.getLocations().get(0).getValueString().length() > 0)
+							lugar = entry.getLocations().get(0).getValueString();
 						e.setLugar(lugar);
 						if (!sortedEvents.contains(e)) {
 							sortedEvents.add(e);
