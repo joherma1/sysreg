@@ -48,9 +48,9 @@ public class AlarmaRepetitiva extends Alarma {
 	public String toString(){
 		Calendar fecha = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
 		fecha.setTimeInMillis(this.getFecha().getValue());
-		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss"); //HH 24 horas
 //		return "Alarma repetida " + this.getModo() + ":\t"+ formatter.format(fecha.getTime());
-		return formatter.format(fecha.getTime());
+		return this.getModo() + ": " + formatter.format(fecha.getTime());
 	}
 
 }

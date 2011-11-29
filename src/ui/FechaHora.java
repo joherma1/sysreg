@@ -3,7 +3,10 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -17,13 +20,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 
-public class Hora extends JDialog {
+public class FechaHora extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JFormattedTextField textField;
+	private JFormattedTextField txtHora;
 	private Date fecha;
 	private boolean modo;
 	private boolean ok = false;
+	private JFormattedTextField txtFecha;
 
 	public boolean isOk() {
 		return ok;
@@ -42,7 +46,7 @@ public class Hora extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Hora dialog = new Hora(new Date());
+			FechaHora dialog = new FechaHora(new Date());
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -53,27 +57,38 @@ public class Hora extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Hora(Date hora) {
+	public FechaHora(Date hora) {
 		this.fecha = hora;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setBounds(100, 100, 216, 134);
+		setBounds(100, 100, 222, 162);
 		getContentPane().setLayout(new BorderLayout());
 		FlowLayout fl_contentPanel = new FlowLayout();
+		fl_contentPanel.setAlignment(FlowLayout.RIGHT);
 		fl_contentPanel.setHgap(20);
 		contentPanel.setLayout(fl_contentPanel);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
-			JLabel lblHora = new JLabel("Hora");
+			JLabel lblFecha = new JLabel("Fecha");
+			contentPanel.add(lblFecha);
+		}
+		{
+			txtFecha = new JFormattedTextField(new SimpleDateFormat("dd/MM/yy"));
+			txtFecha.setValue(fecha);
+			contentPanel.add(txtFecha);
+			txtFecha.setColumns(8);
+		}
+		{
+			JLabel lblHora = new JLabel("Hora ");
 			contentPanel.add(lblHora);
 		}
 		{
-			textField = new JFormattedTextField(
+			txtHora = new JFormattedTextField(
 					new SimpleDateFormat("HH:mm:ss"));
-			textField.setValue(fecha);
-			contentPanel.add(textField);
-			textField.setColumns(8);
+			txtHora.setValue(fecha);
+			contentPanel.add(txtHora);
+			txtHora.setColumns(8);
 		}
 
 		JLabel lblModo = new JLabel("Modo");
@@ -99,7 +114,15 @@ public class Hora extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						fecha = (Date) textField.getValue();
+						Calendar c_hora = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+						c_hora.setTime((Date) txtHora.getValue());
+						Calendar c_fecha = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+						c_fecha.setTime((Date) txtFecha.getValue());
+						//en c_fecha guardamos la hora introducida
+						c_fecha.set(Calendar.HOUR_OF_DAY, c_hora.get(Calendar.HOUR_OF_DAY));
+						c_fecha.set(Calendar.MINUTE, c_hora.get(Calendar.MINUTE));
+						c_fecha.set(Calendar.SECOND, c_hora.get(Calendar.SECOND));
+						fecha = c_fecha.getTime(); 
 						modo = rdbtnOn.isSelected();
 						ok = true;
 						dispose();

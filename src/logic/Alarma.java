@@ -67,7 +67,7 @@ public class Alarma {
 //		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss Z");
 //		return "Alarma " + this.modo + ":\t\t"+ formatter.format(fecha.getTime());
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
-		return formatter.format(fecha.getTime());
+		return this.modo + ": " + formatter.format(fecha.getTime());
 	}
 
 }
