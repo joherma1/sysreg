@@ -5,10 +5,9 @@
 	<!ELEMENT Temperatura (id, alias)>
 	<!ELEMENT id (#PCDATA)>
 	<!ELEMENT alias (#PCDATA)>
-	<!ELEMENT Calendario (usuario,contraseña)>
+	<!ELEMENT Calendario (usuario)>
 	<!ATTLIST Calendario tipo CDATA #REQUIRED>
 	<!ELEMENT usuario (#PCDATA)>
-	<!ELEMENT contraseña (#PCDATA)>
 ]>
 <RegAdmin>
 	<Sensores>
@@ -23,6 +22,5 @@
 	</Sensores>
 	<Calendario tipo="gmail">
 		<usuario>sysreg1</usuario>
-		<contraseña>agricultura.1</contraseña>
 	</Calendario>
 </RegAdmin>

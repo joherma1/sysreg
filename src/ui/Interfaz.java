@@ -1039,6 +1039,7 @@ public class Interfaz {
 					JOptionPane.ERROR_MESSAGE);
 			f_iniciando.dispose();
 			f_interfaz.dispose();
+			logica.cerrar();
 			System.exit(-1);
 		} else if (ini == -2) {
 			JOptionPane.showMessageDialog(this.f_iniciando,
@@ -1046,8 +1047,25 @@ public class Interfaz {
 					JOptionPane.ERROR_MESSAGE);
 			f_iniciando.dispose();
 			f_interfaz.dispose();
+			logica.cerrar();
 			System.exit(-1);
-		} else {
+		} else if (ini == -3){
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"Error al cargar la librería RXTX", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			f_iniciando.dispose();
+			f_interfaz.dispose();
+			logica.cerrar();
+			System.exit(-1);
+		}else if (ini == -4){
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"Error al conectar con Google Calendar", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			f_iniciando.dispose();
+			f_interfaz.dispose();
+			logica.cerrar();
+			System.exit(-1);
+		}  else {
 			TareaInicializar tarea = new TareaInicializar();
 			tarea.execute();
 		}
@@ -1258,16 +1276,20 @@ public class Interfaz {
 			
 			//Actualizamos el calendario y activamos el hilo
 			actualizarCalendario();
-			eventos = logica.comprobarRiego();
+			//--Código si queremos que se inicie sincronizando
+			//--eventos = logica.comprobarRiego();
 			pintarEventos();
+			//Desactivamos la sincronización
+			cb_Desactivar.setSelected(true);
+			tp_horario.setEnabled(false);
 			// Actualizar la hora
 			DecimalFormat entero = new DecimalFormat("00");
 			Calendar now = Calendar.getInstance();
 			l_hora.setText("Hora: "
 					+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":"
 					+ entero.format(now.get(Calendar.MINUTE)));
-			r_riego = new RelojRiego();
-			r_riego.start();
+			//--r_riego = new RelojRiego();
+			//--r_riego.start();
 			// actualizarCalendario(); //Ya lo hacemos al iniciar el hilo
 			return null;
 		}

@@ -49,28 +49,30 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 *         abrir el puerto
 	 */
 	public int initialize() {
-		// Inicialización librería RXTX
-		CommPortIdentifier portId = null;
-		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-
-		// iterate through, looking for the port
-		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
-					.nextElement();
-			for (String portName : PORT_NAMES) {
-				if (currPortId.getName().equals(portName)) {
-					portId = currPortId;
-					break;
-				}
-			}
-		}
-
-		if (portId == null) {
-			System.out.println("Could not find COM port.");
-			return -1;
-		}
 
 		try {
+			// Inicialización librería RXTX
+			CommPortIdentifier portId = null;
+			Enumeration portEnum;
+			portEnum = CommPortIdentifier.getPortIdentifiers();
+
+			// iterate through, looking for the port
+			while (portEnum.hasMoreElements()) {
+				CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
+						.nextElement();
+				for (String portName : PORT_NAMES) {
+					if (currPortId.getName().equals(portName)) {
+						portId = currPortId;
+						break;
+					}
+				}
+			}
+
+			if (portId == null) {
+				System.out.println("Could not find COM port.");
+				return -1;
+			}
+
 			// open serial port, and use class name for the appName.
 			serialPort = (SerialPort) portId.open(this.getClass().getName(),
 					TIME_OUT);
@@ -95,10 +97,16 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 				return 0;
 			else
 				return -2;
+
+		} catch (java.lang.UnsatisfiedLinkError e) {
+			System.err.println(e.toString());
+			System.err.println(e.getMessage());
+			return -3;
 		} catch (Exception e) {
 			System.err.println(e.toString());
 			return -2;
 		}
+
 	}
 
 	/**

@@ -66,17 +66,25 @@ public class Negocio3 {
 	 * Inicializa la placa Arduino y carga la configuración del XML
 	 * 
 	 * @return 0 -> OK; -1 -> No se ha encontrado el puerto; -2 -> Error al
-	 *         abrir el puerto
+	 *         abrir el puerto; -3 -> Error al cargar la libreria rxtx;
+	 *          -4 -> Error al abrir el calendario
 	 */
 	public int inicializar() {
 		int value_due = ino.initialize();
-		// Comprobamos el estado actual del riego
-		regando = ino.comprobarReg();
-		cargarConfiguracion();
-		if (abrirCalendario())
+		boolean value_calendar = false;
+		if (value_due == 0) {
+			// Comprobamos el estado actual del riego
+			regando = ino.comprobarReg();
+			cargarConfiguracion();
+			value_calendar = abrirCalendario();
+		}
+		else{ //Error al conectar con la placa
 			return value_due;
-		else
-			return -1;
+		}
+		if(value_calendar)//Se ha conectado bien y cargado el calendario
+			return 0;
+		else  //Error con el calendario
+			return -4;
 	}
 
 	/**
