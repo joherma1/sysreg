@@ -21,7 +21,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	// Variables RXTX
 	SerialPort serialPort;
 	// Puertos que normalmente se utilizarán
-	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk","/dev/tty.usbmodem1a21", // Mac
+	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk","/dev/tty.usbmodem1a21", "/dev/tty.usbmodemfd121", // Mac
 			"/dev/tty.usbmodem1d11", "/dev/ttyUSB0", // Linux
 			"COM11", // Windows
 	};

@@ -274,10 +274,9 @@ public class Negocio3 {
 	public Float obtenerHumedadHH10D() {
 		return ino.obtenerHumedadHH10D();
 	}
-	
+
 	/**
-	 * Obtiene la humedad del sensor resistivo de humedad del suelo
-	 * placa.
+	 * Obtiene la humedad del sensor resistivo de humedad del suelo placa.
 	 * 
 	 * @return La humedad del suelo
 	 */
@@ -300,7 +299,6 @@ public class Negocio3 {
 	public List<Evento3> cargarCalendario() {
 		try {
 			// Autenticación
-			// long benchIni= System.currentTimeMillis();
 			if (googleCalendar == null) {
 				// Si no se ha conectado todavía con Google Calendar lo
 				// intentamos una vez
@@ -312,242 +310,39 @@ public class Negocio3 {
 			com.google.api.services.calendar.Calendar.Events.List consulta = googleCalendar
 					.events().list("primary");
 
-			// Obtenemos el inicio del día de hoy y el inicio de 2 días mas para
-			// así calcular los eventos incluidos entre todo el día de hoy y de
-			// mañana (diferencia = 2)
-			// Inicio: xx/yy/zzzz 00:00:00
-			// Fin: xx+2/yy/zzzz 00:00:00
-			DateTime dateInicio = obtenerHoy();
-			DateTime dateFin = obtenerPasadoManyana();// LO HEMOS HECHO HOY PARA
-														// QUE NO HAYA PROBLEMAS
-														// CON LOS REPETIDOS
+			DateTime dateInicio = obtenerHoy(); 
+			DateTime dateFin = obtenerPasadoManyana();
 			// dateInicio = DateTime.parseRfc3339("2011-11-23T00:00:00Z");
 			// dateFin = DateTime.parseRfc3339("2011-11-23T23:59:59Z");
 			String inicio = dateInicio.toString();
 			String fin = dateFin.toString();
 			consulta.setTimeMin(inicio);
 			consulta.setTimeMax(fin);
-
-			// Utilizamos la variable diferencia para guardar la amplitud de los
-			// días que se van a leer
-			// esto servirá ara insertar tantos eventos repetidos por día
-			// incluido
-			long diferencia = dateFin.getValue() - dateInicio.getValue();
-			diferencia = diferencia / (24 * 60 * 60 * 1000);
-
-			Calendar inicioCal = new GregorianCalendar();
-			inicioCal.setTimeInMillis(dateInicio.getValue());
-			Calendar finCal = new GregorianCalendar();
-			finCal.setTimeInMillis(dateFin.getValue());
+			// Para que nos retorne los eventos repetidos como eventos simples
+			consulta.setSingleEvents(true);
 
 			Events events = consulta.execute();
 			sortedEvents = new ArrayList<Evento3>();
-			// Método eficiente: Insertamos todos los eventos (con repeticiones)
-			// y borramos los cancelados
-			// 862ms
 			while (true) {
-				for (Event event : events.getItems()) {
+				for (Event event : events.getItems())
 					if (event.getStatus().equals("confirmed")) {
-						if (event.getRecurrence() == null) { // Eventos simples
-							Evento3 e = new Evento3(event.getSummary(),
-									event.getDescription(), event.getStart()
-											.getDateTime(), event.getEnd()
-											.getDateTime(), event.getId());
-							e.setLugar(event.getLocation());
-							sortedEvents.add(e);
-						} else {
-							// Si es un evento repetido procedemos a insertar
-							// una instancia por día
-							// Segun el tipo de repetición
-							String recurrence = event.getRecurrence().get(0);//
-							String[] frecuencia = recurrence.substring(
-									recurrence.indexOf("FREQ=") + 5).split(";");
-							String tipo = frecuencia[0];
-							// Si se repite diariamente
-							// *****************-------------------------
-							// REPASAR - POR AHORA SOLO TRATAMOS LOS QUE SE
-							// REPITEN TODOS LOS DÍAS SIN PERIODICIDAD
-							// if (tipo.compareTo("DAILY") == 0) {
-							// Ponemos el calendario en la fecha indicada
-							Calendar inicioInstancia = new GregorianCalendar();
-							inicioInstancia.setTimeInMillis(event.getStart()
-									.getDateTime().getValue());
-							// y luego ajustamos el día
-							inicioInstancia.set(inicioCal.get(Calendar.YEAR),
-									inicioCal.get(Calendar.MONTH),
-									inicioCal.get(Calendar.DATE));
-							// Igual para la fecha de fin
-							Calendar finInstancia = new GregorianCalendar();
-							finInstancia.setTimeInMillis(event.getEnd()
-									.getDateTime().getValue());
-							finInstancia.set(inicioCal.get(Calendar.YEAR),
-									inicioCal.get(Calendar.MONTH),
-									inicioCal.get(Calendar.DATE));
-							// Ya tenemos la fecha de inicio y de fin
-							// ajustadas
-							// al primer día
-							for (int i = 0; i < diferencia; i++) {
-								// Añadimos el día
-								inicioInstancia.add(Calendar.DAY_OF_MONTH, i);
-								finInstancia.add(Calendar.DAY_OF_MONTH, i);
-								Evento3 e = new Evento3(event.getSummary(),
-										event.getDescription(), new DateTime(
-												inicioInstancia.getTime()),
-										new DateTime(finInstancia.getTime()),
-										event.getId());
-								e.setLugar(event.getLocation());
-								sortedEvents.add(e);
-							}
-							// } // Si no se repite siempre habra que tratar
-							// cada caso
-							// else if (tipo.compareTo("WEEKLY") == 0) {
-							// String[] periodicidad =
-							// frecuencia[1].substring(frecuencia[1].indexOf("=")+1).split(",");
-							// for (int i = 0; i < periodicidad.length; i++){
-							//
-							// }
-							// } else if (tipo.compareTo("MONTHLY") == 0 ||
-							// tipo.compareTo("YEARLY") == 0) {
-							// //Si es mensualmente o anualmente solo tendremos
-							// que insertar uno el día que toque
-							//
-							// }
-
-						}
-					}// Y quitamos las instancias repetidas
-					if (event.getStatus().equals("cancelled")) {
-						// Tendrán el mismo hash code si: son iguales el
-						// idCal y
-						// la fecha de inicio (con precisión de
-						// segundos)Tenemos
-						// que parsear el id del evento padre y la fecha de
-						// inicio, codificada
-						String[] eventoCancelado = event.getId().split("_");
-						eventoCancelado[1] = eventoCancelado[1].substring(0, 4)
-								+ "-" + eventoCancelado[1].substring(4, 6)
-								+ "-" + eventoCancelado[1].substring(6, 11)
-								+ ":" + eventoCancelado[1].substring(11, 13)
-								+ ":" + eventoCancelado[1].substring(13);
-						DateTime fechaCancelada = DateTime
-								.parseRfc3339(eventoCancelado[1]);
-						// Creamos un evento incompleto
-						Evento3 e1 = new Evento3(null, null, fechaCancelada,
-								null, eventoCancelado[0]);
-						// System.out.println("Evento cancelado= "+eventoCancelado[0]+eventoCancelado[1]);
-						sortedEvents.remove(e1);
+						Evento3 e = new Evento3(event.getSummary(),
+								event.getDescription(), event.getStart()
+										.getDateTime(), event.getEnd()
+										.getDateTime(), event.getId());
+						e.setLugar(event.getLocation());
+						sortedEvents.add(e);
 					}
-				}
 				// Por cada página entran por defecto 100 eventos, si hay
-				// mas en
-				// la consulta comprobar las siguientes páginas
+				// mas en la consulta comprobar las siguientes páginas
 				String pageToken = events.getNextPageToken();
 				if (pageToken != null && !pageToken.isEmpty()) {
 					events = googleCalendar.events().list("primary")
 							.setPageToken(pageToken).execute();
-					// System.out.println("Nueva página");
 				} else {
 					break;
 				}
 			}
-
-			// Método ineficiente: Recorremos todas las instancias de los
-			// repetidos y si están en la fecha las insertamos
-			// 20304ms
-			// while (true) {
-			// for (Event event : events.getItems()) {
-			// if (event.getStatus().equals("confirmed")) {
-			// if (event.getRecurrence() == null) { // Eventos simples
-			// Evento3 e = new Evento3(event.getSummary(),
-			// event.getDescription(), event.getStart()
-			// .getDateTime(), event.getEnd()
-			// .getDateTime(), event.getId());
-			// e.setLugar(event.getLocation());
-			// sortedEvents.add(e);
-			// } else {// Si es un evento repetido procedemos a
-			// // insertar las repeticiones
-			//
-			// Instances consulta2 = googleCalendar.events()
-			// .instances("primary", event.getId());
-			// // NO CONSEGUIMOS QUE NOS DEVUELVA SOLO LAS
-			// // INSTANCIAS EN EL PERIODO INDICADO
-			// consulta2.put("timeMax", fin);
-			// consulta2.put("timeMin", inicio);
-			// Events eventsRep = consulta2.execute();
-			// // Como no funciona la query para eventos repetidos
-			// // tendremos que recorrer excluyendo
-			// // MUY INEFICIENTE
-			// while (true) {
-			// for (Event eventRep : eventsRep.getItems()) {
-			// // Si estamos en un evento de día
-			// // posterior ya no hace falta seguir
-			// // buscando
-			// if (eventRep.getStart().getDateTime()
-			// .getValue() > dateFin.getValue()
-			// || eventRep.getEnd().getDateTime()
-			// .getValue() > dateFin
-			// .getValue())
-			// break;
-			// if (eventRep.getStart().getDateTime()
-			// .getValue() >= dateInicio
-			// .getValue()) {
-			// Evento3 e = new Evento3(
-			// eventRep.getSummary(),
-			// eventRep.getDescription(),
-			// eventRep.getStart()
-			// .getDateTime(),
-			// eventRep.getEnd().getDateTime(),
-			// eventRep.getId());
-			// e.setLugar(eventRep.getLocation());
-			// sortedEvents.add(e);
-			// }
-			// }
-			// // No entra más de una vez por que solo recibe
-			// // cien eventos
-			// // LIMITE DE EVENTOS 100, si es un evento
-			// // repetido de hace mucho tiempo tendra que
-			// // buscar MUCHO
-			// // MÁXIMON GOOGLE CALENDAR REPETIR 2 AÑOS, 725
-			// // repeticiones
-			//
-			// // long benchLap1 = System.currentTimeMillis() -
-			// // benchIni;
-			// //
-			// System.out.println("El tiempo de obtener los eventos de un token :"
-			// // + benchLap1 + " miliseg");
-			// String pageToken = eventsRep.getNextPageToken();
-			// if (pageToken != null && !pageToken.isEmpty()) {
-			// consulta2 = googleCalendar
-			// .events()
-			// .instances("primary", event.getId())
-			// .setPageToken(pageToken);
-			// eventsRep = consulta2.execute();
-			// } else {
-			// break;
-			// }
-			// }
-			//
-			// // Events eventsRep =
-			// // googleCalendar.events().instances("primary",
-			// // event.getId()).execute();
-			//
-			// // System.out.println("----" + event.getSummary() +
-			// // "----");
-			// // for (Event eventRep : eventsRep.getItems()) {
-			// // System.out.println(eventRep.getStart() + " -- " +
-			// // eventRep.getEnd());
-			// // }
-			// }
-			// }
-			// }
-			// String pageToken = events.getNextPageToken();
-			// if (pageToken != null && !pageToken.isEmpty()) {
-			// events = googleCalendar.events().list("primary")
-			// .setPageToken(pageToken).execute();
-			// } else {
-			// break;
-			// }
-			// }
-
 			// Ordenamos los eventos
 			Collections.sort(sortedEvents);
 			// Coloreamos los estados
@@ -556,11 +351,8 @@ public class Negocio3 {
 				DateTime now = new DateTime(new Date(),
 						TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
-				// e.imprimir();
+				//e.imprimir();
 			}
-			// long benchFin = System.currentTimeMillis() - benchIni;
-			// System.out.println("El tiempo de demora es :" + benchFin
-			// + " miliseg");
 			return sortedEvents;
 
 		} catch (IOException e1) {
@@ -599,7 +391,7 @@ public class Negocio3 {
 				now.get(Calendar.DAY_OF_MONTH), now.getMinimum(Calendar.HOUR),
 				now.getMinimum(Calendar.MINUTE),
 				now.getMinimum(Calendar.SECOND));
-		now.add(Calendar.DAY_OF_MONTH, 1);
+		now.add(Calendar.DAY_OF_MONTH, 2);
 		return new DateTime(now.getTime(),
 				TimeZone.getTimeZone("Europe/Madrid"));
 	}
@@ -760,7 +552,8 @@ public class Negocio3 {
 			// intentamos una vez
 			if (abrirCalendario() != 0)
 				// Si ha vuelto ha haber algún error al conectar desistimos
-				return null;		}
+				return null;
+		}
 		// Leemos todos los eventos en el periodo indicado
 		try {
 			com.google.api.services.calendar.Calendar.Events.List consulta = googleCalendar
@@ -785,6 +578,11 @@ public class Negocio3 {
 							alarmas.add(off);
 						} else { // Eventos repetidos
 							// Creamos la alarma repetida
+							//*****------------------******
+							//Por ahora solo acepta alarmas repetidas diariamente
+							//Si hay una en ese periodo se insertará
+							//Necesaria modificación en los 4 niveles
+							//*****------------------******
 							AlarmaRepetitiva on = new AlarmaRepetitiva(event
 									.getStart().getDateTime(), event.getId(),
 									Alarma.Modo.ON,
@@ -798,19 +596,6 @@ public class Negocio3 {
 							alarmas.add(on);
 							alarmas.add(off);
 						}
-					} else if (event.getStatus().equals("cancelled")) {
-						// Quitamos los cancelados
-						// Si ha un evento cancelado significara que se ha
-						// creado una
-						// excepción en un evento repetido, tenemos varias
-						// opciones:
-						// Opción 1: IMPLEMENTADA POR DEFECTO
-						// Hacemos caso omiso de la excepción y lo seguimos
-						// programando como repetido
-						// Opción 2:
-						// Eliminamos el evento repetido y creamos tantos
-						// puntuales como días restantes
-						// siguen existiendo.
 					}
 				}
 				// Si hay más resultados
@@ -893,16 +678,16 @@ public class Negocio3 {
 
 	public static void main(String[] args) throws Exception {
 		Negocio3 main = new Negocio3();
-		main.inicializar();
-		// main.abrirCalendario();
-		// main.cargarCalendario();
+		//main.inicializar();
+		main.abrirCalendario();
+		main.cargarCalendario();
 		// System.out.println("Eventos insertados");
 		// for (Evento3 e : main.sortedEvents)
 		// e.imprimir();
-		List<Alarma> alarmas = main.CalendarioAAlarma(
-				DateTime.parseRfc3339("2011-11-25T00:00:00Z"),
-				DateTime.parseRfc3339("2011-11-26T00:00:00Z"));
-		System.out.println(main.AlamarmasAPlaca(alarmas));
+//		List<Alarma> alarmas = main.CalendarioAAlarma(
+//				DateTime.parseRfc3339("2011-11-25T00:00:00Z"),
+//				DateTime.parseRfc3339("2011-11-26T00:00:00Z"));
+//		System.out.println(main.AlamarmasAPlaca(alarmas));
 		// main.pintarMenu();
 		// while(true){
 		// int value = System.in.read();

@@ -1,50 +1,35 @@
 package ui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import javax.swing.JTextPane;
-
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.DateFormat;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
-import org.jdom.DocType;
-
-import com.google.api.client.util.DateTime;
 
 import logic.Alarma;
 import logic.AlarmaRepetitiva;
 import logic.Negocio3;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
-import javax.swing.JList;
+
+import com.google.api.client.util.DateTime;
 
 public class Carga {
 
@@ -330,8 +315,8 @@ public class Carga {
 		frame.getContentPane().add(lblInicio, gbc_lblInicio);
 
 		final JFormattedTextField txtInicio = new JFormattedTextField(
-				DateFormat.getDateInstance(DateFormat.SHORT));
-		txtInicio.setMinimumSize(new Dimension(75, 28));
+				new SimpleDateFormat("dd/MM/yy"));
+		txtInicio.setMinimumSize(new Dimension(77, 28));
 		GridBagConstraints gbc_txtInicio = new GridBagConstraints();
 		gbc_txtInicio.fill = GridBagConstraints.BOTH;
 		gbc_txtInicio.insets = new Insets(0, 0, 5, 5);
@@ -339,11 +324,6 @@ public class Carga {
 		gbc_txtInicio.gridy = 3;
 		frame.getContentPane().add(txtInicio, gbc_txtInicio);
 		txtInicio.setValue(new Date());
-		// tamFechaIni.width = 8;
-		// txtInicio.setSize(tamFechaIni);
-		// Dimension tamIni = txtInicio.getSize();
-		// tamIni.width = 10;
-		// txtInicio.setMinimumSize(tamIni);
 
 		JLabel lblFin = new JLabel("Fin");
 		GridBagConstraints gbc_lblFin = new GridBagConstraints();
@@ -355,8 +335,8 @@ public class Carga {
 		frame.getContentPane().add(lblFin, gbc_lblFin);
 
 		final JFormattedTextField txtFin = new JFormattedTextField(
-				DateFormat.getDateInstance(DateFormat.SHORT));
-		txtFin.setMinimumSize(new Dimension(75, 28));
+				new SimpleDateFormat("dd/MM/yy"));
+		txtFin.setMinimumSize(new Dimension(77, 28));
 		GridBagConstraints gbc_txtFin = new GridBagConstraints();
 		gbc_txtFin.fill = GridBagConstraints.BOTH;
 		gbc_txtFin.insets = new Insets(0, 0, 5, 5);
@@ -364,9 +344,6 @@ public class Carga {
 		gbc_txtFin.gridy = 3;
 		frame.getContentPane().add(txtFin, gbc_txtFin);
 		txtFin.setValue(new Date());
-		// Dimension tamFecha = txtFin.getSize();
-		// txtFin.setSize(tamFecha);
-		// tamFecha.width = 8;
 
 		JButton btnCargar = new JButton("Cargar");
 		btnCargar.setToolTipText("Cargar eventos de Google Calendar");
@@ -393,7 +370,7 @@ public class Carga {
 						fin.getTime(), TimeZone.getTimeZone("Europe/Madrid")));
 
 				// Panel de eventos puntuales
-				if(alarmas != null)
+				if (alarmas != null)
 					pintarAlarmas();
 			}
 		});
@@ -422,91 +399,19 @@ public class Carga {
 	}
 
 	private void pintarAlarmas() {
-		// try {
-		// tp_eventuales.setText("");
-		// StyledDocument docEven = tp_eventuales.getStyledDocument();
-		// // ROJO
-		// // Create a style object and then set the style attributes
-		// Style styleRedEven = docEven.addStyle("StyleRed", null);
-		// // Italic -> cursiva
-		// // StyleConstants.setItalic(styleRed, true);
-		// // Bold -> negrita
-		// // StyleConstants.setBold(styleRed, false);
-		// // Font family
-		// StyleConstants.setFontFamily(styleRedEven, "SansSerif");
-		// // Font size
-		// StyleConstants.setFontSize(styleRedEven, 12);
-		// // Background color
-		// StyleConstants.setBackground(styleRedEven, Color.white);
-		// // Foreground color
-		// StyleConstants.setForeground(styleRedEven, Color.red);
-		// // VERDE
-		// Style styleGreenEven = docEven.addStyle("StyleGreen", null);
-		// // StyleConstants.setItalic(styleGreen, true);
-		// // StyleConstants.setBold(styleGreen, true);
-		// StyleConstants.setFontFamily(styleGreenEven, "SansSerif");
-		// StyleConstants.setFontSize(styleGreenEven, 12);
-		// StyleConstants.setBackground(styleGreenEven, Color.white);
-		// StyleConstants.setForeground(styleGreenEven, Color.green);
-
-		// // Panel de eventos repetidos
-		// tp_indefinidos.setText("");
-		// StyledDocument docInd = tp_indefinidos.getStyledDocument();
-		// // Colores
-		// // ROJO
-		// // Create a style object and then set the style attributes
-		// Style styleRed = docInd.addStyle("StyleRed", null);
-		// // Italic -> cursiva
-		// // StyleConstants.setItalic(styleRed, true);
-		// // Bold -> negrita
-		// // StyleConstants.setBold(styleRed, false);
-		// // Font family
-		// StyleConstants.setFontFamily(styleRed, "SansSerif");
-		// // Font size
-		// StyleConstants.setFontSize(styleRed, 12);
-		// // Background color
-		// StyleConstants.setBackground(styleRed, Color.white);
-		// // Foreground color
-		// StyleConstants.setForeground(styleRed, Color.red);
-		// // VERDE
-		// Style styleGreen = docInd.addStyle("StyleGreen", null);
-		// // StyleConstants.setItalic(styleGreen, true);
-		// // StyleConstants.setBold(styleGreen, true);
-		// StyleConstants.setFontFamily(styleGreen, "SansSerif");
-		// StyleConstants.setFontSize(styleGreen, 12);
-		// StyleConstants.setBackground(styleGreen, Color.white);
-		// StyleConstants.setForeground(styleGreen, Color.green);
 		DefaultListModel modeloPuntuales = new DefaultListModel();
 		DefaultListModel modeloIndefinidos = new DefaultListModel();
 		for (int i = 0; i < alarmas.size(); i++) {
 			Alarma a = alarmas.get(i);
 			if (a instanceof AlarmaRepetitiva) {
 				AlarmaRepetitiva arep = (AlarmaRepetitiva) a;
-				// if (arep.getModo() == Alarma.Modo.ON)
-				// // docInd.insertString(docInd.getLength(), arep.toString()
-				// // + "\n", styleGreen);
-				// modeloEventuales.addElement(arep);
-				// else
-				// // docInd.insertString(docInd.getLength(), arep.toString()
-				// // + "\n", styleRed);
 				modeloIndefinidos.addElement(arep);
 			} else {
-				// if (a.getModo() == Alarma.Modo.ON)
-				// // docEven.insertString(docEven.getLength(), a.toString()
-				// // + "\n", styleGreenEven);
-				// modeloPuntuales.addElement(a);
-				// else
-				// // docEven.insertString(docEven.getLength(), a.toString()
-				// // + "\n", styleRedEven);
 				modeloPuntuales.addElement(a);
 			}
 		}
 		l_puntuales.setModel(modeloPuntuales);
 		l_indefinidos.setModel(modeloIndefinidos);
-		// } catch (BadLocationException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 	}
 
 	public void setVisible(boolean b) {
