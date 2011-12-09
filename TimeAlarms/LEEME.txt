@@ -1,0 +1,8 @@
+Ultima versión descargada de http://www.arduino.cc/playground/Code/Time
+a la que se ha cambiado 
+#if ARDUINO >= 100
+#include <Arduino.h> 
+#else
+#include <WProgram.h> 
+#endif
+para que compile con el último IDE
