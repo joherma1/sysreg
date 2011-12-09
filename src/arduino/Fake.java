@@ -78,6 +78,10 @@ public class Fake implements Arduino{
 	public Float obtenerHumedadHH10D(){
 		return new Float(45.5);
 	}
+	
+	public int obtenerHumedadSuelo() {
+		return 50;
+	}
 	public int initialize(){
 		return 0;
 	}

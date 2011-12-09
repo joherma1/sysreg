@@ -274,6 +274,16 @@ public class Negocio3 {
 	public Float obtenerHumedadHH10D() {
 		return ino.obtenerHumedadHH10D();
 	}
+	
+	/**
+	 * Obtiene la humedad del sensor resistivo de humedad del suelo
+	 * placa.
+	 * 
+	 * @return La humedad del suelo
+	 */
+	public int obtenerHumedadSuelo() {
+		return ino.obtenerHumedadSuelo();
+	}
 
 	/**
 	 * Obtiene, de la cuenta de Google Calendar indicada en el archivo de

@@ -129,6 +129,10 @@ public class Interfaz {
 	private JMenuItem mntmSubirAlarmas;
 	private JMenuItem mntmEliminarAlarmas;
 	private JMenuItem mntmSincronizarReloj;
+	private JLabel l_sensorResistivo;
+	private JLabel l_textHumedadSuelo;
+	private JLabel l_humedadSuelo;
+	private JButton b_recargaHumedadSuelo;
 
 	/**
 	 * This method initializes f_interfaz
@@ -138,7 +142,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(665, 490));
+			f_interfaz.setSize(new Dimension(670, 490));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -1289,6 +1293,10 @@ public class Interfaz {
 			// Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
+			
+			//Sensor de humedad del suelo
+			int humedadSuelo = logica.obtenerHumedadSuelo();
+			l_humedadSuelo.setText(String.valueOf(humedadSuelo));
 
 			// Si tenemos conexión activa
 			if (!offline) {
@@ -1512,10 +1520,10 @@ public class Interfaz {
 			p_HH10D.setBorder(new LineBorder(new Color(0, 0, 0)));
 			GridBagLayout gbl_p_HH10D = new GridBagLayout();
 			gbl_p_HH10D.columnWidths = new int[] { 106, 55, 0 };
-			gbl_p_HH10D.rowHeights = new int[] { 16, 0, 0, 0 };
+			gbl_p_HH10D.rowHeights = new int[] { 16, 0, 0, 0, 0, 0, 0 };
 			gbl_p_HH10D.columnWeights = new double[] { 0.0, 1.0,
 					Double.MIN_VALUE };
-			gbl_p_HH10D.rowWeights = new double[] { 0.0, 0.0, 1.0,
+			gbl_p_HH10D.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 					Double.MIN_VALUE };
 			p_HH10D.setLayout(gbl_p_HH10D);
 			GridBagConstraints gbc_l_HH10D = new GridBagConstraints();
@@ -1538,10 +1546,35 @@ public class Interfaz {
 			gbc_l_humedad.gridy = 1;
 			p_HH10D.add(getL_humedad(), gbc_l_humedad);
 			GridBagConstraints gbc_b_recargarHumedad = new GridBagConstraints();
+			gbc_b_recargarHumedad.insets = new Insets(0, 0, 5, 0);
 			gbc_b_recargarHumedad.anchor = GridBagConstraints.SOUTHEAST;
 			gbc_b_recargarHumedad.gridx = 1;
 			gbc_b_recargarHumedad.gridy = 2;
 			p_HH10D.add(getB_recargarHumedad(), gbc_b_recargarHumedad);
+			GridBagConstraints gbc_l_sensorResistivo = new GridBagConstraints();
+			gbc_l_sensorResistivo.anchor = GridBagConstraints.WEST;
+			gbc_l_sensorResistivo.gridwidth = 2;
+			gbc_l_sensorResistivo.insets = new Insets(0, 5, 5, 0);
+			gbc_l_sensorResistivo.gridx = 0;
+			gbc_l_sensorResistivo.gridy = 3;
+			p_HH10D.add(getL_sensorResistivo(), gbc_l_sensorResistivo);
+			GridBagConstraints gbc_l_textHumedadSuelo = new GridBagConstraints();
+			gbc_l_textHumedadSuelo.anchor = GridBagConstraints.WEST;
+			gbc_l_textHumedadSuelo.insets = new Insets(0, 5, 5, 5);
+			gbc_l_textHumedadSuelo.gridx = 0;
+			gbc_l_textHumedadSuelo.gridy = 4;
+			p_HH10D.add(getL_textHumedadSuelo(), gbc_l_textHumedadSuelo);
+			GridBagConstraints gbc_l_humedadSuelo = new GridBagConstraints();
+			gbc_l_humedadSuelo.anchor = GridBagConstraints.WEST;
+			gbc_l_humedadSuelo.insets = new Insets(0, 5, 5, 0);
+			gbc_l_humedadSuelo.gridx = 1;
+			gbc_l_humedadSuelo.gridy = 4;
+			p_HH10D.add(getL_humedadSuelo(), gbc_l_humedadSuelo);
+			GridBagConstraints gbc_b_recargaHumedadSuelo = new GridBagConstraints();
+			gbc_b_recargaHumedadSuelo.anchor = GridBagConstraints.EAST;
+			gbc_b_recargaHumedadSuelo.gridx = 1;
+			gbc_b_recargaHumedadSuelo.gridy = 5;
+			p_HH10D.add(getB_recargaHumedadSuelo(), gbc_b_recargaHumedadSuelo);
 		}
 		return p_HH10D;
 	}
@@ -1688,5 +1721,36 @@ public class Interfaz {
 			mntmSincronizarReloj = new JMenuItem("Sincronizar reloj");
 		}
 		return mntmSincronizarReloj;
+	}
+	private JLabel getL_sensorResistivo() {
+		if (l_sensorResistivo == null) {
+			l_sensorResistivo = new JLabel("Sensor Resistivo Suelo");
+		}
+		return l_sensorResistivo;
+	}
+	private JLabel getL_textHumedadSuelo() {
+		if (l_textHumedadSuelo == null) {
+			l_textHumedadSuelo = new JLabel("Humedad (%)");
+		}
+		return l_textHumedadSuelo;
+	}
+	private JLabel getL_humedadSuelo() {
+		if (l_humedadSuelo == null) {
+			l_humedadSuelo = new JLabel("50");
+		}
+		return l_humedadSuelo;
+	}
+	private JButton getB_recargaHumedadSuelo() {
+		if (b_recargaHumedadSuelo == null) {
+			b_recargaHumedadSuelo = new JButton();
+			b_recargaHumedadSuelo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					int humedadSuelo = logica.obtenerHumedadSuelo();
+					l_humedadSuelo.setText(String.valueOf(humedadSuelo));
+				}
+			});
+			b_recargaHumedadSuelo.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+		}
+		return b_recargaHumedadSuelo;
 	}
 }

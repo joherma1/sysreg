@@ -31,6 +31,8 @@ public interface Arduino {
 	public Float obtenerAlturaBMP085();
 
 	public Float obtenerHumedadHH10D();
+	
+	public int obtenerHumedadSuelo();
 
 	public boolean establecerHora(Long tiempoUnix);
 

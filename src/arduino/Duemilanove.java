@@ -432,6 +432,24 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			return null;
 		}
 	}
+	
+	/**
+	 * Obtiene la humedad sensor resistivo de humedad del suelo
+	 * 
+	 * @return Valor de humedad leído; -1: En otro caso
+	 */
+	public int obtenerHumedadSuelo() {
+		try {
+			output.write(0x76);
+			String res = leerArduino();
+			Integer res_i = Integer.parseInt(res);
+			return res_i;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+	}
 
 	/**
 	 * Sincroniza la hora de la placa, en caso de no indicar hora (null) se
