@@ -1,7 +1,5 @@
 package arduino;
 
-import java.io.IOException;
-
 /**
  * Interfaz que debe cumplir todo microntrolador que quiera comunicarse con
  * RegAdmin

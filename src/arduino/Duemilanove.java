@@ -8,8 +8,6 @@ import gnu.io.SerialPortEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.text.DecimalFormat;
 import java.util.Enumeration;
 
 /**
@@ -22,18 +20,18 @@ import java.util.Enumeration;
 public class Duemilanove implements SerialPortEventListener, Arduino {
 	// Variables RXTX
 	SerialPort serialPort;
-	/** The port we're normally going to use. */
-	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk", // Mac
+	// Puertos que normalmente se utilizarán
+	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk","/dev/tty.usbmodem1a21", // Mac
 			"/dev/tty.usbmodem1d11", "/dev/ttyUSB0", // Linux
 			"COM11", // Windows
 	};
-	/** Buffered input stream from the port */
+	// Flujo de entrada al puerto
 	private InputStream input;
-	/** The output stream to the port */
+	// Flujo de salida al puerto
 	private OutputStream output;
-	/** Milliseconds to block while waiting for port open */
+	// Milisegundos en espera a que el puerto se abra
 	private static final int TIME_OUT = 2000;
-	/** Default bits per second for COM port. */
+	// Bits por segundos, debe coincidir con la placa Arduino
 	private static final int DATA_RATE = 9600;
 
 	// Variables Arduino
@@ -56,7 +54,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			Enumeration portEnum;
 			portEnum = CommPortIdentifier.getPortIdentifiers();
 
-			// iterate through, looking for the port
+			// Iteramos buscando el puerto
 			while (portEnum.hasMoreElements()) {
 				CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
 						.nextElement();
@@ -69,23 +67,24 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			}
 
 			if (portId == null) {
-				System.out.println("Could not find COM port.");
+				System.out
+						.println("No se ha podido encontrar el puerto de comunicación.");
 				return -1;
 			}
 
-			// open serial port, and use class name for the appName.
-			serialPort = (SerialPort) portId.open(this.getClass().getName(),
-					TIME_OUT);
+			// Abrimos el puerto de serie, indicándole el nombre de la
+			// aplicación (this.getClass().getName())
+			serialPort = (SerialPort) portId.open("RegAdmin", TIME_OUT);
 
-			// set port parameters
+			// Parámetros del puerto
 			serialPort.setSerialPortParams(DATA_RATE, SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
-			// open the streams
+			// Abrimos los flujos de comunicación
 			input = serialPort.getInputStream();
 			output = serialPort.getOutputStream();
 
-			// add event listeners
+			// Listeners
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
 			// Tiempo de arranque, unos 1450
@@ -126,8 +125,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 				int available = input.available();
 				byte chunk[] = new byte[available];
 				input.read(chunk, 0, available);
-				// Cuando llegue información la depositamos en el buffer del
-				// monitor
+				// Cuando llegue información la depositamos
+				// en el buffer del monitor
 				m.depositar(chunk);
 			} catch (Exception e) {
 				System.err.println(e.toString());
@@ -162,8 +161,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			data = aux;
 		}
 		// ya tenemos todo el mensaje, lo pasamos a string eliminando el
-		// carácter
-		// EOT
+		// carácter EOT
 		String res = new String(data, 0, data.length - 1);
 		return res;
 	}
@@ -177,8 +175,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 */
 	byte[] leerArduinoBytes() {
 		byte[] data = m.recoger();
-		while (data[data.length - 1] != 4) {// Mientras no nos diga fin de
-			// Transmisión seguimos esperando
+		while (data[data.length - 1] != 4) {
+			// Mientras no nos diga fin de Transmisión seguimos esperando
 			byte[] data2 = m.recoger();
 			// creamos el nuevo vector y lo rellenamos
 			byte[] aux = new byte[data.length + data2.length];
@@ -207,7 +205,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	}
 
 	int seleccionarSensorT(byte[] sensor) {
-		// 0: CRC NO VALIDO 1: OK -1:No se han pasado 8 B -2:Excepcion
+		// 0: CRC NO VALIDO 1: OK -1:No se han pasado 8 B -2: Excepción
 		try {
 			// el comando es mXXXXXXXX
 			byte[] comando = { 0x6D, sensor[0], sensor[1], sensor[2],
@@ -227,6 +225,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	// ------------------------
 	// Métodos públicos
 	// ------------------------
+	/**
+	 * Enviamos a la placa una señal para que active la válvula de riego
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
 	public boolean startReg() {
 		try {
 			output.write(0x64);
@@ -238,6 +241,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Enviamos a la placa una señal para que desactive la válvula de riego
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
 	public boolean stopReg() {
 		try {
 			output.write(0x65);
@@ -249,6 +257,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Devuelve el estado de la válvula de riego
+	 * 
+	 * @return true: Riego activo; false: En otro caso
+	 */
 	public boolean comprobarReg() {
 		try {
 			output.write(0x66);
@@ -269,6 +282,13 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Envía a la placa el comando para contar el número de sensores de
+	 * temperatura DS18B20 conectados al protocolo One Wire
+	 * 
+	 * @return Número de sensores de temperatura conectados; -1: En caso de
+	 *         error
+	 */
 	public int contarSensoresT() {
 		try {
 			output.write(0x6A);
@@ -286,6 +306,13 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		return this.n_sensores_t;
 	}
 
+	/**
+	 * Lista el identificador de los sensores de temperatura DS18B20 conectados
+	 * al protocolo One Wire
+	 * 
+	 * @return Matriz de bytes con los identificadores de los sensores de
+	 *         temperatura; null: En otro caso
+	 */
 	public byte[][] listarSensoresT() {
 		try {
 			this.contarSensoresT();
@@ -306,6 +333,15 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		return null;
 	}
 
+	/**
+	 * Obtiene la temperatura del sensor de temperatura DS18B20 conectados al
+	 * protocolo One Wire
+	 * 
+	 * @param sensor
+	 *            Identificador del sensor DS18B20
+	 * 
+	 * @return Valor de temperatura leído; null: En otro caso
+	 */
 	public Float obtenerTemperatura(byte[] sensor) {
 		try {
 			// Seleccionamos el sensor
@@ -325,6 +361,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Obtiene la presión del sensor analógico BMP085
+	 * 
+	 * @return Valor de presión leído; null: En otro caso
+	 */
 	public Long obtenerPresionBMP085() {
 		try {
 			output.write(0x71);
@@ -338,6 +379,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Obtiene la temperatura del sensor analógico BMP085
+	 * 
+	 * @return Valor de temperatura leído; null: En otro caso
+	 */
 	public Float obtenerTemperaturaBMP085() {
 		try {
 			output.write(0x70);
@@ -351,6 +397,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Obtiene la altura estimada del sensor analógico BMP085
+	 * 
+	 * @return Valor de altura leído; null: En otro caso
+	 */
 	public Float obtenerAlturaBMP085() {
 		try {
 			output.write(0x72);
@@ -364,6 +415,11 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Obtiene la humedad relativa del sensor analógico HH10D
+	 * 
+	 * @return Valor de humedad leído; null: En otro caso
+	 */
 	public Float obtenerHumedadHH10D() {
 		try {
 			output.write(0x75);
@@ -377,6 +433,14 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		}
 	}
 
+	/**
+	 * Sincroniza la hora de la placa, en caso de no indicar hora (null) se
+	 * establecerá la hora actual
+	 * 
+	 * @param tiempoUnix
+	 *            Instante de tiempo que se establecerá en la placa
+	 * @return true: Hora sincronizada correctamente; false: En otro caso
+	 */
 	public boolean establecerHora(Long tiempoUnix) {
 		Long tiempo;
 		if (tiempoUnix == null)
@@ -415,8 +479,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 * 
 	 * @param tiempoUnix
 	 *            Instante de tiempo en el que se activará el riego
-	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
-	 *         creado correctamente, -2 excepción
+	 * @return ID de la alarma si se ha creado correctamente; -1 si no se ha
+	 *         creado correctamente; -2 excepción
 	 */
 	public int establecerAlarmaOn(Long tiempoUnix) {
 		if (tiempoUnix == null)
@@ -436,8 +500,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else
-				// error
+			else // error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -452,8 +515,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 * 
 	 * @param tiempoUnix
 	 *            Instante de tiempo en el que se desactivará el riego
-	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
-	 *         creado correctamente, -2 excepción
+	 * @return ID de la alarma si se ha creado correctamente; -1 si no se ha
+	 *         creado correctamente; -2 excepción
 	 */
 	public int establecerAlarmaOff(Long tiempoUnix) {
 		if (tiempoUnix == null)
@@ -473,8 +536,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else
-				// error
+			else // error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -491,8 +553,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 *            Hora, en formato 24 horas.
 	 * @param minutos
 	 * @param segundos
-	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
-	 *         creado correctamente, -2 excepción
+	 * @return ID de la alarma si se ha creado correctamente; -1 si no se ha
+	 *         creado correctamente; -2 excepción
 	 */
 	public int establecerAlarmaRepOn(int horas, int minutos, int segundos) {
 		try {
@@ -508,8 +570,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else
-				// error
+			else // error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -526,8 +587,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 *            Hora, en formato 24 horas.
 	 * @param minutos
 	 * @param segundos
-	 * @return ID de la alarma si se ha creado correctamente, -1 si no se ha
-	 *         creado correctamente, -2 excepción
+	 * @return ID de la alarma si se ha creado correctamente; -1 si no se ha
+	 *         creado correctamente; -2 excepción
 	 */
 	public int establecerAlarmaRepOff(int horas, int minutos, int segundos) {
 		try {
@@ -543,8 +604,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else
-				// error
+			else // error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -560,7 +620,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 * 
 	 * @param alarmaId
 	 *            Identificador de la alarma 0 <= id < 255
-	 * @return true si se ha enviado correctamente la señal de borrado, false
+	 * @return true si se ha enviado correctamente la señal de borrado; false
 	 *         número enviado no válido
 	 */
 	public boolean eliminarAlarma(int alarmaId) {

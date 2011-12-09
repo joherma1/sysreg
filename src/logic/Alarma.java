@@ -1,10 +1,8 @@
 package logic;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import com.google.api.client.util.DateTime;
@@ -16,7 +14,7 @@ public class Alarma {
 
 	private DateTime fecha;
 	/**
-	 * Identificador del evento original, lo compartiran las alarmas On y Off
+	 * Identificador del evento original, lo compartirán las alarmas On y Off
 	 * del mismo evento
 	 */
 	private String idEvento;
@@ -61,12 +59,13 @@ public class Alarma {
 		this.idEvento = idEvento;
 		this.modo = modo;
 	}
-	public String toString(){
-		Calendar fecha = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+
+	public String toString() {
+		Calendar fecha = new GregorianCalendar(
+				TimeZone.getTimeZone("Europe/Madrid"));
 		fecha.setTimeInMillis(this.fecha.getValue());
-//		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss Z");
-//		return "Alarma " + this.modo + ":\t\t"+ formatter.format(fecha.getTime());
-		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat(
+				"EEEE, dd MMM yyyy HH:mm:ss");
 		return this.modo + ": " + formatter.format(fecha.getTime());
 	}
 

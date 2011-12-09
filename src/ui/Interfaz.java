@@ -48,9 +48,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import logic.Evento;
 import logic.Evento3;
-import logic.Negocio;
 import logic.Negocio3;
 
 public class Interfaz {
@@ -1059,14 +1057,24 @@ public class Interfaz {
 			System.exit(-1);
 		}else if (ini == -4){
 			JOptionPane.showMessageDialog(this.f_iniciando,
-					"Error al conectar con Google Calendar", "Error",
+					"Se ha cancelado el inicio de sesión en Google Calendar\nIniciando en modo sin conexión", "Modo sin conexión",
+					JOptionPane.INFORMATION_MESSAGE);
+			TareaInicializar tarea = new TareaInicializar(true);
+			tarea.execute();
+		} else if (ini == -5){
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"Código de autorización incorrecto\nIniciando en modo sin conexión", "Autorización incorrecta",
 					JOptionPane.ERROR_MESSAGE);
-			f_iniciando.dispose();
-			f_interfaz.dispose();
-			logica.cerrar();
-			System.exit(-1);
-		}  else {
-			TareaInicializar tarea = new TareaInicializar();
+			TareaInicializar tarea = new TareaInicializar(true);
+			tarea.execute();
+		} else if (ini == -6){
+			JOptionPane.showMessageDialog(this.f_iniciando,
+					"Erro al conectar con Google Calendar\nIniciando en modo sin conexión", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			TareaInicializar tarea = new TareaInicializar(true);
+			tarea.execute();
+		}else {
+			TareaInicializar tarea = new TareaInicializar(false);
 			tarea.execute();
 		}
 	}
@@ -1126,15 +1134,18 @@ public class Interfaz {
 		p_listado.add(b_refresh.get(b_refresh.size() - 1), gridBagConstraints2);
 	}
 
-	private void actualizarCalendario() {
+	private boolean actualizarCalendario() {
 		System.out.println("-----Actualizar calendario");
 		eventos = logica.cargarCalendario();
+		if(eventos == null)
+			return false;
 		// Actualizar la hora
 		DecimalFormat entero = new DecimalFormat("00");
 		Calendar now = Calendar.getInstance();
 		l_ultimaact.setText("Última actualización: "
 				+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":"
 				+ entero.format(now.get(Calendar.MINUTE)));
+		return true;
 		// Comprobamos como tiene que estar el riego
 		// eventos = logica.comprobarRiego();
 		// Pintamos los eventos
@@ -1252,6 +1263,11 @@ public class Interfaz {
 		/*
 		 * Main task. Executed in background thread.
 		 */
+		boolean offline;
+		TareaInicializar(boolean modoOffline){
+			super();
+			this.offline = modoOffline;
+		}
 		@Override
 		public Void doInBackground() {
 			// System.out.println("Obteniendo temperatura de: "+
@@ -1273,13 +1289,16 @@ public class Interfaz {
 			// Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
-			
-			//Actualizamos el calendario y activamos el hilo
-			actualizarCalendario();
-			//--Código si queremos que se inicie sincronizando
-			//--eventos = logica.comprobarRiego();
-			pintarEventos();
-			//Desactivamos la sincronización
+
+			// Si tenemos conexión activa
+			if (!offline) {
+				// Actualizamos el calendario y activamos el hilo
+				actualizarCalendario();
+				// --Código si queremos que se inicie sincronizando
+				// --eventos = logica.comprobarRiego();
+				pintarEventos();
+			}
+			// Desactivamos la sincronización
 			cb_Desactivar.setSelected(true);
 			tp_horario.setEnabled(false);
 			// Actualizar la hora
@@ -1573,19 +1592,29 @@ public class Interfaz {
 				public void actionPerformed(ActionEvent arg0) {
 					boolean desactivar = cb_Desactivar.isSelected();
 					if (desactivar == false) { // Activamos la sincronización
-						actualizarCalendario();
-						eventos = logica.comprobarRiego();
-						pintarEventos();
-						// Actualizar la hora
-						DecimalFormat entero = new DecimalFormat("00");
-						Calendar now = Calendar.getInstance();
-						l_hora.setText("Hora: "
-								+ entero.format(now.get(Calendar.HOUR_OF_DAY))
-								+ ":" + entero.format(now.get(Calendar.MINUTE)));
-						r_riego = new RelojRiego();
-						r_riego.start();		
-						tp_horario.setEnabled(true);
-					} else {// Desactivamos la sincronizacion
+						// Si no se ha iniciado la conexion con Google
+						// lo intentamos una vez, y si vuelve a ir mal 
+						// mostramos un error 
+						if (actualizarCalendario()) {
+							eventos = logica.comprobarRiego();
+							pintarEventos();
+							// Actualizar la hora
+							DecimalFormat entero = new DecimalFormat("00");
+							Calendar now = Calendar.getInstance();
+							l_hora.setText("Hora: "
+									+ entero.format(now
+											.get(Calendar.HOUR_OF_DAY)) + ":"
+									+ entero.format(now.get(Calendar.MINUTE)));
+							r_riego = new RelojRiego();
+							r_riego.start();
+							tp_horario.setEnabled(true);
+						}else{
+							cb_Desactivar.setSelected(true);
+							JOptionPane.showMessageDialog(null,
+									"No se ha podido iniciar sesión en Google Calendar\nSeguimos en modo sin conexión", "Modo sin conexión",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					} else {// Desactivamos la sincronización
 						tp_horario.setEnabled(false);
 						r_riego.detener();
 					}

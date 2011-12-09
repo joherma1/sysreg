@@ -76,8 +76,8 @@ public class Carga {
 	 * Create the application.
 	 */
 	public Carga(Negocio3 logica) {
-		initialize();
 		this.logica = logica;
+		initialize();
 	}
 
 	/**
@@ -393,7 +393,8 @@ public class Carga {
 						fin.getTime(), TimeZone.getTimeZone("Europe/Madrid")));
 
 				// Panel de eventos puntuales
-				pintarAlarmas();
+				if(alarmas != null)
+					pintarAlarmas();
 			}
 		});
 

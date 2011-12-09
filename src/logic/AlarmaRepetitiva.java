@@ -39,17 +39,18 @@ public class AlarmaRepetitiva extends Alarma {
 		super(fecha, idEvento, modo);
 	}
 
-	public AlarmaRepetitiva(DateTime fecha, String idEvento, Modo modo, Tipo tipo,
-			Periodo periodo) {
+	public AlarmaRepetitiva(DateTime fecha, String idEvento, Modo modo,
+			Tipo tipo, Periodo periodo) {
 		super(fecha, idEvento, modo);
 		this.tipo = tipo;
 		this.periodo = periodo;
 	}
-	public String toString(){
-		Calendar fecha = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+
+	public String toString() {
+		Calendar fecha = new GregorianCalendar(
+				TimeZone.getTimeZone("Europe/Madrid"));
 		fecha.setTimeInMillis(this.getFecha().getValue());
-		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss"); //HH 24 horas
-//		return "Alarma repetida " + this.getModo() + ":\t"+ formatter.format(fecha.getTime());
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		return this.getModo() + ": " + formatter.format(fecha.getTime());
 	}
 

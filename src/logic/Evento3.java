@@ -1,10 +1,12 @@
 package logic;
 
-import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import com.google.api.client.util.DateTime;
-
 
 /**
  * Clase utilizada para almacenar y procesar los eventos de Google Calendar.
@@ -23,7 +25,7 @@ public class Evento3 implements Comparable<Evento3> {
 	private DateTime fin;
 	private String lugar;
 	private State estado;
-	private String iCalUID;
+	private String UID;
 	private volatile int hashCode = 0;
 
 	/**
@@ -50,7 +52,7 @@ public class Evento3 implements Comparable<Evento3> {
 		this.fin = fin;
 		this.lugar = lugar;
 		this.estado = State.NEGRO;
-		this.iCalUID = UID;
+		this.UID = UID;
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class Evento3 implements Comparable<Evento3> {
 		this.inicio = comienzo;
 		this.fin = fin;
 		this.estado = State.NEGRO;
-		this.iCalUID = UID;
+		this.UID = UID;
 	}
 
 	public String getTitulo() {
@@ -117,12 +119,12 @@ public class Evento3 implements Comparable<Evento3> {
 		this.lugar = lugar;
 	}
 
-	public String getiCalUID() {
-		return iCalUID;
+	public String getUID() {
+		return UID;
 	}
 
-	public void setiCalUID(String iCalUID) {
-		this.iCalUID = iCalUID;
+	public void setUID(String UID) {
+		this.UID = UID;
 	}
 
 	@Override
@@ -130,9 +132,11 @@ public class Evento3 implements Comparable<Evento3> {
 	 * Método utilizado para ordenar eventos según su fecha de inicio.
 	 */
 	public int compareTo(Evento3 o) {
-		//Nosotros solo queremos comparar con una precisión de segundo, equals comparar con precisión de milisegundo
-		return (int)(this.inicio.getValue()/1000 -  o.getInicio().getValue()/1000);
+		// Nosotros solo queremos comparar con una precisión de segundo, equals
+		// comparar con precisión de milisegundo
+		return (int) (this.inicio.getValue() / 1000 - o.getInicio().getValue() / 1000);
 	}
+
 	@Override
 	/**
 	 * Dos eventos serán iguales si tienen la misma hora de inicio y de fin y el identificador
@@ -148,11 +152,12 @@ public class Evento3 implements Comparable<Evento3> {
 			return false;
 		}
 		Evento3 evento = (Evento3) o;
-		//Para nosotros dos fechas son iguales en segundos, no en milisegundos (metodo equals)
-		if (this.iCalUID.compareTo(evento.iCalUID) == 0
-				&& this.inicio.getValue()/1000 == evento.getInicio().getValue()/1000)
-				//&& this.getInicio().equals(evento.getInicio()))
-				//&& this.getFin().equals(evento.getFin()))
+		// Para nosotros dos fechas son iguales si tienen la misma fecha de
+		// inicio [en segundos, no en milisegundos (así trabaja el método
+		// equals)] y el mismo identificador único de Google
+		if (this.UID.compareTo(evento.UID) == 0
+				&& this.inicio.getValue() / 1000 == evento.getInicio()
+						.getValue() / 1000)
 			return true;
 		else
 			return false;
@@ -169,10 +174,10 @@ public class Evento3 implements Comparable<Evento3> {
 		final int multiplier = 23;
 		if (hashCode == 0) {
 			int code = 133;
-			code = multiplier * code + this.iCalUID.hashCode();
-			code = multiplier * code + (int)this.inicio.getValue()/1000;
-			//code = multiplier * code + getInicio().hashCode();
-			//code = multiplier * code + getFin().hashCode();
+			code = multiplier * code + this.UID.hashCode();
+			code = multiplier * code + (int) this.inicio.getValue() / 1000;
+			// code = multiplier * code + getInicio().hashCode();
+			// code = multiplier * code + getFin().hashCode();
 			hashCode = code;
 		}
 		return hashCode;
@@ -214,21 +219,19 @@ public class Evento3 implements Comparable<Evento3> {
 	 * @return Una cadena de caracteres que describe el evento
 	 */
 	public String toString() {
-//		if(getDateInicio() == null || getDateFin() == null || descripcion == null)
-//			return "Evento incompleto";
-		Date ini = getDateInicio();
-		Date fin = getDateFin();
-		DecimalFormat entero = new DecimalFormat("00");
-		@SuppressWarnings("deprecation")
-		String res = entero.format(ini.getDate()) + "/"
-				+ entero.format(ini.getMonth() + 1) + "/"
-				+ (ini.getYear() + 1900) + ": " + entero.format(ini.getHours())
-				+ ":" + entero.format(ini.getMinutes()) + " -> "
-				+ entero.format(fin.getHours()) + ":"
-				+ entero.format(fin.getMinutes()) + " => " + titulo;
-		if (descripcion!= null && descripcion.length() > 0)
+		Calendar fechaInicio = new GregorianCalendar(
+				TimeZone.getTimeZone("Europe/Madrid"));
+		fechaInicio.setTimeInMillis(this.getDateInicio().getTime());
+		Calendar fechaFin = new GregorianCalendar(
+				TimeZone.getTimeZone("Europe/Madrid"));
+		fechaFin.setTimeInMillis(this.getDateFin().getTime());
+		SimpleDateFormat formato = new SimpleDateFormat(
+				"EEEE, dd MMM yyyy HH:mm:ss");
+		String res = formato.format(fechaInicio.getTime()) + " -> "
+				+ formato.format(fechaFin.getTime()) + " => " + this.titulo;
+		if (descripcion != null && descripcion.length() > 0)
 			res += ": " + descripcion;
-		if ( lugar != null && lugar.length() > 0)
+		if (lugar != null && lugar.length() > 0)
 			res += " (" + lugar + ")";
 		return res;
 	}
@@ -243,9 +246,8 @@ public class Evento3 implements Comparable<Evento3> {
 	 *         caso
 	 */
 	public int colorear(DateTime ahora) {
-		//a.comparteTo(object b) >0 -> b>a 0 -> b=a <0 -> b<a
+		// a.comparteTo(object b) >0 -> b>a 0 -> b=a <0 -> b<a
 		// Si la hora de fin es menor o igual a la de ahora => ROJO (ha pasado)
-		
 		if (this.getFin().getValue() - ahora.getValue() <= 0) {
 			this.estado = State.ROJO;
 			return 0;
