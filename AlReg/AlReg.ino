@@ -4,11 +4,14 @@
 #include <Time.h>
 #include <TimeAlarms.h>
 
+#define motor1Pin 3 // H-bridge leg 1 (pin 2, 1A)
+#define motor2Pin 4 // H-bridge leg 2 (pin 7, 2A)
+#define enable 2 // H-bridge enable
 #define BMP085_ADDRESS 0x77  // Direccion I2C del sensor BMP085
+#define voltageFlipPin1 8 // Pin digital 1 del sensor de humedad del suelo
+#define voltageFlipPin2 9 // Pin digital 2 del sensor de humedad del suelo
+#define sensorPin 0 // Pin analogico del sensor de humedad del suelo
 
-const int motor1Pin = 3;    // H-bridge leg 1 (pin 2, 1A)
-const int motor2Pin = 4;    // H-bridge leg 2 (pin 7, 2A)
-const int enable = 2;
 int riego;		//0-> No se esta regando, 1 -> Regando
 OneWire ds(12); 	    // Pin protocolo 1-wire
 int command;
@@ -28,6 +31,7 @@ int horas = 0;
 int minutos = 0;
 int segundos = 0;
 //int alarmas_max = dtNBR_ALARMS; //tNBR_ALARMS 56  definido en TimeAlarms.h: Alarmas maximas
+
 //I2C Pressure Sensor
 const unsigned char OSS = 3;  // Oversampling Setting
 //0 Ultra low power
@@ -62,7 +66,10 @@ const int Rain = 3;
 
 //Humedad
 long freq, offset, sens; //Si no gastamos longs se trunca la multiplicacion y salen valores no validos
+float hum;
 
+//Humedad del suelo
+int flipTimer = 1000;
 
 void setup(void){
   //Inicializamos las salidas digitales
@@ -70,7 +77,9 @@ void setup(void){
   pinMode(motor2Pin, OUTPUT); 
   pinMode(enable,OUTPUT);
   pinMode(13, OUTPUT);
-  pinMode(6,OUTPUT);//Leda riego activo 
+  pinMode(6,OUTPUT);//Led riego activo 
+  pinMode(voltageFlipPin1, OUTPUT); //Pins del sensor de humedad
+  pinMode(voltageFlipPin2, OUTPUT);
   //Inicializamos el puerto de serie
   Serial.begin(9600);
   //Activamos comunicacion I2C 
@@ -84,14 +93,13 @@ void setup(void){
   //Marcamos como apagado el  riego
   riego = 0;
   //Inicializacion por conexion
-  Serial.print(6, BYTE);//Codigo de inicializacion, ACK
-  Serial.print(4, BYTE);//EndOfTransmission (ASCII);
+  Serial.write(6);//Codigo de inicializacion, ACK
+  Serial.write(4);//EndOfTransmission (ASCII);
   digitalWrite(6, HIGH);  
   delay(300); 
   digitalWrite(6, LOW);  
 }
 void loop(void){
-  byte i; //Variable para bucles
   byte present;
   byte data[12];
   byte addr[8];//Identificador del sensor
@@ -101,8 +109,8 @@ void loop(void){
     switch (command){ 
       //Inicializaion por peticion
     case 0x05: //Solicitud de conexion: ENQ
-      Serial.print(6, BYTE);//Codigo de inicializacion, ACK
-      Serial.print(4,BYTE);//EndOfTransmission (ASCII)
+      Serial.write(6);//Codigo de inicializacion, ACK
+      Serial.write(4);//EndOfTransmission (ASCII)
       break;
     case 0x41: //establecerHora: A 65 0x41
       //Recogemos los 10 siguientes carácteres ASCII que será la hora en tiempo UNIX mas 
@@ -133,7 +141,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-1,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break; 
     case  0x42: //establecerAlarmaON: B 66 0x42
       //Establecemos una alarma en el tiempo indicado: -1 error  AlarmID otro caso
@@ -161,7 +169,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-2,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break; 
     case  0x43: //establecerAlarmaOff: C 67 0x43
       //Establecemos una alarma en el tiempo indicado: -1 error  AlarmID otro caso
@@ -189,7 +197,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-2,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break;
     case  0x44: //establecerAlarmaRepOn: D 68 0x44
       //D(HHMMSS):Establecemos una alarma todos los dias a la HH,MM,SS: -1 error  AlarmID otro caso
@@ -225,7 +233,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-2,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break;
     case  0x45: //establecerAlarmaRepOff: D 68 0x44
       //D(HHMMSS):Establecemos una alarma todos los dias a la HH,MM,SS: -1 error  AlarmID otro caso
@@ -261,7 +269,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-2,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break;
     case  0x46: //eliminarAlarma(xxx): F 70 0x46
       //1 envia la orden de eliminar la alarma, -1 en caso contrario
@@ -285,7 +293,7 @@ void loop(void){
       else{ //No se ha recibido correctamente el tiempo
         Serial.print(-1,DEC); //return -1
       }
-      Serial.print(4,BYTE); //señal EOF
+      Serial.write(4); //señal EOF
       break;
     case  0x47: //eliminarAlarmas: G 71 0x47
       //Elimina todas las alarmas
@@ -316,29 +324,29 @@ void loop(void){
         Serial.print(1);
       else
         Serial.print(0);
-      Serial.print(4,BYTE);
+      Serial.write(4);
       break;	
     case 0x6A: //contarSensores: j 106 0x6A
       //Lo enviamos como texto, si lo enviamos como Byte (RAW) solo podremos enviar 1 Byte en Ca2
       Serial.print(contarSensores());
-      Serial.print(4,BYTE);
+      Serial.write(4);
       break;
     case 0x6B: //resetBusqueda: k 107 0x6B
       ds.reset_search();
       break;
     case 0x6C: //siguienteSensor: l 108 0x6C
       if(ds.search(addr)){
-        for(i=0;i<8;i++){
-          Serial.print(addr[i], BYTE);
+        for(int i=0;i<8;i++){
+          Serial.write(addr[i]);
         }
-        Serial.print(4,BYTE);
+        Serial.write(4);
       }
       break;
     case 0x6D: //seleccionarCursor: m 109 0x6D
       //leemos los 8 siguientes byte que seran el ID del sensor
       delay(40);
       contador=0;
-      for (i=0;i<8;i++){
+      for (int i=0;i<8;i++){
         if(Serial.available()>0){
           sensor_id[i]=Serial.read();
           contador++;
@@ -347,18 +355,18 @@ void loop(void){
       if(contador==8){
         if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
           Serial.print(0,DEC);
-          Serial.print(4,BYTE);
+          Serial.write(4);
           return;
         } 
         //Sensor valido
         Serial.print(1,DEC);
-        Serial.print(4,BYTE);
+        Serial.write(4);
         ds.reset();
         ds.select(sensor_id);
       }
       else{
         Serial.print(-1,DEC);
-        Serial.print(4,BYTE);
+        Serial.write(4);
       }
       break; 
     case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
@@ -369,7 +377,7 @@ void loop(void){
       present = ds.reset();
       ds.select(sensor_id);    
       ds.write(0xBE);         // Read Scratchpad
-      for ( i = 0; i < 9; i++) {           // we need 9 bytes
+      for (int i = 0; i < 9; i++) {           // we need 9 bytes
         data[i] = ds.read();
       }
       LowByte = data[0];
@@ -395,7 +403,7 @@ void loop(void){
         Serial.print("0");
       }
       Serial.print(Fract);
-      Serial.print(4,BYTE);
+      Serial.write(4);
       break;
     case 0x70: //Obtener Tª del sensor de presion I2C: p 112 0x70
       temperature = bmp085GetTemperature(bmp085ReadUT());
@@ -404,7 +412,7 @@ void loop(void){
       Serial.print(Whole);
       Serial.print(".");
       Serial.print(Fract);
-      Serial.print(4,BYTE);
+      Serial.write(4);
       break;
     case 0x71: //Obtener Presion del sensor I2C: q 113 0x71
       //Tiene que leer antes la temperatura para calibrar la presion
@@ -413,7 +421,7 @@ void loop(void){
       //Serial.print("Pressure: ");
       Serial.print(pressure, DEC);
       //Serial.println(" Pa");
-      Serial.print(4,BYTE);
+      Serial.write(4);
       //Por precaucion      
       delay(1000);
       break;
@@ -425,7 +433,7 @@ void loop(void){
       //Serial.print("Altitude: ");
       Serial.print(altitude, 2);
       //Serial.println(" m");  
-      Serial.print(4,BYTE);
+      Serial.write(4);
       //Por precaucion      
       delay(1000);
       break;
@@ -440,7 +448,7 @@ void loop(void){
         Serial.print(Partly_Cloudy);
       else if (weatherDiff > -250)
         Serial.print(Rain);
-      Serial.print(4,BYTE);
+      Serial.write(4);
       //Por precaucion      
       delay(1000);  
       break;
@@ -470,12 +478,27 @@ void loop(void){
       delay(1000);
       break;
     case 0x75: //Obtener humedad relativa del sensor HH10D 0x75 117 u
-      float hum = hh10dReadHumidity();
+      hum = hh10dReadHumidity();
       if(hum < 0 || hum > 100)
         Serial.print(-1);
       else 
         Serial.print(hum);
-      Serial.print(4,BYTE);
+      Serial.write(4);
+      break;
+    case 0x76: //Obtener humedad del suelo 0x76 118 v
+      setSensorPolarity(true);
+      delay(flipTimer);
+      int val1 = analogRead(sensorPin);
+      delay(flipTimer);  
+      setSensorPolarity(false);
+      delay(flipTimer);
+      // Invertimos la lectura
+      int val2 = 1023 - analogRead(sensorPin);
+      // Calculamos el valor de humedad en % truncando decimales  
+      int avg = (val1 + val2) / 2;
+      avg = avg * 0.09765625; // En porcentaje (*100/1024)
+      Serial.print(avg);
+      Serial.write(4);
       break;
     }
   }
@@ -483,7 +506,7 @@ void loop(void){
   //digitalClockDisplay();
   Alarm.delay(000);
 }
-
+  
 int contarSensores(void){
   int count=0;
   byte addr[8];
@@ -565,17 +588,15 @@ long bmp085GetPressure(unsigned long up)
 // Read 1 byte from the BMP085 at 'address'
 char bmp085Read(unsigned char address)
 {
-  unsigned char data;
-
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(address);
+  Wire.write(address);
   Wire.endTransmission();
 
   Wire.requestFrom(BMP085_ADDRESS, 1);
   while(!Wire.available())
     ;
 
-  return Wire.receive();
+  return Wire.read();
 }
 
 // Read 2 bytes from the BMP085
@@ -584,16 +605,16 @@ char bmp085Read(unsigned char address)
 int bmp085ReadInt(unsigned char address)
 {
   unsigned char msb, lsb;
-
+  
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(address);
+  Wire.write(address);
   Wire.endTransmission();
 
   Wire.requestFrom(BMP085_ADDRESS, 2);
   while(Wire.available()<2)
     ;
-  msb = Wire.receive();
-  lsb = Wire.receive();
+  msb = Wire.read();
+  lsb = Wire.read();
 
   return (int) msb<<8 | lsb;
 }
@@ -606,8 +627,8 @@ unsigned int bmp085ReadUT()
   // Write 0x2E into Register 0xF4
   // This requests a temperature reading
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF4);
-  Wire.send(0x2E);
+  Wire.write(0xF4);
+  Wire.write(0x2E);
   Wire.endTransmission();
 
   // Wait at least 4.5ms
@@ -627,8 +648,8 @@ unsigned long bmp085ReadUP()
   // Write 0x34+(OSS<<6) into register 0xF4
   // Request a pressure reading w/ oversampling setting
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF4);
-  Wire.send(0x34 + (OSS<<6));
+  Wire.write(0xF4);
+  Wire.write(0x34 + (OSS<<6));
   Wire.endTransmission();
 
   // Wait for conversion, delay time dependent on OSS
@@ -636,16 +657,16 @@ unsigned long bmp085ReadUP()
 
   // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF6);
+  Wire.write(0xF6);
   Wire.endTransmission();
   Wire.requestFrom(BMP085_ADDRESS, 3);
 
   // Wait for data to become available
   while(Wire.available() < 3)
     ;
-  msb = Wire.receive();
-  lsb = Wire.receive();
-  xlsb = Wire.receive();
+  msb = Wire.read();
+  lsb = Wire.read();
+  xlsb = Wire.read();
 
   up = (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8-OSS);
 
@@ -661,7 +682,7 @@ void hh10dCalibration(){
 int i2cRead2bytes(int deviceaddress, byte address){
   // SET ADDRESS
   Wire.beginTransmission(deviceaddress);
-  Wire.send(address); // address for sensitivity
+  Wire.write(address); // address for sensitivity
   Wire.endTransmission();
 
   // REQUEST RETURN VALUE
@@ -669,7 +690,7 @@ int i2cRead2bytes(int deviceaddress, byte address){
   // COLLECT RETURN VALUE
   int rv = 0;
   for (int c = 0; c < 2; c++ )
-    if (Wire.available()) rv = rv * 256 + Wire.receive();
+    if (Wire.available()) rv = rv * 256 + Wire.read();
   return rv;
 }
 float hh10dReadHumidity(){
@@ -681,6 +702,15 @@ float hh10dReadHumidity(){
   //Calculate RH
   float RH =  (offset-freq)*sens/4096; //Sure, you can use int - depending on what do you need
   return RH;
+}
+void setSensorPolarity(boolean flip){
+  if(flip){
+    digitalWrite(voltageFlipPin1, HIGH);
+    digitalWrite(voltageFlipPin2, LOW);
+  }else{
+    digitalWrite(voltageFlipPin1, LOW);
+    digitalWrite(voltageFlipPin2, HIGH);
+  }
 }
 void digitalClockDisplay(){
   // digital clock display of the time
@@ -720,40 +750,4 @@ void alarmaOff(){
   delay(300);
   digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
