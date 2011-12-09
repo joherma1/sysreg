@@ -1,0 +1,9 @@
+Es la librería original
+http://interface.khm.de/index.php/lab/experiments/arduino-frequency-counter-library/
+
+modificada para que compile con la nueva version del IDE Arduino 1.0
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
