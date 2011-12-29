@@ -554,6 +554,20 @@ public class Interfaz {
 	private JTextPane getTp_horario() {
 		if (tp_horario == null) {
 			tp_horario = new JTextPane();
+			tp_horario.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					try {
+						Desktop.getDesktop().browse(new URI("https://www.google.com/calendar/"));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
 			tp_horario.setEditable(false);
 			// Para que aparezca el scroll horizontal hemos metido el jtextpane
 			// en un jpane y este a su vez en un jscrollpane
