@@ -1,14 +1,17 @@
 package arduino;
 
 import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.TooManyListenersException;
 
 /**
  * Implementación de la clase que establece la comunicación entre una placa
@@ -17,14 +20,9 @@ import java.util.Enumeration;
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  */
 @SuppressWarnings("restriction")
-public class Duemilanove implements SerialPortEventListener, Arduino {
+public class Uno implements SerialPortEventListener, Arduino {
 	// Variables RXTX
 	SerialPort serialPort;
-	// Puertos que normalmente se utilizarán
-	private static final String PORT_NAMES[] = { "/dev/tty.usbserial-A700e0xk","/dev/tty.usbmodem1a21", "/dev/tty.usbmodemfd121", // Mac
-			"/dev/tty.usbmodem1d11", "/dev/ttyUSB0", // Linux
-			"COM11", // Windows
-	};
 	// Flujo de entrada al puerto
 	private InputStream input;
 	// Flujo de salida al puerto
@@ -41,71 +39,75 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 
 	/**
 	 * Inicializa la librería RXTX. Sigue el protocolo implementado en AlReg,
-	 * esperando la confirmación (ACK).
+	 * esperando la confirmación (ACK). Por defecto coge el primer puerto de
+	 * serie detectado, si este no es válido mostrara una lista para seleccionar
+	 * el puerto correcto
 	 * 
 	 * @return 0 -> OK; -1 -> No se ha encontrado el puerto; -2 -> Error al
 	 *         abrir el puerto
 	 */
 	public int initialize() {
+		// Inicialización librería RXTX
+		Enumeration portEnum;
+		portEnum = CommPortIdentifier.getPortIdentifiers();
+		// Iteramos buscando el puerto
+		while (portEnum.hasMoreElements()) {
+			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
+					.nextElement();
+			if (currPortId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+				String curr_port = currPortId.getName();
+				System.out.println(curr_port);
+				// Probamos que el puerto es correcto
+				try {
+					// Abrimos el puerto de serie, indicándole el nombre de la
+					// aplicación (this.getClass().getName())
+					serialPort = (SerialPort) currPortId.open("RegAdmin",
+							TIME_OUT);
 
-		try {
-			// Inicialización librería RXTX
-			CommPortIdentifier portId = null;
-			Enumeration portEnum;
-			portEnum = CommPortIdentifier.getPortIdentifiers();
+					// Parámetros del puerto
+					serialPort.setSerialPortParams(DATA_RATE,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
 
-			// Iteramos buscando el puerto
-			while (portEnum.hasMoreElements()) {
-				CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
-						.nextElement();
-				for (String portName : PORT_NAMES) {
-					if (currPortId.getName().equals(portName)) {
-						portId = currPortId;
-						break;
+					// Abrimos los flujos de comunicación
+					input = serialPort.getInputStream();
+					output = serialPort.getOutputStream();
+
+					// Listeners
+					serialPort.addEventListener(this);
+					serialPort.notifyOnDataAvailable(true);
+					// Tiempo de arranque, unos 1450
+					// Le enviamos una petición de enlace
+					// Inicializamos por petición aunque aceptamos la
+					// inicialización por conexión
+					output.write(0x05);
+					byte[] res = this.leerArduinoBytes();
+					if (res != null && res[0] == 6) {
+						// Responde correctamente y ya no tenemos que seguir
+						// buscando puerto
+						return 0;
+					} else { // Timeout o error de comunicación
+						System.out
+								.println("El puerto "
+										+ currPortId.getName()
+										+ " no responde correctamente a nuestra petición");
+						// Cerramos el puerto
+						this.close();
 					}
+				} catch (Exception e) {
+					// Si ha habido un error al conectar probamos con el
+					// siguiente
+					System.out.println("Error al conectar con el puerto "
+							+ currPortId.getName());
+					System.out.println(e.toString());
+					// Cerramos el puerto
+					this.close();
 				}
 			}
-
-			if (portId == null) {
-				System.out
-						.println("No se ha podido encontrar el puerto de comunicación.");
-				return -1;
-			}
-
-			// Abrimos el puerto de serie, indicándole el nombre de la
-			// aplicación (this.getClass().getName())
-			serialPort = (SerialPort) portId.open("RegAdmin", TIME_OUT);
-
-			// Parámetros del puerto
-			serialPort.setSerialPortParams(DATA_RATE, SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-			// Abrimos los flujos de comunicación
-			input = serialPort.getInputStream();
-			output = serialPort.getOutputStream();
-
-			// Listeners
-			serialPort.addEventListener(this);
-			serialPort.notifyOnDataAvailable(true);
-			// Tiempo de arranque, unos 1450
-			// Le enviamos una petición de enlace
-			// Inicializamos por petición aunque aceptamos la inicialización por
-			// conexión
-			output.write(0x05);
-			if (this.leerArduinoBytes()[0] == 6)// Arduino nos responde con ACK
-				return 0;
-			else
-				return -2;
-
-		} catch (java.lang.UnsatisfiedLinkError e) {
-			System.err.println(e.toString());
-			System.err.println(e.getMessage());
-			return -3;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return -2;
 		}
-
+		// Si no hay ningún puerto de comunicación de serie válido
+		System.out.println("No se ha podido encontrar un puerto de comunicación válido");
+		return -1;
 	}
 
 	/**
@@ -147,6 +149,9 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 */
 	String leerArduino() {
 		byte[] data = m.recoger();
+		if (data == null) { // Si ha saltado el timeout
+			return null;
+		}
 		while (data[data.length - 1] != 4) {// Mientras no nos diga fin de
 			// Transmisión seguimos esperando
 			byte[] data2 = m.recoger();
@@ -175,6 +180,9 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 	 */
 	byte[] leerArduinoBytes() {
 		byte[] data = m.recoger();
+		if (data == null) { // Si ha saltado el timeout
+			return null;
+		}
 		while (data[data.length - 1] != 4) {
 			// Mientras no nos diga fin de Transmisión seguimos esperando
 			byte[] data2 = m.recoger();
@@ -432,7 +440,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Obtiene la humedad sensor resistivo de humedad del suelo
 	 * 
@@ -518,7 +526,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else // error
+			else
+				// error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -554,7 +563,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else // error
+			else
+				// error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -588,7 +598,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else // error
+			else
+				// error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -622,7 +633,8 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			int res_l = Integer.parseInt(res);
 			if (res_l != -1)
 				return res_l;
-			else // error
+			else
+				// error
 				return -1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -688,10 +700,15 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		private byte[] buffer;
 		private boolean vacio = true;
 
+		/**
+		 * Variable bandera para saber si ha saltado el timeout
+		 */
+		// private boolean timeout = true;
+
 		public synchronized byte[] recoger() {
-			while (vacio == true) {
+			if (vacio == true) {
 				try {
-					wait();
+					wait(4000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -699,37 +716,45 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 			vacio = true;
 			byte[] res = buffer;
 			buffer = null;
+			// timeout = true;
 			return res;
 		}
 
 		public synchronized void depositar(byte[] data) {
 			buffer = data;
 			vacio = false;
+			// timeout = false;
 			notify();
 		}
 	}
 
 	public static void main(String[] args) {
-		Duemilanove d = new Duemilanove();
-		d.initialize();
-		d.establecerHora(1321873956L); // 12:12:37D
-		System.out.println(d.establecerAlarmaRepOn(12, 13, 00));
-		System.out.println(d.establecerAlarmaRepOff(12, 13, 10));
-		System.out.println(d.eliminarAlarmas());
-		// System.out.println(d.establecerAlarmaOn(1321805121L));
-		// System.out.println(d.establecerAlarmaOff(1321805131L));
-		// System.out.println(d.establecerHora(null));
+		Uno d = new Uno();
+		if (d.initialize() == 0) {
+			System.out.println("Numero de sensores " + d.contarSensoresT());
+			byte[][] l = d.listarSensoresT();
+			for (int i = 0; i < d.n_sensores_t; i++) {
+				for (int j = 0; j < l[i].length; j++)
+					System.out.print(String.format("%02X", l[i][j]) + " ");
+				System.out.println();
+			}
+		}
+		// d.establecerHora(1321873956L); // 12:12:37D
+		// System.out.println(d.establecerAlarmaRepOn(12, 13, 00));
+		// System.out.println(d.establecerAlarmaRepOff(12, 13, 10));
+		// System.out.println(d.eliminarAlarmas());
+
 		// System.out.println("1-Contar sensores");
 		// System.out.println("2-Listar sensores");
 		// System.out.println("3-Obtener temperatura del 1r sensor");
 		// System.out.println("4-Obtener temperatura del 2o sensor");
 		// int opcion;
 		// for (int ii = 0; ii < 1; ii++) {
-		// // int n=d.contarSensoresT();
-		// System.out.println("Numero de sensores "+ n);
-		// byte[][] l=d.listarSensoresT();
-		// for(int i=0;i<d.n_sensores_t;i++){
-		// String aux= new String(l[i]);
+		// int n=d.contarSensoresT();
+		// System.out.println("Numero de sensores " + n);
+		// byte[][] l = d.listarSensoresT();
+		// for (int i = 0; i < d.n_sensores_t; i++) {
+		// String aux = new String(l[i]);
 		// System.out.println(aux);
 		// }
 		// System.out.println("Temperatura Sensor 1");
@@ -750,19 +775,19 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		// int n = d.contarSensoresT();
 		// d.close();
 		// System.exit(0);
-
+		//
 		// try {
 		// opcion = System.in.read();
-		// while(opcion!=-1){
+		// while (opcion != -1) {
 		// switch (opcion) {
-		// case 49://1 ASCII
-		// int n=d.contarSensoresT();
-		// System.out.println("Numero de sensores "+ n);
+		// case 49:// 1 ASCII
+		// int n = d.contarSensoresT();
+		// System.out.println("Numero de sensores " + n);
 		// break;
 		// case 50:
-		// byte[][] l=d.listarSensoresT();
-		// for(int i=0;i<d.n_sensores_t;i++){
-		// String aux= new String(l[i]);
+		// byte[][] l = d.listarSensoresT();
+		// for (int i = 0; i < d.n_sensores_t; i++) {
+		// String aux = new String(l[i]);
 		// System.out.println(aux);
 		// }
 		// default:
@@ -775,5 +800,7 @@ public class Duemilanove implements SerialPortEventListener, Arduino {
 		// // TODO Auto-generated catch block
 		// e.printStackTrace();
 		// }
+		d.close();
+		System.exit(0);
 	}
 }

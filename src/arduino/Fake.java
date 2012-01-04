@@ -1,43 +1,39 @@
 package arduino;
 
-import java.io.IOException;
-
-import arduino.Duemilanove.Monitor;
-
-public class Fake implements Arduino{
-	//-----------------
-	//Variables Arduino
-	//-----------------
+public class Fake implements Arduino {
+	// -----------------
+	// Variables Arduino
+	// -----------------
 	int n_sensores_t;
 	public byte sensores_t[][];
 	boolean regando;
 	int n_alarmas;
-	long[] alarmas = new long[56];//Numero máximo de alarmas en la placa
+	long[] alarmas = new long[56];// Número máximo de alarmas en la placa
 
-	public boolean startReg(){
+	public boolean startReg() {
 		regando = true;
 		return true;
 	}
 
-	public boolean stopReg(){
+	public boolean stopReg() {
 		regando = false;
 		return false;
 	}
-	public boolean comprobarReg(){
-		//Con regando simulamos el ultimo estado que hayamos puesto
-		//iniciando la placa en off
-		return regando; //Siempre off
+
+	public boolean comprobarReg() {
+		// Con regando simulamos el ultimo estado que hayamos puesto
+		// iniciando la placa en off
+		return regando; // Siempre off
 	}
 
-	public int contarSensoresT(){
+	public int contarSensoresT() {
 		this.n_sensores_t = 2;
 		return 2;
 	}
 
-
-	public byte[][] listarSensoresT(){
+	public byte[][] listarSensoresT() {
 		this.contarSensoresT();
-		this.sensores_t= new byte[this.n_sensores_t][8];
+		this.sensores_t = new byte[this.n_sensores_t][8];
 		this.sensores_t[0][0] = new Byte("00").byteValue();
 		this.sensores_t[0][1] = new Byte("00").byteValue();
 		this.sensores_t[0][2] = new Byte("00").byteValue();
@@ -57,35 +53,39 @@ public class Fake implements Arduino{
 		return this.sensores_t;
 	}
 
-	public Float obtenerTemperatura(byte[] sensor){
-		if(sensor == this.sensores_t[1]){
+	public Float obtenerTemperatura(byte[] sensor) {
+		if (sensor == this.sensores_t[1]) {
 			return new Float("34.2");
-		}else{
+		} else {
 			return new Float("24.2");
 		}
 	}
 
-	public Long obtenerPresionBMP085(){
-		return new Long (101325);
+	public Long obtenerPresionBMP085() {
+		return new Long(101325);
 	}
 
-	public Float obtenerTemperaturaBMP085(){
+	public Float obtenerTemperaturaBMP085() {
 		return new Float(30);
 	}
-	public Float obtenerAlturaBMP085(){
+
+	public Float obtenerAlturaBMP085() {
 		return new Float(0);
 	}
-	public Float obtenerHumedadHH10D(){
+
+	public Float obtenerHumedadHH10D() {
 		return new Float(45.5);
 	}
-	
+
 	public int obtenerHumedadSuelo() {
 		return 50;
 	}
-	public int initialize(){
+
+	public int initialize() {
 		return 0;
 	}
-	public void close(){
+
+	public void close() {
 	}
 
 	public boolean establecerHora(Long tiempoUnix) {
@@ -103,12 +103,12 @@ public class Fake implements Arduino{
 	}
 
 	public int establecerAlarmaRepOn(int horas, int minutos, int segundos) {
-		this.alarmas[n_alarmas] = horas*24 + minutos*60 + segundos;
+		this.alarmas[n_alarmas] = horas * 24 + minutos * 60 + segundos;
 		return n_alarmas++;
 	}
 
 	public int establecerAlarmaRepOff(int horas, int minutos, int segundos) {
-		this.alarmas[n_alarmas] = horas*24 + minutos*60 + segundos;
+		this.alarmas[n_alarmas] = horas * 24 + minutos * 60 + segundos;
 		return n_alarmas++;
 	}
 
