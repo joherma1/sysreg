@@ -17,7 +17,7 @@ import java.util.TimeZone;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import logic.Evento3.State;
+import logic.Evento.State;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -25,7 +25,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import arduino.Arduino;
-import arduino.Duemilanove;
+import arduino.Uno;
 import arduino.Fake;
 
 import com.google.api.client.auth.oauth2.draft10.AccessTokenResponse;
@@ -39,23 +39,23 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
-public class Negocio3 {
+public class Negocio {
 	private Arduino ino;
 	private String[] sensores_t;
 	private byte[][] sensores_t_raw;
-	private List<Evento3> sortedEvents;
+	private List<Evento> sortedEvents;
 	private boolean regando;
 	com.google.api.services.calendar.Calendar googleCalendar;
 
-	public Negocio3() {
-		ino = new Duemilanove();
+	public Negocio() {
+		ino = new Uno();
 	}
 
-	public Negocio3(boolean debug) {
+	public Negocio(boolean debug) {
 		if (debug == true)
 			ino = new Fake();
 		else
-			ino = new Duemilanove();
+			ino = new Uno();
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class Negocio3 {
 	 *         ha podido obtener eventos
 	 * 
 	 */
-	public List<Evento3> cargarCalendario() {
+	public List<Evento> cargarCalendario() {
 		try {
 			// Autenticación
 			if (googleCalendar == null) {
@@ -322,11 +322,11 @@ public class Negocio3 {
 			consulta.setSingleEvents(true);
 
 			Events events = consulta.execute();
-			sortedEvents = new ArrayList<Evento3>();
+			sortedEvents = new ArrayList<Evento>();
 			while (true) {
 				for (Event event : events.getItems())
 					if (event.getStatus().equals("confirmed")) {
-						Evento3 e = new Evento3(event.getSummary(),
+						Evento e = new Evento(event.getSummary(),
 								event.getDescription(), event.getStart()
 										.getDateTime(), event.getEnd()
 										.getDateTime(), event.getId());
@@ -347,7 +347,7 @@ public class Negocio3 {
 			Collections.sort(sortedEvents);
 			// Coloreamos los estados
 			for (int i = 0; i < sortedEvents.size(); i++) {
-				Evento3 e = sortedEvents.get(i);
+				Evento e = sortedEvents.get(i);
 				DateTime now = new DateTime(new Date(),
 						TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
@@ -403,11 +403,11 @@ public class Negocio3 {
 	 * 
 	 * @return Lista de eventos ordenados y coloreados
 	 */
-	public List<Evento3> comprobarRiego() {
+	public List<Evento> comprobarRiego() {
 		boolean activo = false;
 		if (sortedEvents != null) {
 			for (int i = 0; i < sortedEvents.size(); i++) {
-				Evento3 e = sortedEvents.get(i);
+				Evento e = sortedEvents.get(i);
 				DateTime now = new DateTime(new Date(),
 						TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
@@ -503,7 +503,7 @@ public class Negocio3 {
 
 			// Lectura del código a través de un JOptionPane
 			ImageIcon icono = new ImageIcon(
-					Negocio3.class
+					Negocio.class
 							.getResource("/imagenes/Naranjito/Naranjito 64.png"));
 			String code = (String) JOptionPane.showInputDialog(null,
 					"Introduzca el código de autorización:",
@@ -677,7 +677,7 @@ public class Negocio3 {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio3 main = new Negocio3();
+		Negocio main = new Negocio();
 		//main.inicializar();
 		main.abrirCalendario();
 		main.cargarCalendario();

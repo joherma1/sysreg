@@ -27,14 +27,14 @@ import javax.swing.ListSelectionModel;
 
 import logic.Alarma;
 import logic.AlarmaRepetitiva;
-import logic.Negocio3;
+import logic.Negocio;
 
 import com.google.api.client.util.DateTime;
 
 public class Carga {
 
 	private JFrame frame;
-	private Negocio3 logica;
+	private Negocio logica;
 	private List<Alarma> alarmas;
 	private JList l_puntuales;
 	private JList l_indefinidos;
@@ -46,7 +46,7 @@ public class Carga {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Negocio3 logica = new Negocio3();
+					Negocio logica = new Negocio();
 					logica.inicializar();
 					Carga window = new Carga(logica);
 					window.frame.setVisible(true);
@@ -60,7 +60,7 @@ public class Carga {
 	/**
 	 * Create the application.
 	 */
-	public Carga(Negocio3 logica) {
+	public Carga(Negocio logica) {
 		this.logica = logica;
 		initialize();
 	}

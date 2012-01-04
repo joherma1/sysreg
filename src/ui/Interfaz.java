@@ -48,8 +48,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import logic.Evento3;
-import logic.Negocio3;
+import logic.Evento;
+import logic.Negocio;
 
 public class Interfaz {
 
@@ -59,9 +59,9 @@ public class Interfaz {
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
 	//private Negocio logica = null; // @jve:decl-index=0:
-	private Negocio3 logica = null;
+	private Negocio logica = null;
 	//private List<Evento> eventos = null;
-	private List<Evento3> eventos = null;
+	private List<Evento> eventos = null;
 	// private RelojCalendar r_cal = null;
 	private RelojRiego r_riego = null;
 	// Panel Tª
@@ -1047,7 +1047,7 @@ public class Interfaz {
 	void inicializar(boolean debug) {
 
 		System.out.println("----Inicializar");
-		logica = new Negocio3(debug);
+		logica = new Negocio(debug);
 		int ini = logica.inicializar();
 		if (ini == -1) {
 			JOptionPane.showMessageDialog(this.f_iniciando,
@@ -1214,8 +1214,8 @@ public class Interfaz {
 			// Append to document
 			if (eventos != null) {
 				for (int i = 0; i < eventos.size(); i++) {
-					Evento3 e = eventos.get(i);
-					Evento3.State es = e.getEstado();
+					Evento e = eventos.get(i);
+					Evento.State es = e.getEstado();
 					String e_des = e.toString() + "\n";
 					int longitud = doc.getLength();
 					switch (es) {

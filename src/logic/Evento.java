@@ -14,7 +14,7 @@ import com.google.api.client.util.DateTime;
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  * 
  */
-public class Evento3 implements Comparable<Evento3> {
+public class Evento implements Comparable<Evento> {
 	public enum State {
 		ROJO, VERDE, NEGRO
 	};
@@ -44,7 +44,7 @@ public class Evento3 implements Comparable<Evento3> {
 	 * @param UID
 	 *            Identificador único proporcionado por la API de Google
 	 */
-	public Evento3(String titulo, String descripcion, DateTime comienzo,
+	public Evento(String titulo, String descripcion, DateTime comienzo,
 			DateTime fin, String lugar, String UID) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
@@ -69,7 +69,7 @@ public class Evento3 implements Comparable<Evento3> {
 	 * @param UID
 	 *            Identificador único proporcionado por la API de Google
 	 */
-	public Evento3(String titulo, String descripcion, DateTime comienzo,
+	public Evento(String titulo, String descripcion, DateTime comienzo,
 			DateTime fin, String UID) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
@@ -131,7 +131,7 @@ public class Evento3 implements Comparable<Evento3> {
 	/**
 	 * Método utilizado para ordenar eventos según su fecha de inicio.
 	 */
-	public int compareTo(Evento3 o) {
+	public int compareTo(Evento o) {
 		// Nosotros solo queremos comparar con una precisión de segundo, equals
 		// comparar con precisión de milisegundo
 		return (int) (this.inicio.getValue() / 1000 - o.getInicio().getValue() / 1000);
@@ -148,10 +148,10 @@ public class Evento3 implements Comparable<Evento3> {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof Evento3)) {
+		if (!(o instanceof Evento)) {
 			return false;
 		}
-		Evento3 evento = (Evento3) o;
+		Evento evento = (Evento) o;
 		// Para nosotros dos fechas son iguales si tienen la misma fecha de
 		// inicio [en segundos, no en milisegundos (así trabaja el método
 		// equals)] y el mismo identificador único de Google
