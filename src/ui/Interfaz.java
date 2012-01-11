@@ -147,7 +147,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(695, 490));
+			f_interfaz.setSize(new Dimension(736, 490));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -177,14 +177,14 @@ public class Interfaz {
 	private JPanel getP_interfaz() {
 		if (p_interfaz == null) {
 			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.gridx = 1;
+			gridBagConstraints14.gridx = 0;
 			gridBagConstraints14.anchor = GridBagConstraints.NORTHWEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
 			gridBagConstraints14.gridy = 3;
 			l_hora = new JLabel();
 			l_hora.setText("Hora:");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			gridBagConstraints10.gridx = 4;
+			gridBagConstraints10.gridx = 3;
 			gridBagConstraints10.anchor = GridBagConstraints.EAST;
 			gridBagConstraints10.insets = new Insets(0, 10, 5, 10);
 			gridBagConstraints10.fill = GridBagConstraints.NONE;
@@ -200,20 +200,20 @@ public class Interfaz {
 			gridBagConstraints12.gridheight = 3;
 			gridBagConstraints12.insets = new Insets(10, 5, 5, 10);
 			gridBagConstraints12.gridwidth = 3;
-			gridBagConstraints12.gridx = 2;
+			gridBagConstraints12.gridx = 1;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 1;
+			gridBagConstraints5.gridx = 0;
 			gridBagConstraints5.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints5.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints5.fill = GridBagConstraints.NONE;
 			gridBagConstraints5.gridy = 2;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 1;
+			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.insets = new Insets(5, 10, 5, 5);
 			gridBagConstraints4.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints4.gridy = 1;
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.gridheight = 1;
 			gridBagConstraints11.anchor = GridBagConstraints.CENTER;
 			gridBagConstraints11.gridwidth = 1;
@@ -231,21 +231,21 @@ public class Interfaz {
 
 			p_interfaz = new JPanel();
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
-			gbl_p_interfaz.columnWidths = new int[] { 0, 202, 0, 185, 57 };
+			gbl_p_interfaz.columnWidths = new int[] { 202, 0, 185, 57 };
 			gbl_p_interfaz.rowHeights = new int[] { 0, 0, 27, 0, 174, 0 };
 			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
 			p_interfaz.add(getB_desactivarRiego(), gridBagConstraints5);
 			GridBagConstraints gbc_cb_Desactivar = new GridBagConstraints();
 			gbc_cb_Desactivar.insets = new Insets(0, 0, 5, 5);
-			gbc_cb_Desactivar.gridx = 2;
+			gbc_cb_Desactivar.gridx = 1;
 			gbc_cb_Desactivar.gridy = 3;
 			p_interfaz.add(getCb_Desactivar(), gbc_cb_Desactivar);
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 3;
+			gridBagConstraints13.gridx = 2;
 			gridBagConstraints13.anchor = GridBagConstraints.WEST;
 			gridBagConstraints13.insets = new Insets(0, 10, 5, 5);
 			gridBagConstraints13.gridy = 3;
@@ -255,38 +255,38 @@ public class Interfaz {
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridwidth = 2;
 			gridBagConstraints3.fill = GridBagConstraints.BOTH;
-			gridBagConstraints3.gridx = 1;
+			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
 			gridBagConstraints3.gridy = 4;
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
 			GridBagConstraints gbc_p_BMP085 = new GridBagConstraints();
 			gbc_p_BMP085.insets = new Insets(5, 5, 5, 5);
 			gbc_p_BMP085.fill = GridBagConstraints.BOTH;
-			gbc_p_BMP085.gridx = 3;
+			gbc_p_BMP085.gridx = 2;
 			gbc_p_BMP085.gridy = 4;
 			p_interfaz.add(getP_BMP085(), gbc_p_BMP085);
 			GridBagConstraints gbc_p_HH10D = new GridBagConstraints();
 			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
 			gbc_p_HH10D.anchor = GridBagConstraints.WEST;
 			gbc_p_HH10D.insets = new Insets(5, 5, 5, 0);
-			gbc_p_HH10D.gridx = 4;
+			gbc_p_HH10D.gridx = 3;
 			gbc_p_HH10D.gridy = 4;
 			p_interfaz.add(getPanel_1(), gbc_p_HH10D);
 			GridBagConstraints gbc_chckbxActualizarSensores = new GridBagConstraints();
 			gbc_chckbxActualizarSensores.anchor = GridBagConstraints.WEST;
 			gbc_chckbxActualizarSensores.insets = new Insets(0, 0, 0, 5);
-			gbc_chckbxActualizarSensores.gridx = 1;
+			gbc_chckbxActualizarSensores.gridx = 0;
 			gbc_chckbxActualizarSensores.gridy = 5;
 			p_interfaz.add(getChckbxActualizarSensores(), gbc_chckbxActualizarSensores);
 			GridBagConstraints gbc_spiActualizarSensores = new GridBagConstraints();
 			gbc_spiActualizarSensores.anchor = GridBagConstraints.WEST;
 			gbc_spiActualizarSensores.insets = new Insets(0, 0, 0, 5);
-			gbc_spiActualizarSensores.gridx = 2;
+			gbc_spiActualizarSensores.gridx = 1;
 			gbc_spiActualizarSensores.gridy = 5;
 			p_interfaz.add(getSpiActualizarSensores(), gbc_spiActualizarSensores);
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints6.gridx = 4;
+			gridBagConstraints6.gridx = 3;
 			gridBagConstraints6.insets = new Insets(0, 5, 0, 10);
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridy = 5;
@@ -1410,8 +1410,9 @@ public class Interfaz {
 
 		public void detener() {
 			this.activo = false;
-			if (!this.isInterrupted())
-				this.interrupt();
+			// Nos esperamos a que termine la iteración para desactivar la actualización
+//			if (!this.isInterrupted())
+//				this.interrupt();
 		}
 
 		public void run() {
@@ -1836,12 +1837,24 @@ public class Interfaz {
 			chckbxActualizarSensores.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if(chckbxActualizarSensores.isSelected()){
+						// Desactivamos los botones de actualización
+						for (int i = 0; i < b_refresh.size(); i++)
+							b_refresh.get(i).setEnabled(false);
+						b_RecargarBMP085.setEnabled(false);
+						b_recargarHumedad.setEnabled(false);
+						b_recargaHumedadSuelo.setEnabled(false);
+						
 						spiActualizarSensores.setEnabled(true);
 						// La frecuencia de actualización la marcará el spinner
 						r_sensores =  new RelojSensores(); 
 						r_sensores.start();
 					}
 					else{
+						for (int i = 0; i < b_refresh.size(); i++)
+							b_refresh.get(i).setEnabled(true);
+						b_RecargarBMP085.setEnabled(true);
+						b_recargarHumedad.setEnabled(true);
+						b_recargaHumedadSuelo.setEnabled(true);
 						spiActualizarSensores.setEnabled(false);
 						r_sensores.detener();
 					}
