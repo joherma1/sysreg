@@ -28,6 +28,12 @@ public class Fake implements Arduino {
 
 	public int contarSensoresT() {
 		this.n_sensores_t = 2;
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return 2;
 	}
 
@@ -62,6 +68,12 @@ public class Fake implements Arduino {
 	}
 
 	public Long obtenerPresionBMP085() {
+		try {
+			Thread.sleep(800);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new Long(101325);
 	}
 

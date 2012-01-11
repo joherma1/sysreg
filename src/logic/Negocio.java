@@ -73,11 +73,8 @@ public class Negocio {
 			// Comprobamos el estado actual del riego
 			regando = ino.comprobarReg();
 			cargarConfiguracion();
-			value_calendar = abrirCalendario();
-		} else { // Error al conectar con la placa
-			return value_due;
 		}
-		return value_calendar;
+		return value_due;
 	}
 
 	/**
@@ -492,8 +489,14 @@ public class Negocio {
 			System.out.println(authorizationUrl);
 
 			// Abrimos directamente el navegador
-			Desktop.getDesktop().browse(new URI(authorizationUrl));
-
+			ImageIcon icono = new ImageIcon(
+					Negocio.class
+							.getResource("/imagenes/Naranjito/Naranjito 64.png"));
+			int res=JOptionPane.showConfirmDialog(null, "¿Desea iniciar sesión en Google Calendar?", "Iniciar sesión", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icono);
+			if(res == JOptionPane.YES_OPTION)
+				Desktop.getDesktop().browse(new URI(authorizationUrl));
+			else //NO_OPTION
+				return -4;
 			// Lectura por la entrada estándard
 			// BufferedReader in = new BufferedReader(new InputStreamReader(
 			// System.in));
@@ -502,9 +505,6 @@ public class Negocio {
 			// code = in.readLine();
 
 			// Lectura del código a través de un JOptionPane
-			ImageIcon icono = new ImageIcon(
-					Negocio.class
-							.getResource("/imagenes/Naranjito/Naranjito 64.png"));
 			String code = (String) JOptionPane.showInputDialog(null,
 					"Introduzca el código de autorización:",
 					"Autorización para acceder a Google Calendar",
