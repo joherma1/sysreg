@@ -311,10 +311,8 @@ public class Negocio {
 			DateTime dateFin = obtenerPasadoManyana();
 			// dateInicio = DateTime.parseRfc3339("2011-11-23T00:00:00Z");
 			// dateFin = DateTime.parseRfc3339("2011-11-23T23:59:59Z");
-			String inicio = dateInicio.toString();
-			String fin = dateFin.toString();
-			consulta.setTimeMin(inicio);
-			consulta.setTimeMax(fin);
+			consulta.setTimeMin(dateInicio);
+			consulta.setTimeMax(dateFin);
 			// Para que nos retorne los eventos repetidos como eventos simples
 			consulta.setSingleEvents(true);
 
@@ -558,8 +556,8 @@ public class Negocio {
 		try {
 			com.google.api.services.calendar.Calendar.Events.List consulta = googleCalendar
 					.events().list("primary");
-			consulta.setTimeMin(inicio.toString());
-			consulta.setTimeMax(fin.toString());
+			consulta.setTimeMin(inicio);
+			consulta.setTimeMax(fin);
 			Events events = consulta.execute();
 			List<Alarma> alarmas = new ArrayList<Alarma>();
 
