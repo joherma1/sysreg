@@ -15,7 +15,7 @@ import java.util.TooManyListenersException;
 
 /**
  * Implementación de la clase que establece la comunicación entre una placa
- * Duemilanove y el Software RegAdmin.
+ * Uno y el Software RegAdmin.
  * 
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  */
