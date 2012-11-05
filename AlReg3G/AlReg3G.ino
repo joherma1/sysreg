@@ -317,7 +317,6 @@ void loop(){
                   incoming=Serial1.read();  
                   if(verbose){
                     Serial.print(incoming);
-
                     Serial.flush();  
                   }
                 }                     
@@ -325,7 +324,7 @@ void loop(){
               while(incoming != '>');
               Serial1.println(contarSensores());            //DATA
               Serial1.flush();
-              Serial.print("Sensores contados"); 
+              Serial.print("Sensores contados "); 
               Serial.flush();
               x=0;
               do{
