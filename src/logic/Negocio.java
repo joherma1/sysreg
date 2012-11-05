@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -25,6 +26,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import arduino.Arduino;
+import arduino.Mega3G;
 import arduino.Uno;
 import arduino.Fake;
 
@@ -46,6 +48,15 @@ public class Negocio {
 	private List<Evento> sortedEvents;
 	private boolean regando;
 	com.google.api.services.calendar.Calendar googleCalendar;
+	private final String IPV4_REGEX = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	private Pattern IPV4_PATTERN = Pattern.compile(IPV4_REGEX);
+
+	public boolean validarIP(final String s) {
+		return IPV4_PATTERN.matcher(s).matches();
+	}
 
 	public Negocio() {
 		ino = new Uno();
@@ -56,6 +67,13 @@ public class Negocio {
 			ino = new Fake();
 		else
 			ino = new Uno();
+	}
+
+	public Negocio(String IP) {
+		if (IP != null && IP.length() > 0 && validarIP(IP)) {
+			ino = new Mega3G(IP);
+		} else
+			System.err.println("IP no válida");
 	}
 
 	/**
@@ -307,7 +325,7 @@ public class Negocio {
 			com.google.api.services.calendar.Calendar.Events.List consulta = googleCalendar
 					.events().list("primary");
 
-			DateTime dateInicio = obtenerHoy(); 
+			DateTime dateInicio = obtenerHoy();
 			DateTime dateFin = obtenerPasadoManyana();
 			// dateInicio = DateTime.parseRfc3339("2011-11-23T00:00:00Z");
 			// dateFin = DateTime.parseRfc3339("2011-11-23T23:59:59Z");
@@ -346,7 +364,7 @@ public class Negocio {
 				DateTime now = new DateTime(new Date(),
 						TimeZone.getTimeZone("Europe/Madrid"));
 				e.colorear(now);
-				//e.imprimir();
+				// e.imprimir();
 			}
 			return sortedEvents;
 
@@ -490,10 +508,14 @@ public class Negocio {
 			ImageIcon icono = new ImageIcon(
 					Negocio.class
 							.getResource("/imagenes/Naranjito/Naranjito 64.png"));
-			int res=JOptionPane.showConfirmDialog(null, "¿Desea iniciar sesión en Google Calendar?", "Iniciar sesión", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icono);
-			if(res == JOptionPane.YES_OPTION)
+			int res = JOptionPane.showConfirmDialog(null,
+					"¿Desea iniciar sesión en Google Calendar?",
+					"Iniciar sesión", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, icono);
+			if (res == JOptionPane.YES_OPTION)
 				Desktop.getDesktop().browse(new URI(authorizationUrl));
-			else //NO_OPTION
+			else
+				// NO_OPTION
 				return -4;
 			// Lectura por la entrada estándard
 			// BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -576,11 +598,12 @@ public class Negocio {
 							alarmas.add(off);
 						} else { // Eventos repetidos
 							// Creamos la alarma repetida
-							//*****------------------******
-							//Por ahora solo acepta alarmas repetidas diariamente
-							//Si hay una en ese periodo se insertará
-							//Necesaria modificación en los 4 niveles
-							//*****------------------******
+							// *****------------------******
+							// Por ahora solo acepta alarmas repetidas
+							// diariamente
+							// Si hay una en ese periodo se insertará
+							// Necesaria modificación en los 4 niveles
+							// *****------------------******
 							AlarmaRepetitiva on = new AlarmaRepetitiva(event
 									.getStart().getDateTime(), event.getId(),
 									Alarma.Modo.ON,
@@ -675,17 +698,18 @@ public class Negocio {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio();
-		//main.inicializar();
-		main.abrirCalendario();
-		main.cargarCalendario();
+		Negocio main = new Negocio("80.27.44.189");
+		main.inicializar();
+		System.out.println(main.contarSensoresT());
+		// main.abrirCalendario();
+		// main.cargarCalendario();
 		// System.out.println("Eventos insertados");
 		// for (Evento3 e : main.sortedEvents)
 		// e.imprimir();
-//		List<Alarma> alarmas = main.CalendarioAAlarma(
-//				DateTime.parseRfc3339("2011-11-25T00:00:00Z"),
-//				DateTime.parseRfc3339("2011-11-26T00:00:00Z"));
-//		System.out.println(main.AlamarmasAPlaca(alarmas));
+		// List<Alarma> alarmas = main.CalendarioAAlarma(
+		// DateTime.parseRfc3339("2011-11-25T00:00:00Z"),
+		// DateTime.parseRfc3339("2011-11-26T00:00:00Z"));
+		// System.out.println(main.AlamarmasAPlaca(alarmas));
 		// main.pintarMenu();
 		// while(true){
 		// int value = System.in.read();

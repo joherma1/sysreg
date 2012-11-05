@@ -1,22 +1,19 @@
 package arduino;
 
 import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.TooManyListenersException;
 
 /**
  * Implementación de la clase que establece la comunicación entre una placa
  * Uno y el Software RegAdmin.
- * 
+ *  
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  */
 @SuppressWarnings("restriction")

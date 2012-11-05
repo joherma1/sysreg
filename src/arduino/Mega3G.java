@@ -37,7 +37,7 @@ public class Mega3G implements Arduino {
 	 * @param ip
 	 *            Dirección IP de la placa Arduino
 	 */
-	Mega3G(String ip) {
+	public Mega3G(String ip) {
 		servidor = ip;
 	}
 
@@ -103,10 +103,12 @@ public class Mega3G implements Arduino {
 	public int contarSensoresT() {
 		try {
 			char[] leido_char = new char[3];
-			salida.println("sysreg l");
+			salida.println("sysreg j");
 			entrada.read(leido_char);
 			String leido = new String(leido_char);
-			this.n_sensores_t = 2;
+			leido = leido.replace('\r', ' ').replace('\n', ' ').trim();
+			this.n_sensores_t = Integer.parseInt(leido);
+			return n_sensores_t;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
