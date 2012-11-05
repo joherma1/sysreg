@@ -199,10 +199,11 @@ void loop(){
           Serial.print("Comando: ");
           Serial.println(comando, HEX); 
           Serial.flush();
-          if(input_ans.length() > 12 ){//Si tiene argumento
-            for(int i=0; i<input_ans.length();i++)
+          int length  = input_ans.length();
+          if(length > 12 ){//Si tiene argumento
+            for(int i=0; i<length;i++)
               Serial.print(input_ans[i],HEX);
-            argumento = input_ans.substring(9,input_ans.length());
+            argumento = input_ans.substring(9,length);
             Serial.println("Argumento: " + argumento);//incluye <cr><lf><cr><lf>
             Serial.flush();
           }
@@ -397,11 +398,9 @@ void loop(){
               break;
             case 0x6D: //seleccionarCursor: m 109 0x6D
               //leemos los 8 siguientes byte que seran el ID del sensor
-
-              Serial.println("Entrando");
-              Serial.println(argumento + argumento.length());
-              if(argumento.length() != 16 ){
-                Serial.println("Arumento invalido " + argumento.length());
+              if(argumento.length() < 16 ){
+                Serial.println("Argumento invalido");
+                Serial.flush();
                 break;
               }
               else{
