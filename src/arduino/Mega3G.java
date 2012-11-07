@@ -104,12 +104,16 @@ public class Mega3G implements Arduino {
 		try {
 			char[] leido_char = new char[3];
 			salida.println("sysreg j");
+			Thread.sleep(2000);
 			entrada.read(leido_char);
 			String leido = new String(leido_char);
 			leido = leido.replace('\r', ' ').replace('\n', ' ').trim();
 			this.n_sensores_t = Integer.parseInt(leido);
 			return n_sensores_t;
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;

@@ -58,10 +58,26 @@ public class Negocio {
 		return IPV4_PATTERN.matcher(s).matches();
 	}
 
+	/**
+	 * Constructor de la clase negocio que implementa la lógica del software
+	 * RegAdmin. Este constructor establece la conexión con una placa AlReg por
+	 * USB, a través de la implementación Uno.java siguiendo la interfaz
+	 * Arduino.java.
+	 */
 	public Negocio() {
 		ino = new Uno();
 	}
 
+	/**
+	 * Constructor de la clase negocio que implementa la lógica del software
+	 * RegAdmin. Constructor indicado para llevar a cabo tareas de depuración
+	 * permitiendo indicar a través de su parametro si queremos simular la placa
+	 * AlReg (clase Fake.java) o utilizar la placa Uno por USB (Uno.java).
+	 * 
+	 * @param debug
+	 *            Tipo de conexión - true: Simulacion - false: USB
+	 * 
+	 */
 	public Negocio(boolean debug) {
 		if (debug == true)
 			ino = new Fake();
@@ -69,6 +85,14 @@ public class Negocio {
 			ino = new Uno();
 	}
 
+	/**
+	 * Constructor de la clase negocio que implementa la lógica del software
+	 * RegAdmin. Este constructor requiere del parametro IP, ya que establece la
+	 * conexión con la placa AlReg3G mediante sockets.
+	 * 
+	 * @param IP
+	 *            Dirección IP de la placa AlReg3G
+	 */
 	public Negocio(String IP) {
 		if (IP != null && IP.length() > 0 && validarIP(IP)) {
 			ino = new Mega3G(IP);
@@ -86,7 +110,6 @@ public class Negocio {
 	 */
 	public int inicializar() {
 		int value_due = ino.initialize();
-		int value_calendar;
 		if (value_due == 0) {
 			// Comprobamos el estado actual del riego
 			regando = ino.comprobarReg();
@@ -698,7 +721,7 @@ public class Negocio {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio("80.27.44.189");
+		Negocio main = new Negocio("95.126.42.94");
 		main.inicializar();
 		System.out.println(main.contarSensoresT());
 		// main.abrirCalendario();
