@@ -91,6 +91,34 @@ boolean esperarNet(){
   return false;
 }
 
+boolean esperarSendOk(){
+  char data = 0;
+  char data_old = 0;
+  timeout = false;
+  for (int i=0;i<dtNBR_ALARMS;i++){
+    Alarm.free(i);
+  }
+  AlarmId timer = Alarm.timerOnce(15, t_agotado);
+  do{          
+    if(Serial1.available()){
+      data_old = data;
+      data = Serial1.read();  
+      if(verbose){
+        Serial.print(data);     
+        Serial.flush(); 
+      }
+    }
+    Alarm.delay(0);
+  }
+  while((data_old != 'o' || data !='k') && !timeout);    //Esperamos "send ok" o que salte el timeout
+  if(!timeout){ //si no ha saltado el timeout lo desactivamos
+    Alarm.disable(timer);
+    timeout = false;
+    return true;
+  }
+  return false;
+}
+
 void t_agotado(){
   timeout = true;
   if(verbose){
@@ -283,21 +311,17 @@ void loop(){
               else
                 Serial1.println(0);
               Serial1.flush();
-              x=0;
-              do{
-                while(Serial1.available() == 0);
-                data[x]=Serial1.read();  
+              if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.print(data[x]);
-
+                  Serial.println("Comunicacion terminada correctamente con " + client); 
                   Serial.flush();
                 }
-                x++;                        
               }
-              while(!(data[x-1]=='k'&&data[x-2]=='o'));    //Waits for "send ok"
-              if(verbose){
-                Serial.println("Comunicacion terminada con " + client); 
-                Serial.flush();
+              else{
+                if(verbose){
+                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.flush();
+                }
               }
               break;
             case 0x6A: //contarSensores: j 106 0x6A
@@ -326,24 +350,17 @@ void loop(){
               Serial1.flush();
               Serial.print("Sensores contados "); 
               Serial.flush();
-              x=0;
-              do{
-                while(Serial1.available() == 0);
-                data[x]=Serial1.read();  
+              if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.print(data[x]); 
+                  Serial.println("Comunicacion terminada correctamente con " + client); 
                   Serial.flush();
                 }
-                x++;                        
               }
-              while(!(data[x-1]=='k'&&data[x-2]=='o'));    //Waits for "send ok"
-              //Serial1.print("AT+CLOSECLIENT="); //desactivates the connection with the client  
-              //Serial1.println(id_client);
-              //Serial1.flush();
-              //esperarOK();
-              if(verbose){
-                Serial.println("Comunicacion terminada con " + client); 
-                Serial.flush();
+              else{
+                if(verbose){
+                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.flush();
+                }
               }
               break;
             case 0x6B: //resetBusqueda: k 107 0x6B
@@ -379,20 +396,17 @@ void loop(){
                 Serial1.print("No more address");
               Serial1.println();
               Serial1.flush();
-              x=0;
-              do{
-                while(Serial1.available() == 0);
-                data[x]=Serial1.read();  
+              if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.print(data[x]);
+                  Serial.println("Comunicacion terminada correctamente con " + client); 
                   Serial.flush();
                 }
-                x++;                        
               }
-              while(!(data[x-1]=='k'&&data[x-2]=='o'));    //Waits for "send ok"
-              if(verbose){
-                Serial.println("Comunicacion terminada con " + client); 
-                Serial.flush();
+              else{
+                if(verbose){
+                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.flush();
+                }
               }
               break;
             case 0x6D: //seleccionarCursor: m 109 0x6D
@@ -485,20 +499,17 @@ void loop(){
                 //DATA
                 Serial1.println(celsius);
                 Serial1.flush();
-                x=0;
-                do{
-                  while(Serial1.available() == 0);
-                  data[x]=Serial1.read();  
+                if(esperarSendOk()){//Comunicacion enviada correctamente
                   if(verbose){
-                    Serial.print(data[x]);
+                    Serial.println("Comunicacion terminada correctamente con " + client); 
                     Serial.flush();
                   }
-                  x++;                        
                 }
-                while(!(data[x-1]=='k'&&data[x-2]=='o'));    //Waits for "send ok"
-                if(verbose){
-                  Serial.println("Comunicacion terminada con " + client); 
-                  Serial.flush();
+                else{
+                  if(verbose){
+                    Serial.println("Comunicacion fallida con " + client); 
+                    Serial.flush();
+                  }
                 }
                 break;
               }
