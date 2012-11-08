@@ -44,7 +44,6 @@ import com.google.api.services.calendar.model.Events;
 public class Negocio {
 	private Arduino ino;
 	private String[] sensores_t;
-	private byte[][] sensores_t_raw;
 	private List<Evento> sortedEvents;
 	private boolean regando;
 	com.google.api.services.calendar.Calendar googleCalendar;
@@ -138,18 +137,6 @@ public class Negocio {
 	}
 
 	/**
-	 * Obtiene un los bytes que identifican los sensores. El resultado se
-	 * obtiene en forma de matrix en la que las filas son los sensores y las
-	 * columnas los bytes
-	 * 
-	 * @return Matriz de bytes con los identificadores One-Wire de los sensores
-	 *         de temperatura devueltos por la placa Arduino
-	 */
-	public byte[][] getSensoresTRaw() {
-		return sensores_t_raw;
-	}
-
-	/**
 	 * Envía la señal de activar el riego a la placa Arduino. Esta señal solo se
 	 * envía si el dispositivo no está regando.
 	 * 
@@ -213,42 +200,10 @@ public class Negocio {
 		return ino.contarSensoresT();
 	}
 
-	/**
-	 * Convierte la información bruta obtenida de la placa (en bytes) a cadenas
-	 * de caracteres que identifican los sensores de temperatura DS18S20
-	 * conectados al pin One-Wire
-	 * 
-	 * @return Vector de caracteres con los identificadores de los sensores
-	 */
 	public String[] listarSensoresT() {
 		// Los índices son los mismos para sensores y sensores_raw
-		sensores_t_raw = ino.listarSensoresT();
-		sensores_t = new String[sensores_t_raw.length];
-		for (int i = 0; i < sensores_t_raw.length; i++)
-			sensores_t[i] = toHexadecimal(sensores_t_raw[i]);
+		sensores_t = ino.listarSensoresT();
 		return sensores_t;
-	}
-
-	/**
-	 * Convierte el vector de bytes a una cadena de caracteres
-	 * 
-	 * @param datos
-	 *            El vector de bytes a transformar
-	 * @return La cadena convertida
-	 */
-	private String toHexadecimal(byte[] datos) {
-		String resultado = "";
-		ByteArrayInputStream input = new ByteArrayInputStream(datos);
-		String cadAux;
-		int leido = input.read();
-		while (leido != -1) {
-			cadAux = Integer.toHexString(leido);
-			if (cadAux.length() < 2) // Hay que añadir un 0
-				resultado += "0";
-			resultado += cadAux;
-			leido = input.read();
-		}
-		return resultado;
 	}
 
 	/**
@@ -261,17 +216,7 @@ public class Negocio {
 	 *         en otro caso null
 	 */
 	public Float obtenerTemperatura(String sensor) {
-		int i;
-		// Buscamos el índice del sensor
-		for (i = 0; i < sensores_t.length; i++)
-			if (sensor.compareTo(sensores_t[i]) == 0)
-				break;
-		if (i == sensores_t.length)// No se ha encontrado el sensor
-			return null;
-		else {// Los dos índices coinciden
-			Float res = ino.obtenerTemperatura(sensores_t_raw[i]);
-			return res;
-		}
+		return ino.obtenerTemperatura(sensor);
 	}
 
 	/**
@@ -721,9 +666,11 @@ public class Negocio {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio("95.126.42.94");
+		Negocio main = new Negocio("80.27.49.186");
 		main.inicializar();
-		System.out.println(main.contarSensoresT());
+		for (String s : main.listarSensoresT()) {
+			System.out.println(s);
+		}
 		// main.abrirCalendario();
 		// main.cargarCalendario();
 		// System.out.println("Eventos insertados");

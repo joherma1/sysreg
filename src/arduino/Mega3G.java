@@ -18,18 +18,18 @@ public class Mega3G implements Arduino {
 	// -----------------
 	// Variables Arduino
 	// -----------------
-	int n_sensores_t;
-	public byte sensores_t[][];
-	boolean regando;
-	int n_alarmas;
-	long[] alarmas = new long[56];// Número máximo de alarmas en la placa
+	private int n_sensores_t;
+	public String sensores_t[];
+	private boolean regando;
+	private int n_alarmas;
+	private long[] alarmas = new long[56];// Número máximo de alarmas en la placa
 
 	// Variables sockets
-	final String servidor;
-	final int puerto = 80;
-	Socket socket;
-	BufferedReader entrada;
-	PrintWriter salida;
+	private final String servidor;
+	private final int puerto = 80;
+	private Socket socket;
+	private BufferedReader entrada;
+	private PrintWriter salida;
 
 	/**
 	 * Contructor de la clase Mega3G que inicializa la dirección IP del servidor
@@ -119,29 +119,35 @@ public class Mega3G implements Arduino {
 		return -1;
 	}
 
-	public byte[][] listarSensoresT() {
-		this.contarSensoresT();
-		this.sensores_t = new byte[this.n_sensores_t][8];
-		this.sensores_t[0][0] = new Byte("00").byteValue();
-		this.sensores_t[0][1] = new Byte("00").byteValue();
-		this.sensores_t[0][2] = new Byte("00").byteValue();
-		this.sensores_t[0][3] = new Byte("00").byteValue();
-		this.sensores_t[0][4] = new Byte("00").byteValue();
-		this.sensores_t[0][5] = new Byte("00").byteValue();
-		this.sensores_t[0][6] = new Byte("00").byteValue();
-		this.sensores_t[0][7] = new Byte("00").byteValue();
-		this.sensores_t[1][0] = new Byte("11").byteValue();
-		this.sensores_t[1][1] = new Byte("11").byteValue();
-		this.sensores_t[1][2] = new Byte("11").byteValue();
-		this.sensores_t[1][3] = new Byte("11").byteValue();
-		this.sensores_t[1][4] = new Byte("11").byteValue();
-		this.sensores_t[1][5] = new Byte("11").byteValue();
-		this.sensores_t[1][6] = new Byte("11").byteValue();
-		this.sensores_t[1][7] = new Byte("11").byteValue();
-		return this.sensores_t;
+	void resetearBusquedaT() {
+		salida.println("sysreg k");
 	}
 
-	public Float obtenerTemperatura(byte[] sensor) {
+	public String[] listarSensoresT() {
+		try {
+			this.contarSensoresT();
+			this.resetearBusquedaT();
+			this.sensores_t = new String[this.n_sensores_t];
+			char[] leido = new char[16];
+			for (int i = 0; i < this.n_sensores_t; i++) {
+				salida.println("sysreg l");
+				Thread.sleep(2000);
+				entrada.read(leido);
+				this.sensores_t[i] = new String(leido);
+			}
+			return this.sensores_t;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Float obtenerTemperatura(String sensor) {
 		if (sensor == this.sensores_t[1]) {
 			return new Float("34.2");
 		} else {

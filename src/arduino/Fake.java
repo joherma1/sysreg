@@ -5,7 +5,7 @@ public class Fake implements Arduino {
 	// Variables Arduino
 	// -----------------
 	int n_sensores_t;
-	public byte sensores_t[][];
+	public String sensores_t[];
 	boolean regando;
 	int n_alarmas;
 	long[] alarmas = new long[56];// Número máximo de alarmas en la placa
@@ -37,29 +37,15 @@ public class Fake implements Arduino {
 		return 2;
 	}
 
-	public byte[][] listarSensoresT() {
+	public String[] listarSensoresT() {
 		this.contarSensoresT();
-		this.sensores_t = new byte[this.n_sensores_t][8];
-		this.sensores_t[0][0] = new Byte("00").byteValue();
-		this.sensores_t[0][1] = new Byte("00").byteValue();
-		this.sensores_t[0][2] = new Byte("00").byteValue();
-		this.sensores_t[0][3] = new Byte("00").byteValue();
-		this.sensores_t[0][4] = new Byte("00").byteValue();
-		this.sensores_t[0][5] = new Byte("00").byteValue();
-		this.sensores_t[0][6] = new Byte("00").byteValue();
-		this.sensores_t[0][7] = new Byte("00").byteValue();
-		this.sensores_t[1][0] = new Byte("11").byteValue();
-		this.sensores_t[1][1] = new Byte("11").byteValue();
-		this.sensores_t[1][2] = new Byte("11").byteValue();
-		this.sensores_t[1][3] = new Byte("11").byteValue();
-		this.sensores_t[1][4] = new Byte("11").byteValue();
-		this.sensores_t[1][5] = new Byte("11").byteValue();
-		this.sensores_t[1][6] = new Byte("11").byteValue();
-		this.sensores_t[1][7] = new Byte("11").byteValue();
+		this.sensores_t = new String[this.n_sensores_t];
+		this.sensores_t[0] = "00000000000000";
+		this.sensores_t[1] = "11111111111111";
 		return this.sensores_t;
 	}
 
-	public Float obtenerTemperatura(byte[] sensor) {
+	public Float obtenerTemperatura(String sensor) {
 		if (sensor == this.sensores_t[1]) {
 			return new Float("34.2");
 		} else {

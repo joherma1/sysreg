@@ -20,9 +20,9 @@ public interface Arduino {
 
 	public int contarSensoresT();
 
-	public byte[][] listarSensoresT();
+	public String[] listarSensoresT();
 
-	public Float obtenerTemperatura(byte[] sensor);
+	public Float obtenerTemperatura(String sensor);
 
 	public Long obtenerPresionBMP085();
 

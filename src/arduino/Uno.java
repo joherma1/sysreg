@@ -5,15 +5,16 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
 /**
- * Implementación de la clase que establece la comunicación entre una placa
- * Uno y el Software RegAdmin.
- *  
+ * Implementación de la clase que establece la comunicación entre una placa Uno
+ * y el Software RegAdmin.
+ * 
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  */
 @SuppressWarnings("restriction")
@@ -30,9 +31,10 @@ public class Uno implements SerialPortEventListener, Arduino {
 	private static final int DATA_RATE = 9600;
 
 	// Variables Arduino
-	int n_sensores_t = 0;
-	public byte sensores_t[][] = null;
-	Monitor m = new Monitor();
+	private int n_sensores_t = 0;
+	public String sensores_t[] = null;
+	private byte sensores_tRaw[][] = null;
+	private Monitor m = new Monitor();
 
 	/**
 	 * Inicializa la librería RXTX. Sigue el protocolo implementado en AlReg,
@@ -103,7 +105,8 @@ public class Uno implements SerialPortEventListener, Arduino {
 			}
 		}
 		// Si no hay ningún puerto de comunicación de serie válido
-		System.out.println("No se ha podido encontrar un puerto de comunicación válido");
+		System.out
+				.println("No se ha podido encontrar un puerto de comunicación válido");
 		return -1;
 	}
 
@@ -204,12 +207,11 @@ public class Uno implements SerialPortEventListener, Arduino {
 		try {
 			output.write(0x6B);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	int seleccionarSensorT(byte[] sensor) {
+	private int seleccionarSensorT(byte[] sensor) {
 		// 0: CRC NO VALIDO 1: OK -1:No se han pasado 8 B -2: Excepción
 		try {
 			// el comando es mXXXXXXXX
@@ -318,17 +320,21 @@ public class Uno implements SerialPortEventListener, Arduino {
 	 * @return Matriz de bytes con los identificadores de los sensores de
 	 *         temperatura; null: En otro caso
 	 */
-	public byte[][] listarSensoresT() {
+	public String[] listarSensoresT() {
 		try {
 			this.contarSensoresT();
 			this.resetearBusquedaT();
-			this.sensores_t = new byte[this.n_sensores_t][8];
+			this.sensores_tRaw = new byte[this.n_sensores_t][8];
 			for (int i = 0; i < this.n_sensores_t; i++) {
 				output.write(0x6C);
 				byte res[] = leerArduinoBytes();
-				this.sensores_t[i] = res;
+				this.sensores_tRaw[i] = res;
 			}
 			this.resetearBusquedaT();
+			// Los índices son los mismos para sensores y sensores_raw
+			sensores_t = new String[sensores_tRaw.length];
+			for (int i = 0; i < sensores_tRaw.length; i++)
+				sensores_t[i] = toHexadecimal(sensores_tRaw[i]);
 			return this.sensores_t;
 
 		} catch (IOException e) {
@@ -336,6 +342,28 @@ public class Uno implements SerialPortEventListener, Arduino {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Convierte el vector de bytes a una cadena de caracteres
+	 * 
+	 * @param datos
+	 *            El vector de bytes a transformar
+	 * @return La cadena convertida
+	 */
+	private String toHexadecimal(byte[] datos) {
+		String resultado = "";
+		ByteArrayInputStream input = new ByteArrayInputStream(datos);
+		String cadAux;
+		int leido = input.read();
+		while (leido != -1) {
+			cadAux = Integer.toHexString(leido);
+			if (cadAux.length() < 2) // Hay que añadir un 0
+				resultado += "0";
+			resultado += cadAux;
+			leido = input.read();
+		}
+		return resultado;
 	}
 
 	/**
@@ -347,17 +375,26 @@ public class Uno implements SerialPortEventListener, Arduino {
 	 * 
 	 * @return Valor de temperatura leído; null: En otro caso
 	 */
-	public Float obtenerTemperatura(byte[] sensor) {
+	public Float obtenerTemperatura(String sensor) {
 		try {
-			// Seleccionamos el sensor
-			if (seleccionarSensorT(sensor) != 1)
+			int i;
+			// Buscamos el índice del sensor
+			for (i = 0; i < sensores_t.length; i++)
+				if (sensor.compareTo(sensores_t[i]) == 0)
+					break;
+			if (i == sensores_t.length)// No se ha encontrado el sensor
 				return null;
-			else {
-				output.write(0x6E);
-				// Tiempo necesario para la conversion, unos 1000¡
-				String res = leerArduino();
-				Float res_f = Float.parseFloat(res);
-				return res_f;
+			else {// Los dos índices coinciden --> Se ha encontrado el sensor
+				// Seleccionamos el sensor
+				if (seleccionarSensorT(sensores_tRaw[i]) != 1)
+					return null;
+				else {
+					output.write(0x6E);
+					// Tiempo necesario para la conversion, unos 1000¡
+					String res = leerArduino();
+					Float res_f = Float.parseFloat(res);
+					return res_f;
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -727,15 +764,15 @@ public class Uno implements SerialPortEventListener, Arduino {
 
 	public static void main(String[] args) {
 		Uno d = new Uno();
-		if (d.initialize() == 0) {
-			System.out.println("Numero de sensores " + d.contarSensoresT());
-			byte[][] l = d.listarSensoresT();
-			for (int i = 0; i < d.n_sensores_t; i++) {
-				for (int j = 0; j < l[i].length; j++)
-					System.out.print(String.format("%02X", l[i][j]) + " ");
-				System.out.println();
-			}
-		}
+		// if (d.initialize() == 0) {
+		// System.out.println("Numero de sensores " + d.contarSensoresT());
+		// byte[][] l = d.listarSensoresT();
+		// for (int i = 0; i < d.n_sensores_t; i++) {
+		// for (int j = 0; j < l[i].length; j++)
+		// System.out.print(String.format("%02X", l[i][j]) + " ");
+		// System.out.println();
+		// }
+		// }
 		// d.establecerHora(1321873956L); // 12:12:37D
 		// System.out.println(d.establecerAlarmaRepOn(12, 13, 00));
 		// System.out.println(d.establecerAlarmaRepOff(12, 13, 10));
