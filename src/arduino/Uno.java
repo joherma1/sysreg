@@ -20,7 +20,7 @@ import java.util.Enumeration;
 @SuppressWarnings("restriction")
 public class Uno implements SerialPortEventListener, Arduino {
 	// Variables RXTX
-	SerialPort serialPort;
+	private SerialPort serialPort;
 	// Flujo de entrada al puerto
 	private InputStream input;
 	// Flujo de salida al puerto
@@ -147,7 +147,7 @@ public class Uno implements SerialPortEventListener, Arduino {
 	 * 
 	 * @return La cadena leída
 	 */
-	String leerArduino() {
+	private String leerArduino() {
 		byte[] data = m.recoger();
 		if (data == null) { // Si ha saltado el timeout
 			return null;
@@ -178,7 +178,7 @@ public class Uno implements SerialPortEventListener, Arduino {
 	 * 
 	 * @return Los Bytes leídos
 	 */
-	byte[] leerArduinoBytes() {
+	private byte[] leerArduinoBytes() {
 		byte[] data = m.recoger();
 		if (data == null) { // Si ha saltado el timeout
 			return null;
@@ -203,7 +203,7 @@ public class Uno implements SerialPortEventListener, Arduino {
 		return res;
 	}
 
-	void resetearBusquedaT() {
+	private void resetearBusquedaT() {
 		try {
 			output.write(0x6B);
 		} catch (IOException e) {

@@ -666,11 +666,12 @@ public class Negocio {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio("80.27.49.186");
+		Negocio main = new Negocio("95.126.199.162");
 		main.inicializar();
 		for (String s : main.listarSensoresT()) {
-			System.out.println(s);
+			System.out.println(main.obtenerTemperatura(s));
 		}
+		//System.out.println(main.obtenerTemperatura("28F5E9AF020000D2"));
 		// main.abrirCalendario();
 		// main.cargarCalendario();
 		// System.out.println("Eventos insertados");

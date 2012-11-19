@@ -22,7 +22,8 @@ public class Mega3G implements Arduino {
 	public String sensores_t[];
 	private boolean regando;
 	private int n_alarmas;
-	private long[] alarmas = new long[56];// Número máximo de alarmas en la placa
+	private long[] alarmas = new long[56];// Número máximo de alarmas en la
+											// placa
 
 	// Variables sockets
 	private final String servidor;
@@ -119,7 +120,7 @@ public class Mega3G implements Arduino {
 		return -1;
 	}
 
-	void resetearBusquedaT() {
+	private void resetearBusquedaT() {
 		salida.println("sysreg k");
 	}
 
@@ -147,11 +148,39 @@ public class Mega3G implements Arduino {
 		return null;
 	}
 
+	private void seleccionarSensorT(String sensor) {
+		// el comando es sysreg m sensor
+		try {
+			salida.println("sysreg m " + sensor);
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Float obtenerTemperatura(String sensor) {
-		if (sensor == this.sensores_t[1]) {
-			return new Float("34.2");
-		} else {
-			return new Float("24.2");
+		try {
+			/*
+			int i;
+			// Buscamos el índice del sensor
+			for (i = 0; i < sensores_t.length; i++)
+				if (sensor.compareTo(sensores_t[i]) == 0)
+					break;
+			if (i == sensores_t.length)// No se ha encontrado el sensor
+				return null;
+			else {// Los dos índices coinciden --> Se ha encontrado el sensor
+					// Seleccionamos el sensor
+					 */
+				seleccionarSensorT(sensor);
+				salida.println("sysreg n");
+				// recibimos la respuesta del servidor
+				char[] temp_char = new char[6];
+				entrada.read(temp_char);
+				return Float.parseFloat(new String(temp_char));
+			//}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
