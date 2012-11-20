@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,6 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -36,16 +39,22 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+
+import java.awt.Dialog.*;
 
 import logic.Evento;
 import logic.Negocio;
@@ -59,9 +68,9 @@ public class Interfaz {
 	private JButton b_activarRiego = null;
 	private JButton b_desactivarRiego = null;
 	private JLabel l_solenoide = null;
-	//private Negocio logica = null; // @jve:decl-index=0:
+	// private Negocio logica = null; // @jve:decl-index=0:
 	private Negocio logica = null;
-	//private List<Evento> eventos = null;
+	// private List<Evento> eventos = null;
 	private List<Evento> eventos = null;
 	// private RelojCalendar r_cal = null;
 	private RelojRiego r_riego = null;
@@ -138,6 +147,7 @@ public class Interfaz {
 	private JButton b_recargaHumedadSuelo;
 	private JCheckBox chckbxActualizarSensores;
 	private JSpinner spiActualizarSensores;
+
 
 	/**
 	 * This method initializes f_interfaz
@@ -233,7 +243,8 @@ public class Interfaz {
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
 			gbl_p_interfaz.columnWidths = new int[] { 202, 0, 185, 57 };
 			gbl_p_interfaz.rowHeights = new int[] { 0, 0, 27, 0, 174, 0 };
-			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0 };
 			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
@@ -277,13 +288,15 @@ public class Interfaz {
 			gbc_chckbxActualizarSensores.insets = new Insets(0, 0, 0, 5);
 			gbc_chckbxActualizarSensores.gridx = 0;
 			gbc_chckbxActualizarSensores.gridy = 5;
-			p_interfaz.add(getChckbxActualizarSensores(), gbc_chckbxActualizarSensores);
+			p_interfaz.add(getChckbxActualizarSensores(),
+					gbc_chckbxActualizarSensores);
 			GridBagConstraints gbc_spiActualizarSensores = new GridBagConstraints();
 			gbc_spiActualizarSensores.anchor = GridBagConstraints.WEST;
 			gbc_spiActualizarSensores.insets = new Insets(0, 0, 0, 5);
 			gbc_spiActualizarSensores.gridx = 1;
 			gbc_spiActualizarSensores.gridy = 5;
-			p_interfaz.add(getSpiActualizarSensores(), gbc_spiActualizarSensores);
+			p_interfaz.add(getSpiActualizarSensores(),
+					gbc_spiActualizarSensores);
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints6.gridx = 3;
@@ -527,7 +540,6 @@ public class Interfaz {
 		return cp_iniciando;
 	}
 
-
 	/**
 	 * This method initializes pb_iniciando
 	 * 
@@ -566,7 +578,8 @@ public class Interfaz {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
 					try {
-						Desktop.getDesktop().browse(new URI("https://www.google.com/calendar/"));
+						Desktop.getDesktop().browse(
+								new URI("https://www.google.com/calendar/"));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -1024,7 +1037,7 @@ public class Interfaz {
 		frame_main.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				Interfaz.class
 						.getResource("/imagenes/Naranjito/Naranjito 128.png")));
-
+		
 		frame_iniciando.setVisible(true);
 		if (args.length > 0 && args[0].compareTo("debug") == 0)
 			main.inicializar(true);
@@ -1073,7 +1086,7 @@ public class Interfaz {
 			f_interfaz.dispose();
 			logica.cerrar();
 			System.exit(-1);
-		} else if (ini == -3){
+		} else if (ini == -3) {
 			JOptionPane.showMessageDialog(this.f_iniciando,
 					"Error al cargar la librería RXTX", "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -1081,25 +1094,33 @@ public class Interfaz {
 			f_interfaz.dispose();
 			logica.cerrar();
 			System.exit(-1);
-		}else if (ini == -4){
-			JOptionPane.showMessageDialog(this.f_iniciando,
-					"Se ha cancelado el inicio de sesión en Google Calendar\nIniciando en modo sin conexión", "Modo sin conexión",
-					JOptionPane.INFORMATION_MESSAGE);
+		} else if (ini == -4) {
+			JOptionPane
+					.showMessageDialog(
+							this.f_iniciando,
+							"Se ha cancelado el inicio de sesión en Google Calendar\nIniciando en modo sin conexión",
+							"Modo sin conexión",
+							JOptionPane.INFORMATION_MESSAGE);
 			TareaInicializar tarea = new TareaInicializar(true);
 			tarea.execute();
-		} else if (ini == -5){
-			JOptionPane.showMessageDialog(this.f_iniciando,
-					"Código de autorización incorrecto\nIniciando en modo sin conexión", "Autorización incorrecta",
-					JOptionPane.ERROR_MESSAGE);
+		} else if (ini == -5) {
+			JOptionPane
+					.showMessageDialog(
+							this.f_iniciando,
+							"Código de autorización incorrecto\nIniciando en modo sin conexión",
+							"Autorización incorrecta",
+							JOptionPane.ERROR_MESSAGE);
 			TareaInicializar tarea = new TareaInicializar(true);
 			tarea.execute();
-		} else if (ini == -6){
-			JOptionPane.showMessageDialog(this.f_iniciando,
-					"Erro al conectar con Google Calendar\nIniciando en modo sin conexión", "Error",
-					JOptionPane.ERROR_MESSAGE);
+		} else if (ini == -6) {
+			JOptionPane
+					.showMessageDialog(
+							this.f_iniciando,
+							"Erro al conectar con Google Calendar\nIniciando en modo sin conexión",
+							"Error", JOptionPane.ERROR_MESSAGE);
 			TareaInicializar tarea = new TareaInicializar(true);
 			tarea.execute();
-		}else {
+		} else {
 			TareaInicializar tarea = new TareaInicializar(false);
 			tarea.execute();
 		}
@@ -1163,7 +1184,7 @@ public class Interfaz {
 	private boolean actualizarCalendario() {
 		System.out.println("-----Actualizar calendario");
 		eventos = logica.cargarCalendario();
-		if(eventos == null)
+		if (eventos == null)
 			return false;
 		// Actualizar la hora
 		DecimalFormat entero = new DecimalFormat("00");
@@ -1290,10 +1311,12 @@ public class Interfaz {
 		 * Main task. Executed in background thread.
 		 */
 		boolean offline;
-		TareaInicializar(boolean modoOffline){
+
+		TareaInicializar(boolean modoOffline) {
 			super();
 			this.offline = modoOffline;
 		}
+
 		@Override
 		public Void doInBackground() {
 			// System.out.println("Obteniendo temperatura de: "+
@@ -1315,8 +1338,8 @@ public class Interfaz {
 			// Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
-			
-			//Sensor de humedad del suelo
+
+			// Sensor de humedad del suelo
 			int humedadSuelo = logica.obtenerHumedadSuelo();
 			l_humedadSuelo.setText(String.valueOf(humedadSuelo));
 
@@ -1337,8 +1360,8 @@ public class Interfaz {
 			l_hora.setText("Hora: "
 					+ entero.format(now.get(Calendar.HOUR_OF_DAY)) + ":"
 					+ entero.format(now.get(Calendar.MINUTE)));
-			//--r_riego = new RelojRiego();
-			//--r_riego.start();
+			// --r_riego = new RelojRiego();
+			// --r_riego.start();
 			// actualizarCalendario(); //Ya lo hacemos al iniciar el hilo
 			return null;
 		}
@@ -1410,9 +1433,10 @@ public class Interfaz {
 
 		public void detener() {
 			this.activo = false;
-			// Nos esperamos a que termine la iteración para desactivar la actualización
-//			if (!this.isInterrupted())
-//				this.interrupt();
+			// Nos esperamos a que termine la iteración para desactivar la
+			// actualización
+			// if (!this.isInterrupted())
+			// this.interrupt();
 		}
 
 		public void run() {
@@ -1428,11 +1452,11 @@ public class Interfaz {
 				while (activo) {
 					System.out.println("Iteración hilo actualizar sensores");
 					// Sensores Tª
-//					String[] sensores = logica.listarSensoresT();
-//					for (String sensor : sensores) {
-//						Float res = logica.obtenerTemperatura(sensor);
-//						anyardirSensor(sensor, res);
-//					}
+					// String[] sensores = logica.listarSensoresT();
+					// for (String sensor : sensores) {
+					// Float res = logica.obtenerTemperatura(sensor);
+					// anyardirSensor(sensor, res);
+					// }
 					// Sensor BMP085
 					Long presion = logica.obtenerPresionBMP085();
 					l_Presion.setText(presion.toString());
@@ -1444,15 +1468,16 @@ public class Interfaz {
 					// Sensor HH10D
 					Float humedad = logica.obtenerHumedadHH10D();
 					l_humedad.setText(humedad.toString());
-					
-					//Sensor de humedad del suelo
+
+					// Sensor de humedad del suelo
 					int humedadSuelo = logica.obtenerHumedadSuelo();
 					l_humedadSuelo.setText(String.valueOf(humedadSuelo));
-					Thread.sleep((Integer)spiActualizarSensores.getValue()*1000);
+					Thread.sleep((Integer) spiActualizarSensores.getValue() * 1000);
 				}
 				System.out.println("Fin hilo actualizar sensores");
 			} catch (InterruptedException e) {
-				System.out.println("Sincronización desactivada (hilo actualizar sensores)");
+				System.out
+						.println("Sincronización desactivada (hilo actualizar sensores)");
 			}
 		}
 	}
@@ -1530,7 +1555,7 @@ public class Interfaz {
 
 	private JLabel getL_TextTemperatura() {
 		if (l_TextTemperatura == null) {
-			l_TextTemperatura = new JLabel("Temperatura (ªC)");
+			l_TextTemperatura = new JLabel("Temperatura (ºC)");
 		}
 		return l_TextTemperatura;
 	}
@@ -1601,8 +1626,8 @@ public class Interfaz {
 			gbl_p_HH10D.rowHeights = new int[] { 16, 0, 0, 0, 0, 0, 0 };
 			gbl_p_HH10D.columnWeights = new double[] { 0.0, 1.0,
 					Double.MIN_VALUE };
-			gbl_p_HH10D.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-					Double.MIN_VALUE };
+			gbl_p_HH10D.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+					1.0, Double.MIN_VALUE };
 			p_HH10D.setLayout(gbl_p_HH10D);
 			GridBagConstraints gbc_l_HH10D = new GridBagConstraints();
 			gbc_l_HH10D.anchor = GridBagConstraints.NORTHWEST;
@@ -1704,8 +1729,8 @@ public class Interfaz {
 					boolean desactivar = cb_Desactivar.isSelected();
 					if (desactivar == false) { // Activamos la sincronización
 						// Si no se ha iniciado la conexion con Google
-						// lo intentamos una vez, y si vuelve a ir mal 
-						// mostramos un error 
+						// lo intentamos una vez, y si vuelve a ir mal
+						// mostramos un error
 						if (actualizarCalendario()) {
 							eventos = logica.comprobarRiego();
 							pintarEventos();
@@ -1719,11 +1744,14 @@ public class Interfaz {
 							r_riego = new RelojRiego();
 							r_riego.start();
 							tp_horario.setEnabled(true);
-						}else{
+						} else {
 							cb_Desactivar.setSelected(true);
-							JOptionPane.showMessageDialog(null,
-									"No se ha podido iniciar sesión en Google Calendar\nSeguimos en modo sin conexión", "Modo sin conexión",
-									JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane
+									.showMessageDialog(
+											null,
+											"No se ha podido iniciar sesión en Google Calendar\nSeguimos en modo sin conexión",
+											"Modo sin conexión",
+											JOptionPane.INFORMATION_MESSAGE);
 						}
 					} else {// Desactivamos la sincronización
 						tp_horario.setEnabled(false);
@@ -1767,6 +1795,7 @@ public class Interfaz {
 		}
 		return mi_forzarParar;
 	}
+
 	private JMenu getMnPlaca() {
 		if (mnPlaca == null) {
 			mnPlaca = new JMenu("Placa");
@@ -1776,6 +1805,7 @@ public class Interfaz {
 		}
 		return mnPlaca;
 	}
+
 	private JMenuItem getMntmSubirAlarmas() {
 		if (mntmSubirAlarmas == null) {
 			mntmSubirAlarmas = new JMenuItem("Subir alarmas");
@@ -1788,36 +1818,42 @@ public class Interfaz {
 		}
 		return mntmSubirAlarmas;
 	}
+
 	private JMenuItem getMntmEliminarAlarmas() {
 		if (mntmEliminarAlarmas == null) {
 			mntmEliminarAlarmas = new JMenuItem("Eliminar alarmas");
 		}
 		return mntmEliminarAlarmas;
 	}
+
 	private JMenuItem getMntmSincronizarReloj() {
 		if (mntmSincronizarReloj == null) {
 			mntmSincronizarReloj = new JMenuItem("Sincronizar reloj");
 		}
 		return mntmSincronizarReloj;
 	}
+
 	private JLabel getL_sensorResistivo() {
 		if (l_sensorResistivo == null) {
 			l_sensorResistivo = new JLabel("Sensor Resistivo Suelo");
 		}
 		return l_sensorResistivo;
 	}
+
 	private JLabel getL_textHumedadSuelo() {
 		if (l_textHumedadSuelo == null) {
 			l_textHumedadSuelo = new JLabel("Humedad (%)");
 		}
 		return l_textHumedadSuelo;
 	}
+
 	private JLabel getL_humedadSuelo() {
 		if (l_humedadSuelo == null) {
 			l_humedadSuelo = new JLabel("50");
 		}
 		return l_humedadSuelo;
 	}
+
 	private JButton getB_recargaHumedadSuelo() {
 		if (b_recargaHumedadSuelo == null) {
 			b_recargaHumedadSuelo = new JButton();
@@ -1827,29 +1863,31 @@ public class Interfaz {
 					l_humedadSuelo.setText(String.valueOf(humedadSuelo));
 				}
 			});
-			b_recargaHumedadSuelo.setIcon(new ImageIcon(Interfaz.class.getResource("/imagenes/iconic/reload24.png")));
+			b_recargaHumedadSuelo.setIcon(new ImageIcon(Interfaz.class
+					.getResource("/imagenes/iconic/reload24.png")));
 		}
 		return b_recargaHumedadSuelo;
 	}
+
 	private JCheckBox getChckbxActualizarSensores() {
 		if (chckbxActualizarSensores == null) {
-			chckbxActualizarSensores = new JCheckBox("Actualizar sensores cada (segundos)");
+			chckbxActualizarSensores = new JCheckBox(
+					"Actualizar sensores cada (segundos)");
 			chckbxActualizarSensores.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					if(chckbxActualizarSensores.isSelected()){
+					if (chckbxActualizarSensores.isSelected()) {
 						// Desactivamos los botones de actualización
 						for (int i = 0; i < b_refresh.size(); i++)
 							b_refresh.get(i).setEnabled(false);
 						b_RecargarBMP085.setEnabled(false);
 						b_recargarHumedad.setEnabled(false);
 						b_recargaHumedadSuelo.setEnabled(false);
-						
+
 						spiActualizarSensores.setEnabled(true);
 						// La frecuencia de actualización la marcará el spinner
-						r_sensores =  new RelojSensores(); 
+						r_sensores = new RelojSensores();
 						r_sensores.start();
-					}
-					else{
+					} else {
 						for (int i = 0; i < b_refresh.size(); i++)
 							b_refresh.get(i).setEnabled(true);
 						b_RecargarBMP085.setEnabled(true);
@@ -1863,14 +1901,18 @@ public class Interfaz {
 		}
 		return chckbxActualizarSensores;
 	}
+
 	private JSpinner getSpiActualizarSensores() {
 		if (spiActualizarSensores == null) {
 			spiActualizarSensores = new JSpinner();
-			spiActualizarSensores.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+			spiActualizarSensores.setModel(new SpinnerNumberModel(
+					new Integer(1), new Integer(1), null, new Integer(1)));
 			spiActualizarSensores.setEnabled(false);
 			spiActualizarSensores.setPreferredSize(new Dimension(40, 20));
 			spiActualizarSensores.setMinimumSize(new Dimension(40, 20));
 		}
 		return spiActualizarSensores;
 	}
+	
+
 }
