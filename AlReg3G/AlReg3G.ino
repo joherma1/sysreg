@@ -2,10 +2,10 @@
 #include <Time.h>
 #include <TimeAlarms.h>
 
-
 #define motor1Pin 3 // H-bridge leg 1 (pin 2, 1A)
 #define motor2Pin 4 // H-bridge leg 2 (pin 7, 2A)
 #define enable 2 // H-bridge enable
+
 int verbose = 1;
 
 int led = 13;
@@ -114,6 +114,10 @@ boolean esperarSendOk(){
   if(!timeout){ //si no ha saltado el timeout lo desactivamos
     Alarm.disable(timer);
     timeout = false;
+    if(verbose){
+      Serial.println();     
+      Serial.flush(); 
+    }
     return true;
   }
   return false;
@@ -121,10 +125,8 @@ boolean esperarSendOk(){
 
 void t_agotado(){
   timeout = true;
-  if(verbose){
-    Serial.println("< Timeout >"); 
-    Serial.flush();
-  }
+  Serial.println("<<Timeout>>"); 
+  Serial.flush();
 }
 
 //Funcion reset de la placa por software
@@ -142,8 +144,7 @@ void setup(){
   onModule();
   //switchModule();
   if(verbose){
-    Serial.println("Esperando inicio...");
-
+    Serial.println("-->Esperando inicio...<--");
     Serial.flush();
   }
   for (int i=0;i<5;i++){ //5 OK
@@ -151,7 +152,6 @@ void setup(){
   } 
 
   //APN
-  //Serial.println("-->Enviando comandos");
   Serial1.print("AT+CGSOCKCONT=1,\"IP\",\"");
   Serial1.print(apn);
   Serial1.println("\"");
@@ -172,7 +172,8 @@ void setup(){
   Serial1.println(port);        
   Serial1.flush();
   if(!esperarNet()){
-    Serial.println("Network opened timeout - Reiniciando");
+    Serial.println("<<Network opened timeout>>");
+    Serial.println('/t' + '/t' + "Reiniciando");
     Serial.flush();
     resetBoard();  
   }
@@ -216,7 +217,8 @@ void loop(){
       if(input_ans != NULL) {
         String c_conected = ""; //xxx.xxx.xxx.xxx:ppppp
         for(int i=10; i < input.length(); i++) //Copiamos la IP y el puerto
-          c_conected = c_conected + input[i];
+          if(input[i]!=0x0D) //Para que no guarde el salto de linea que no envia en OS X
+            c_conected = c_conected + input[i];
 
         //Si cumple con el reconocimiento
         //capturamos el mensaje: sysreg comando arg1
@@ -253,21 +255,18 @@ void loop(){
                   }
                   else if(input[i] != 0x20){ //diferente de espacio en blanco
                     client = client + input[i];
-
                   }//Si es espacio en blanco adelantamos el indice de la linea pero no de la matriz
                 }
                 //Si coincide con el conectado paramos
-                if(client == c_conected){ 
+                if(client.equals(c_conected)){
                   break;
                 }
               }
             }
-            Serial.print("Repeticion: ");
-            Serial.print(client);
-            Serial.print(" con id: ");
-            Serial.print(id_client);
-
-            Serial.flush();
+            if(verbose){
+              Serial.println("-->Cliente: " + client + " con id: " + id_client + "<--");
+              Serial.flush();
+            }
             switch(comando){
             case 0x64: //activarRiego: d 100 0x64
               riego = 1;
@@ -313,13 +312,13 @@ void loop(){
               Serial1.flush();
               if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.println("Comunicacion terminada correctamente con " + client); 
+                  Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
                   Serial.flush();
                 }
               }
               else{
                 if(verbose){
-                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
                   Serial.flush();
                 }
               }
@@ -352,13 +351,13 @@ void loop(){
               Serial.flush();
               if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.println("Comunicacion terminada correctamente con " + client); 
+                  Serial.println("<--Comunicacion terminada correctamente con " + client + "<--"); 
                   Serial.flush();
                 }
               }
               else{
                 if(verbose){
-                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
                   Serial.flush();
                 }
               }
@@ -398,13 +397,13 @@ void loop(){
               Serial1.flush();
               if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
-                  Serial.println("Comunicacion terminada correctamente con " + client); 
+                  Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
                   Serial.flush();
                 }
               }
               else{
                 if(verbose){
-                  Serial.println("Comunicacion fallida con " + client); 
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
                   Serial.flush();
                 }
               }
@@ -412,7 +411,7 @@ void loop(){
             case 0x6D: //seleccionarCursor: m 109 0x6D
               //leemos los 8 siguientes byte que seran el ID del sensor
               if(argumento.length() < 16 ){
-                Serial.println("Argumento invalido");
+                Serial.println("<<Argumento invalido>>");
                 Serial.flush();
                 break;
               }
@@ -425,13 +424,13 @@ void loop(){
                   sensor_id[i/2]  = strtol(dato,NULL,16);
                 }
                 if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
-                  Serial.println("Sensor no valido");
+                  Serial.println("<<Sensor no valido>>");
                   break;
                 }
                 //Sensor valido
                 ds.reset();
                 ds.select(sensor_id);
-                Serial.println("Sensor valido");
+                Serial.println("-->Sensor valido<--");
                 break; 
               case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
                 byte type_s;
@@ -445,7 +444,7 @@ void loop(){
                 ds.select(sensor_id);    
                 ds.write(0xBE);         // Read Scratchpad
 
-                Serial.print("  Data = ");
+                Serial.print("Data = ");
                 Serial.print(present,HEX);
                 Serial.print(" ");
                 for (int  i = 0; i < 9; i++) {           // we need 9 bytes
@@ -475,7 +474,7 @@ void loop(){
                   // default is 12 bit resolution, 750 ms conversion time
                 }
                 celsius = (float)raw / 16.0;
-                Serial.print("  Temperature = ");
+                Serial.print("Temperatura = ");
                 Serial.println(celsius);
 
                 //Respondemos al cliente
@@ -501,13 +500,13 @@ void loop(){
                 Serial1.flush();
                 if(esperarSendOk()){//Comunicacion enviada correctamente
                   if(verbose){
-                    Serial.println("Comunicacion terminada correctamente con " + client); 
+                    Serial.println("<--Comunicacion terminada correctamente con " + client + "-->"); 
                     Serial.flush();
                   }
                 }
                 else{
                   if(verbose){
-                    Serial.println("Comunicacion fallida con " + client); 
+                    Serial.println("<<Comunicacion fallida con " + client + ">>"); 
                     Serial.flush();
                   }
                 }
@@ -515,7 +514,6 @@ void loop(){
               }
             }
           }
-          //CONTESTAMOS
         }
       }
     }
@@ -542,8 +540,8 @@ void loop(){
         }
       }
       while(incoming_char != '>');
+      Serial.println("Modo Terminal cerrado");
       break;
-
     }
   }
 }
@@ -680,3 +678,9 @@ unsigned char stringToByte(char c[2])
   Serial.println(charToHexDigit(c[1]));  
   return charToHexDigit(c[0]) * 16 + charToHexDigit(c[1]);
 }
+
+
+
+
+
+
