@@ -72,7 +72,8 @@ public class Mega3G implements Arduino {
 	 */
 	public void close() {
 		try {
-			socket.close();
+			if(socket!=null)
+				socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -139,10 +140,8 @@ public class Mega3G implements Arduino {
 			return this.sensores_t;
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -188,7 +187,6 @@ public class Mega3G implements Arduino {
 		try {
 			Thread.sleep(800);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Long(101325);

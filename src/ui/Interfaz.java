@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -26,7 +24,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,27 +36,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
-import java.awt.Dialog.*;
-
 import logic.Evento;
 import logic.Negocio;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 public class Interfaz {
 
@@ -147,7 +138,6 @@ public class Interfaz {
 	private JButton b_recargaHumedadSuelo;
 	private JCheckBox chckbxActualizarSensores;
 	private JSpinner spiActualizarSensores;
-
 
 	/**
 	 * This method initializes f_interfaz
@@ -1025,6 +1015,7 @@ public class Interfaz {
 		Interfaz main = new Interfaz();
 		JFrame frame_main = main.getF_interfaz();
 		JFrame frame_iniciando = main.getF_iniciando();
+		Selector dialog_selector = new Selector();
 		// Image icono = new
 		// ImageIcon(frame_main.getClass().getResource("/imagenes/thumb-PGV-100G.jpg")).getImage();
 		// frame_main.setIconImage(icono);
@@ -1037,12 +1028,23 @@ public class Interfaz {
 		frame_main.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				Interfaz.class
 						.getResource("/imagenes/Naranjito/Naranjito 128.png")));
-		
-		frame_iniciando.setVisible(true);
-		if (args.length > 0 && args[0].compareTo("debug") == 0)
-			main.inicializar(true);
-		else
-			main.inicializar(false);
+
+		dialog_selector.setVisible(true);// Ventana modal de selección
+		String IP = dialog_selector.getIP();
+		if (IP == null) { // Conexión USB
+			frame_iniciando.setVisible(true);
+			if (args.length > 0 && args[0].compareTo("debug") == 0)
+				main.inicializar(true);
+			else
+				main.inicializar(false);
+		} else if (IP.equals("-1")) { // Cancelar o salir
+			frame_iniciando.dispose();
+			frame_main.dispose();
+			System.exit(-1);
+		} else {// IP Valida
+			frame_iniciando.setVisible(true);
+			main.inicializar(IP);
+		}
 	}
 
 	private static boolean isWindows() {
@@ -1069,6 +1071,17 @@ public class Interfaz {
 
 		System.out.println("----Inicializar");
 		logica = new Negocio(debug);
+		inicializarNegocio();
+	}
+
+	void inicializar(String IP) {
+
+		System.out.println("----Inicializar");
+		logica = new Negocio(IP);
+		inicializarNegocio();
+	}
+
+	private void inicializarNegocio() {
 		int ini = logica.inicializar();
 		if (ini == -1) {
 			JOptionPane.showMessageDialog(this.f_iniciando,
@@ -1913,6 +1926,5 @@ public class Interfaz {
 		}
 		return spiActualizarSensores;
 	}
-	
 
 }
