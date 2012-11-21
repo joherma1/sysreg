@@ -70,9 +70,9 @@ public class Selector extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[] { 0, 117, 0 };
+		gbl_contentPanel.columnWidths = new int[] { 0, 0, 0 };
 		gbl_contentPanel.rowHeights = new int[] { 0, 0, 0 };
-		gbl_contentPanel.columnWeights = new double[] { 0.0, 1.0,
+		gbl_contentPanel.columnWeights = new double[] { 0.0, 0.0,
 				Double.MIN_VALUE };
 		gbl_contentPanel.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		contentPanel.setLayout(gbl_contentPanel);
@@ -101,7 +101,7 @@ public class Selector extends JDialog {
 		{
 			textField = new JTextField();
 			GridBagConstraints gbc_textField = new GridBagConstraints();
-			gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_textField.anchor = GridBagConstraints.WEST;
 			gbc_textField.gridx = 1;
 			gbc_textField.gridy = 1;
 			contentPanel.add(textField, gbc_textField);
