@@ -4,11 +4,10 @@
 
 #define motor1Pin 3 // H-bridge leg 1 (pin 2, 1A)
 #define motor2Pin 4 // H-bridge leg 2 (pin 7, 2A)
-#define enable 2 // H-bridge enable
-
+#define enable 7 // H-bridge enable
+#define led 13
 int verbose = 1;
 
-int led = 13;
 int onModulePin = 2;        // the pin to switch on the module (without press on button) 
 int x=0;
 char data[1024];
@@ -134,12 +133,22 @@ void(* resetBoard) (void) = 0;
 
 
 void setup(){
+  //Inicializamos las salidas digitales
+  pinMode(motor1Pin, OUTPUT); 
+  pinMode(motor2Pin, OUTPUT); 
+  pinMode(enable,OUTPUT);
+  pinMode(led, OUTPUT);
+
   Serial.begin(9600);      //RX0 Pin 0, TX0 Pin 1: USB 
   Serial1.begin(9600);     //RX1 Pin 19, TX1 Pin 18: Sheild 3G
   delay(2000);
-  pinMode(led, OUTPUT);
+
+  //Desactivamos el puente H
+  digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
+  //Marcamos como apagado el  riego
+  riego = 0;
+  //Encendemos el modulo 3G
   pinMode(onModulePin, OUTPUT);
-  digitalWrite(led, LOW);
   offModule();  // switches the module ON
   onModule();
   //switchModule();
@@ -197,8 +206,12 @@ void setup(){
   Serial1.flush();
   esperarOK();
 
-  delay(2000);  
-  digitalWrite(led, LOW);
+  delay(2000);
+
+  //Señal de inicializacion OK
+  digitalWrite(led, HIGH);  
+  delay(300); 
+  digitalWrite(led, LOW);  
 }
 void loop(){
   byte addr[8];//Identificador del sensor
@@ -273,7 +286,7 @@ void loop(){
               digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
               digitalWrite(motor1Pin, LOW);   // set leg 1 of the H-bridge low
               digitalWrite(motor2Pin, HIGH);  // set leg 2 of the H-bridge high
-              digitalWrite(6, HIGH);  
+              digitalWrite(led, HIGH);  
               delay(300);
               digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
               break;
@@ -282,7 +295,7 @@ void loop(){
               digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
               digitalWrite(motor1Pin, HIGH);  // set leg 1 of the H-bridge high
               digitalWrite(motor2Pin, LOW);   // set leg 2 of the H-bridge low
-              digitalWrite(6, LOW);  
+              digitalWrite(led, LOW);  
               delay(300);
               digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
               break;
@@ -678,6 +691,8 @@ unsigned char stringToByte(char c[2])
   Serial.println(charToHexDigit(c[1]));  
   return charToHexDigit(c[0]) * 16 + charToHexDigit(c[1]);
 }
+
+
 
 
 
