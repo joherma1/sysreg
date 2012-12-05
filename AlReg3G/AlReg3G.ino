@@ -19,6 +19,12 @@ char apn[]="movistar.es";
 char userApn[]="MOVISTAR";
 char passApn[]="MOVISTAR";
 
+char serverFTP[ ]="arroveitor.no-ip.org";
+char portFTP[ ]="21";
+char user_nameFTP[ ]="proto1";
+char passwordFTP[ ]="agricultura.1";
+int file_size;
+
 String input;
 
 //Timeout
@@ -131,6 +137,98 @@ void t_agotado(){
 //Funcion reset de la placa por software
 void(* resetBoard) (void) = 0;
 
+void guardarIP(){
+  Serial.println("Guardando IP en el servidor"); 
+  Serial.flush();
+  Serial1.print("AT+CFTPSERV=\""); //Sets the FTP server
+  Serial1.print(serverFTP);
+  Serial1.println("\""); 
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.print("AT+CFTPPORT=");    //Sets FTP port
+  Serial1.println(portFTP);
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.print("AT+CFTPUN=\""); //Sets the user name
+  Serial1.print(user_nameFTP);
+  Serial1.println("\""); 
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.print("AT+CFTPPW=\""); //Sets password
+  Serial1.print(passwordFTP);
+  Serial1.println("\"");     
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.println("AT+CFTPMODE=1");    //Selects pasive mode
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.println("AT+CFTPTYPE=I");    //Selects Binary mode
+  Serial1.flush();
+  esperarOK();
+
+  Serial1.println("AT+CFTPPUT=\"/alreg/proto1/prueba.txt\"");    //Creates a file and sends data (ASCII)
+  Serial1.flush(); 
+  
+  char data66 = 0;
+  char data_old66 = 0;
+  do{          
+    if(Serial1.available()){
+      data_old66 = data66;
+      data66 = Serial1.read();
+      if(verbose){
+        Serial.print(data66);    
+        Serial.flush();
+      }
+    }    
+  }
+  while(data_old66 != 'I' || data66 !='N');    //Esperamos el OK
+
+  Serial1.println("255.255.255.255");    //Data for the file
+  Serial1.write(0x1A);    //EOL character
+  Serial1.write(0x0D);
+  Serial1.write(0x0A);
+  esperarOK();
+
+  delay(1000);
+  Serial.print("Leyendo contenido");
+  Serial.flush();
+
+  Serial1.println("AT+CFTPGET=\"/alreg/proto1/prueba.txt\"");    //Reads the data from test file
+  Serial1.flush();
+
+  x=0;
+  do{
+    while(Serial1.available()==0);
+    data[x]=Serial1.read();  
+    if(verbose){
+      Serial.print(data);     
+      Serial.flush(); 
+    }
+    x++;  
+  }
+  while((data[x-1]!=','));
+
+  x=0;
+
+  while(Serial1.peek()!=0x0A){
+    file_size=(file_size*10)+(Serial1.read()-0x30);
+  }; 
+
+  for(x=0;x< file_size;x++){
+    while(Serial1.available()==0);
+    data[x]=Serial1.read();
+  }
+
+  Serial1.print(data);
+
+  Serial.println("Fin del guardado de la IP");
+  Serial.flush();
+}
 
 void setup(){
   //Inicializamos las salidas digitales
@@ -212,6 +310,8 @@ void setup(){
   digitalWrite(led, HIGH);  
   delay(300); 
   digitalWrite(led, LOW);  
+
+  guardarIP();
 }
 void loop(){
   byte addr[8];//Identificador del sensor
@@ -691,6 +791,8 @@ unsigned char stringToByte(char c[2])
   Serial.println(charToHexDigit(c[1]));  
   return charToHexDigit(c[0]) * 16 + charToHexDigit(c[1]);
 }
+
+
 
 
 
