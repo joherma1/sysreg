@@ -24,6 +24,7 @@ char portFTP[ ]="21";
 char user_nameFTP[ ]="proto1";
 char passwordFTP[ ]="agricultura.1";
 int file_size;
+String ip = "";
 
 String input;
 
@@ -128,6 +129,34 @@ boolean esperarSendOk(){
   return false;
 }
 
+boolean esperarBEGIN(){
+  char data = 0;
+  char data_old = 0;
+  timeout = false;
+  for (int i=0;i<dtNBR_ALARMS;i++){
+    Alarm.free(i);
+  }
+  AlarmId timer = Alarm.timerOnce(15, t_agotado);
+  do{          
+    if(Serial1.available()){
+      data_old = data;
+      data = Serial1.read();  
+      if(verbose){
+        Serial.print(data);     
+        Serial.flush(); 
+      }
+    }
+    Alarm.delay(0);
+  }
+  while((data_old != 'I' || data !='N') && !timeout);    //Esperamos hasta tener el mensaje "Network opened" o que salte el timeout
+  if(!timeout){ //si no ha saltado el timeout lo desactivamos
+    Alarm.disable(timer);
+    timeout = false;
+    return true;
+  }
+  return false;
+}
+
 void t_agotado(){
   timeout = true;
   Serial.println("<<Timeout>>"); 
@@ -137,7 +166,7 @@ void t_agotado(){
 //Funcion reset de la placa por software
 void(* resetBoard) (void) = 0;
 
-void guardarIP(){
+void guardarIP(String ip){
   Serial.println("Guardando IP en el servidor"); 
   Serial.flush();
   Serial1.print("AT+CFTPSERV=\""); //Sets the FTP server
@@ -171,63 +200,21 @@ void guardarIP(){
   Serial1.flush();
   esperarOK();
 
-  Serial1.println("AT+CFTPPUT=\"/alreg/proto1/prueba.txt\"");    //Creates a file and sends data (ASCII)
-  Serial1.flush(); 
-  
-  char data66 = 0;
-  char data_old66 = 0;
-  do{          
-    if(Serial1.available()){
-      data_old66 = data66;
-      data66 = Serial1.read();
-      if(verbose){
-        Serial.print(data66);    
-        Serial.flush();
-      }
-    }    
+  Serial1.println("AT+CFTPPUT=\"/alreg/proto1/ip.txt\"");    //Creates a file and sends data (ASCII)
+  Serial1.flush();   
+  if(!esperarBEGIN()){ //Si ha fallado la conexion FTP
+    Serial.println("<<FTP PUT Timeout>>  Error al guardar la IP");
+    Serial.println("-->Error al guardar la IP<--");
+    Serial.flush();
+    return;
   }
-  while(data_old66 != 'I' || data66 !='N');    //Esperamos el OK
-
-  Serial1.println("255.255.255.255");    //Data for the file
+  //Guardamos la IP
+  Serial1.print(ip);
   Serial1.write(0x1A);    //EOL character
   Serial1.write(0x0D);
   Serial1.write(0x0A);
   esperarOK();
-
   delay(1000);
-  Serial.print("Leyendo contenido");
-  Serial.flush();
-
-  Serial1.println("AT+CFTPGET=\"/alreg/proto1/prueba.txt\"");    //Reads the data from test file
-  Serial1.flush();
-
-  x=0;
-  do{
-    while(Serial1.available()==0);
-    data[x]=Serial1.read();  
-    if(verbose){
-      Serial.print(data);     
-      Serial.flush(); 
-    }
-    x++;  
-  }
-  while((data[x-1]!=','));
-
-  x=0;
-
-  while(Serial1.peek()!=0x0A){
-    file_size=(file_size*10)+(Serial1.read()-0x30);
-  }; 
-
-  for(x=0;x< file_size;x++){
-    while(Serial1.available()==0);
-    data[x]=Serial1.read();
-  }
-
-  Serial1.print(data);
-
-  Serial.println("Fin del guardado de la IP");
-  Serial.flush();
 }
 
 void setup(){
@@ -280,7 +267,7 @@ void setup(){
   Serial1.flush();
   if(!esperarNet()){
     Serial.println("<<Network opened timeout>>");
-    Serial.println('/t' + '/t' + "Reiniciando");
+    Serial.println("-->Reiniciando<--");
     Serial.flush();
     resetBoard();  
   }
@@ -295,10 +282,12 @@ void setup(){
       incoming = Serial1.read();
       Serial.print(incoming);     
       Serial.flush();
+      ip+=incoming;
     }    
   }
   while(incoming !='K');
-
+  //Limpiamos la IP
+  ip = ip.substring(23,ip.indexOf(0x0D,23)); //Primera posicion de la IP
   //Arrancamos el servidor TCP
   Serial1.println("AT+SERVERSTART");
   Serial1.flush();
@@ -311,7 +300,7 @@ void setup(){
   delay(300); 
   digitalWrite(led, LOW);  
 
-  guardarIP();
+  guardarIP(ip);
 }
 void loop(){
   byte addr[8];//Identificador del sensor
@@ -791,6 +780,8 @@ unsigned char stringToByte(char c[2])
   Serial.println(charToHexDigit(c[1]));  
   return charToHexDigit(c[0]) * 16 + charToHexDigit(c[1]);
 }
+
+
 
 
 
