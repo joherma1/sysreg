@@ -136,7 +136,7 @@ boolean esperarBEGIN(){
   for (int i=0;i<dtNBR_ALARMS;i++){
     Alarm.free(i);
   }
-  AlarmId timer = Alarm.timerOnce(15, t_agotado);
+  AlarmId timer = Alarm.timerOnce(20, t_agotado);
   do{          
     if(Serial1.available()){
       data_old = data;
@@ -167,8 +167,6 @@ void t_agotado(){
 void(* resetBoard) (void) = 0;
 
 void guardarIP(String ip){
-  Serial.println("Guardando IP en el servidor"); 
-  Serial.flush();
   Serial1.print("AT+CFTPSERV=\""); //Sets the FTP server
   Serial1.print(serverFTP);
   Serial1.println("\""); 
@@ -238,7 +236,7 @@ void setup(){
   onModule();
   //switchModule();
   if(verbose){
-    Serial.println("-->Esperando inicio...<--");
+    Serial.println("-->Iniciando<--");
     Serial.flush();
   }
   for (int i=0;i<5;i++){ //5 OK
@@ -292,7 +290,6 @@ void setup(){
   Serial1.println("AT+SERVERSTART");
   Serial1.flush();
   esperarOK();
-
   delay(2000);
 
   //Señal de inicializacion OK
@@ -300,22 +297,33 @@ void setup(){
   delay(300); 
   digitalWrite(led, LOW);  
 
+  //Guardamos la IP en servidor FTP
   guardarIP(ip);
+
+  Serial.println();
+  Serial.println("-->Inicializacion terminada<--");
+  Serial.flush();
 }
+
 void loop(){
   byte addr[8];//Identificador del sensor
   if(Serial1.available()){
     input = leerLinea();
-    Serial.print(input); 
-    Serial.flush();
+    if(verbose){
+      Serial.println(input); 
+      Serial.flush();
+    }
     //RECV FROM: 193.144.127.13:6766
     if(input != NULL && input.startsWith("RECV FROM")){ //Si ha encontrado un mensaje entrante
-      //Serial.println("<<"+input+">>");
       //Copiamos la informacion del cliente despues de leer rapidamente
       //para evitar perdidas de datos
-      leerLinea();
-      String input_ans;
+      leerLinea(); //Descartamos el salto de linea
+      String input_ans; //Comando que envia el cliente
       input_ans = leerLinea();
+      if(verbose){
+        Serial.println(input_ans); 
+        Serial.flush();
+      }
       if(input_ans != NULL) {
         String c_conected = ""; //xxx.xxx.xxx.xxx:ppppp
         for(int i=10; i < input.length(); i++) //Copiamos la IP y el puerto
@@ -328,22 +336,19 @@ void loop(){
         String argumento = "";
         if(input_ans.startsWith("sysreg")){
           comando = input_ans[7];
-          Serial.print("Comando: ");
-          Serial.println(comando, HEX); 
-          Serial.flush();
-          int length  = input_ans.length();
-          if(length > 12 ){//Si tiene argumento
-            for(int i=0; i<length;i++)
-              Serial.print(input_ans[i],HEX);
-            argumento = input_ans.substring(9,length);
-            Serial.println("Argumento: " + argumento);//incluye <cr><lf><cr><lf>
-            Serial.flush();
+          int input_ans_length  = input_ans.length();
+          if(input_ans_length > 12 ){//Si tiene argumento
+            //En Windows y OS X envia finales de linea diferentes, si queremos ver lo que envia
+            //for(int i=0; i<length;i++)
+            //  Serial.print(input_ans[i],HEX);
+            argumento = input_ans.substring(9,input_ans_length);
           }
           //Obtenemos el ID del cliente
           input = leerClientes();
           if(input != NULL){
-            Serial.println("<!" + input + "!>"); 
-            Serial.flush();
+            //Para ver los clientes conectados
+            //Serial.println("<!" + input + "!>"); 
+            //Serial.flush();
             String client;
             int id_client;
             for(int i=0; i< input.length(); i++){ //Recorremos el string 
@@ -366,7 +371,13 @@ void loop(){
               }
             }
             if(verbose){
-              Serial.println("-->Cliente: " + client + " con id: " + id_client + "<--");
+              Serial.print("-->Cliente: " + client + " con id: " + id_client);
+              Serial.print(" Comando: ");
+              Serial.print(comando);
+              if(argumento.length() > 0){
+                Serial.print(" Argumento:" + argumento);
+              }
+              Serial.println("<--");
               Serial.flush();
             }
             switch(comando){
@@ -626,7 +637,7 @@ void loop(){
     switch(comando){
     case '<': //Modo consola
       Serial.println();
-      Serial.println("Modo Terminal (para salir pulse > + Intro)");
+      Serial.println("-->Modo Terminal (para salir pulse > + Intro)<--");
       Serial.flush();
       char  incoming_char = 0;
       do{
@@ -642,25 +653,12 @@ void loop(){
         }
       }
       while(incoming_char != '>');
-      Serial.println("Modo Terminal cerrado");
+      Serial.println("-->Modo Terminal cerrado<--");
       break;
     }
   }
 }
 
-String leerPlaca(){//NO utilizar la clase STRING CUANDO EL TIEMPO  
-  //SEA IMPORTANTE POR QUE SE PERDERA INFORMACION AL SER EL BUFFER PEQUEÑO
-  //YA QUE RALENTIZA MUCHO 
-  //GUARDAR EN vector de string y luego transformar
-  String res = "";
-  char character = 0;
-  while(Serial1.available()){
-    character = Serial1.read();
-    res = res + character;
-  }  
-
-  return res;
-}
 String leerLinea(){// Para que no dependa del tiempo de procesamiento
   char data[1024];
   char character = 0;
@@ -671,29 +669,16 @@ String leerLinea(){// Para que no dependa del tiempo de procesamiento
     Alarm.free(i);
   }
   AlarmId timer = Alarm.timerOnce(5, t_agotado);
-  if(verbose){
-    Serial.print("<<");
-
-    Serial.flush();
-  }
   do{
     if(Serial1.available()){
       character_old = character;
       character = Serial1.read();
       data[length] = character;
-      if(verbose) {
-        Serial.print(character); 
-        Serial.flush();
-      }
       length++;  
     }
     Alarm.delay(0);
   } 
   while(character !=0x0A && character_old != 0x0D && !timeout); 
-  if(verbose){
-    Serial.print(">>"); 
-    Serial.flush();
-  }
   if(!timeout){ //si no ha saltado el timeout lo desactivamos
     Alarm.disable(timer);
     timeout = false; 
@@ -709,8 +694,6 @@ String leerLinea(){// Para que no dependa del tiempo de procesamiento
     return NULL;
   }
 }
-
-
 
 String leerClientes(){ //NO utilizar la clase STRING CUANDO EL TIEMPO  
   //SEA IMPORTANTE POR QUE SE PERDERA INFORMACION AL SER EL BUFFER PEQUEÑO
@@ -730,8 +713,7 @@ String leerClientes(){ //NO utilizar la clase STRING CUANDO EL TIEMPO
     if(Serial1.available()){
       character = Serial1.read();
       data[length] = character;
-      length++;      
-      //Serial.print(character);
+      length++;
     }    
     Alarm.delay(0);
   }
@@ -750,7 +732,6 @@ String leerClientes(){ //NO utilizar la clase STRING CUANDO EL TIEMPO
     Serial.flush();
     return NULL;
   }
-
 }
 
 int contarSensores(void){
@@ -764,22 +745,15 @@ int contarSensores(void){
   return count;
 }
 
-
 unsigned char charToHexDigit(char c){
-
   if (c >= 'A')
     return c - 'A' + 10;
   else
     return c - '0';
 }
 
-unsigned char stringToByte(char c[2])
-{
-  Serial.print("<");
-  Serial.println(charToHexDigit(c[0]));
-  Serial.println(charToHexDigit(c[1]));  
-  return charToHexDigit(c[0]) * 16 + charToHexDigit(c[1]);
-}
+
+
 
 
 
