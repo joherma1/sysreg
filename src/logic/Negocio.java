@@ -1,11 +1,11 @@
 package logic;
 
 import java.awt.Desktop;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -26,18 +26,19 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import arduino.Arduino;
+import arduino.Fake;
 import arduino.Mega3G;
 import arduino.Uno;
-import arduino.Fake;
 
-import com.google.api.client.auth.oauth2.draft10.AccessTokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.draft10.GoogleAccessProtectedResource;
-import com.google.api.client.googleapis.auth.oauth2.draft10.GoogleAccessTokenRequest.GoogleAuthorizationCodeGrant;
-import com.google.api.client.googleapis.auth.oauth2.draft10.GoogleAuthorizationRequestUrl;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
@@ -46,7 +47,11 @@ public class Negocio {
 	private String[] sensores_t;
 	private List<Evento> sortedEvents;
 	private boolean regando;
+
+	private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	private final JsonFactory JSON_FACTORY = new JacksonFactory();
 	com.google.api.services.calendar.Calendar googleCalendar;
+
 	private final String IPV4_REGEX = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
@@ -445,29 +450,35 @@ public class Negocio {
 	 *         el inicio de sesión; -5: Código de autorización incorrecto; -6:
 	 *         En otro caso
 	 */
+
 	private int abrirCalendario() {
 		try {
-			HttpTransport httpTransport = new NetHttpTransport();
-			JacksonFactory jsonFactory = new JacksonFactory();
-
 			// Las claves copiadas de la pestaña API Access en la consola de
 			// APIs de Google
-
-			// Claves de la cuenta sysreg1@gmail.com, funciona también si
-			// habrimos una cuenta diferente es decir, lo que realmente enlaza
-			// sesión es el authorization code con registrar la aplicación en
-			// una cuenta sirve por lo que puede leer eventos de cualquier
-			// cuenta
-			String clientId = "797624020242.apps.googleusercontent.com";
-			String clientSecret = "2YlbP9Pt90AUF029Dj4vCHiE";
-			String redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
-			String scope = "https://www.googleapis.com/auth/calendar";
-
 			// Paso 1: Autorización
-			String authorizationUrl = new GoogleAuthorizationRequestUrl(
-					clientId, redirectUrl, scope).build();
+			String clientId = "810683266685.apps.googleusercontent.com";
+			String clientSecret = "FuiqalJWLiOxkbqLIDKCN9ro";
+			String redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
-			// Point or redirect your user to the authorizationUrl.
+			// Si preferimos leer los datos del JSON descargado
+			// GoogleClientSecrets clientSecrets = GoogleClientSecrets
+			// .load(JSON_FACTORY,
+			// new FileInputStream(
+			// "/Volumes/Drive-roveitor/jose/Descargas/client_secrets.json"));
+			// GoogleAuthorizationCodeFlow flow = new
+			// GoogleAuthorizationCodeFlow.Builder(
+			// HTTP_TRANSPORT, JSON_FACTORY, clientSecrets,
+			// Arrays.asList(CalendarScopes.CALENDAR)).build();
+
+			// Creamos el flujo de autorización
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+					HTTP_TRANSPORT, JSON_FACTORY, clientId, clientSecret,
+					Arrays.asList(CalendarScopes.CALENDAR)).build();
+
+			// Obtenemos la URL para autorizar el acceso
+			String authorizationUrl = flow.newAuthorizationUrl()
+					.setRedirectUri(redirectUrl).build();
+
 			// Redirección para usar la url de autorización
 			System.out.println("Vaya al siguiente enlace en su navegador:");
 			System.out.println(authorizationUrl);
@@ -501,16 +512,20 @@ public class Negocio {
 				return -4;
 
 			// Paso 2: Intercambio de códigos
-			AccessTokenResponse response = new GoogleAuthorizationCodeGrant(
-					httpTransport, jsonFactory, clientId, clientSecret, code,
-					redirectUrl).execute();
-			GoogleAccessProtectedResource accessProtectedResource = new GoogleAccessProtectedResource(
-					response.accessToken, httpTransport, jsonFactory, clientId,
-					clientSecret, response.refreshToken);
-			googleCalendar = com.google.api.services.calendar.Calendar
-					.builder(httpTransport, jsonFactory)
-					.setApplicationName("SysReg")
-					.setHttpRequestInitializer(accessProtectedResource).build();
+			// Con el código introducido obtenemos el token que permite el
+			// acceso
+			GoogleTokenResponse response = flow.newTokenRequest(code)
+					.setRedirectUri(redirectUrl).execute();
+
+			// Creamos la credencial
+			Credential credential = flow.createAndStoreCredential(response,
+					null);
+
+			// Obtenemos el objeto Calendario
+			googleCalendar = new com.google.api.services.calendar.Calendar.Builder(
+					HTTP_TRANSPORT, JSON_FACTORY, credential)
+					.setApplicationName("RegAdmin").build();
+
 			return 0;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -671,7 +686,7 @@ public class Negocio {
 		for (String s : main.listarSensoresT()) {
 			System.out.println(main.obtenerTemperatura(s));
 		}
-		//System.out.println(main.obtenerTemperatura("28F5E9AF020000D2"));
+		// System.out.println(main.obtenerTemperatura("28F5E9AF020000D2"));
 		// main.abrirCalendario();
 		// main.cargarCalendario();
 		// System.out.println("Eventos insertados");
