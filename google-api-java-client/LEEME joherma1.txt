@@ -1,0 +1,9 @@
+Versión
+	1.10.3-beta
+Funciona con RegAdmin revisión 
+	144
+Claves API Google
+        clientId = "797624020242.apps.googleusercontent.com";
+        clientSecret = "2YlbP9Pt90AUF029Dj4vCHiE";
+        redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+	scope = "https://www.googleapis.com/auth/calendar";
