@@ -1,12 +1,16 @@
 #include <OneWire.h>
 #include <Time.h>
 #include <TimeAlarms.h>
+#include <LiquidCrystal.h>
 
 #define motor1Pin 3 // H-bridge leg 1 (pin 2, 1A)
 #define motor2Pin 4 // H-bridge leg 2 (pin 7, 2A)
 #define enable 7 // H-bridge enable
 #define led 13
 int verbose = 1;
+
+// Display PINS (rs, enable, d4, d5, d6, d7) 
+LiquidCrystal lcd(29, 28, 25, 24, 23, 22);
 
 int onModulePin = 2;        // the pin to switch on the module (without press on button) 
 int x=0;
@@ -15,9 +19,15 @@ char incoming = 0;
 int riego;
 char port[]="80";
 
+//MOVISTAR
 char apn[]="movistar.es";
 char userApn[]="MOVISTAR";
 char passApn[]="MOVISTAR";
+
+//SIMYO
+//char apn[]="gprs-service.com";
+//char userApn[]="";
+//char passApn[]="";
 
 char serverFTP[ ]="arroveitor.no-ip.org";
 char portFTP[ ]="21";
@@ -225,6 +235,12 @@ void setup(){
   Serial.begin(9600);      //RX0 Pin 0, TX0 Pin 1: USB 
   Serial1.begin(9600);     //RX1 Pin 19, TX1 Pin 18: Sheild 3G
   delay(2000);
+  
+  //LCD DISPLAY
+  // set up the LCD's number of columns and rows: 
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print("hello, world!");
 
   //Desactivamos el puente H
   digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
@@ -751,6 +767,7 @@ unsigned char charToHexDigit(char c){
   else
     return c - '0';
 }
+
 
 
 
