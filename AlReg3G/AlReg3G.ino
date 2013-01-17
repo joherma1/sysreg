@@ -35,6 +35,7 @@ char user_nameFTP[ ]="proto1";
 char passwordFTP[ ]="agricultura.1";
 int file_size;
 String ip = "";
+boolean estadoFTP;
 
 String input;
 
@@ -176,7 +177,7 @@ void t_agotado(){
 //Funcion reset de la placa por software
 void(* resetBoard) (void) = 0;
 
-void guardarIP(String ip){
+boolean guardarIP(String ip){
   Serial1.print("AT+CFTPSERV=\""); //Sets the FTP server
   Serial1.print(serverFTP);
   Serial1.println("\""); 
@@ -214,7 +215,7 @@ void guardarIP(String ip){
     Serial.println("<<FTP PUT Timeout>>  Error al guardar la IP");
     Serial.println("-->Error al guardar la IP<--");
     Serial.flush();
-    return;
+    return false;
   }
   //Guardamos la IP
   Serial1.print(ip);
@@ -223,6 +224,7 @@ void guardarIP(String ip){
   Serial1.write(0x0A);
   esperarOK();
   delay(1000);
+  return true;
 }
 
 void setup(){
@@ -235,12 +237,12 @@ void setup(){
   Serial.begin(9600);      //RX0 Pin 0, TX0 Pin 1: USB 
   Serial1.begin(9600);     //RX1 Pin 19, TX1 Pin 18: Sheild 3G
   delay(2000);
-  
+
   //LCD DISPLAY
   // set up the LCD's number of columns and rows: 
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("hello, world!");
+  lcd.print("Iniciando...");
 
   //Desactivamos el puente H
   digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
@@ -314,11 +316,22 @@ void setup(){
   digitalWrite(led, LOW);  
 
   //Guardamos la IP en servidor FTP
-  guardarIP(ip);
+  estadoFTP =guardarIP(ip);
 
   Serial.println();
   Serial.println("-->Inicializacion terminada<--");
   Serial.flush();
+
+  //Mostramos en el display la IP y un mensaje
+  lcd.setCursor(0, 0);  //Primera linea
+  lcd.print(ip);
+  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+  if(estadoFTP)
+    lcd.print("S");
+  else
+    lcd.print("E");
+  lcd.setCursor(0, 1);  //Segunda linea
+  lcd.print("Ini. terminada");
 }
 
 void loop(){
@@ -396,6 +409,18 @@ void loop(){
               Serial.println("<--");
               Serial.flush();
             }
+
+            lcd.clear(); //Limpia y pone en la primera posicion
+            lcd.print(ip);
+            lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+            if(estadoFTP)
+              lcd.print("S");
+            else
+              lcd.print("E");
+            lcd.setCursor(0, 1);
+            lcd.print("Client IN ");
+            lcd.print(id_client);
+
             switch(comando){
             case 0x64: //activarRiego: d 100 0x64
               riego = 1;
@@ -443,6 +468,17 @@ void loop(){
                 if(verbose){
                   Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
                   Serial.flush();
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
                 }
               }
               else{
@@ -481,7 +517,18 @@ void loop(){
               if(esperarSendOk()){//Comunicacion enviada correctamente
                 if(verbose){
                   Serial.println("<--Comunicacion terminada correctamente con " + client + "<--"); 
-                  Serial.flush();
+                  Serial.flush();    
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
                 }
               }
               else{
@@ -528,6 +575,17 @@ void loop(){
                 if(verbose){
                   Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
                   Serial.flush();
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
                 }
               }
               else{
@@ -631,6 +689,17 @@ void loop(){
                   if(verbose){
                     Serial.println("<--Comunicacion terminada correctamente con " + client + "-->"); 
                     Serial.flush();
+                    //Mostramos en el display la IP y un mensaje
+                    lcd.clear(); //Limpia y pone en la primera posicion
+                    lcd.print(ip);
+                    lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                    if(estadoFTP)
+                      lcd.print("S");
+                    else
+                      lcd.print("E");
+                    lcd.setCursor(0, 1);
+                    lcd.print("Client OUT ");
+                    lcd.print(id_client);
                   }
                 }
                 else{
@@ -767,6 +836,15 @@ unsigned char charToHexDigit(char c){
   else
     return c - '0';
 }
+
+
+
+
+
+
+
+
+
 
 
 
