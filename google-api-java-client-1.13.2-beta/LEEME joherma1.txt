@@ -1,0 +1,13 @@
+Versión
+	1.13.2-beta
+Funciona con RegAdmin revisión 
+	164
+Claves API Google (RegAdmin)
+        clientId = "810683266685.apps.googleusercontent.com";
+        clientSecret = "FuiqalJWLiOxkbqLIDKCN9ro";
+        redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+Url
+	http://code.google.com/p/google-api-java-client/
+Descripción
+	Core client library .jar files	
+		Lists the latest .jar files for the Google APIs Client Library for Java.
