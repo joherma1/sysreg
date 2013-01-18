@@ -312,12 +312,18 @@ public class Negocio {
 			while (true) {
 				for (Event event : events.getItems())
 					if (event.getStatus().equals("confirmed")) {
-						Evento e = new Evento(event.getSummary(),
-								event.getDescription(), event.getStart()
-										.getDateTime(), event.getEnd()
-										.getDateTime(), event.getId());
-						e.setLugar(event.getLocation());
-						sortedEvents.add(e);
+						// Los eventos que duran todo el día tienen los campos
+						// getDateTime a null. En su lugar tienen la información
+						// en getDate, pero estos eventos no nos interesan
+						if (event.getStart().getDateTime() != null
+								&& event.getEnd().getDateTime() != null) {
+							Evento e = new Evento(event.getSummary(),
+									event.getDescription(), event.getStart()
+											.getDateTime(), event.getEnd()
+											.getDateTime(), event.getId());
+							e.setLugar(event.getLocation());
+							sortedEvents.add(e);
+						}
 					}
 				// Por cada página entran por defecto 100 eventos, si hay
 				// mas en la consulta comprobar las siguientes páginas
