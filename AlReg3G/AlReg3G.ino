@@ -5,9 +5,14 @@
 
 #define motor1Pin 3 // H-bridge leg 1 (pin 2, 1A)
 #define motor2Pin 4 // H-bridge leg 2 (pin 7, 2A)
-#define enable 7 // H-bridge enable
+#define enable 14 // H-bridge enable
 #define led 13
+#define relePin 7 // Pin que activa el transistor para activar el Rele
 int verbose = 1;
+
+// Estado de los actuadores
+int riego;
+int estadoRele;
 
 // Display PINS (rs, enable, d4, d5, d6, d7) 
 LiquidCrystal lcd(29, 28, 25, 24, 23, 22);
@@ -16,9 +21,8 @@ int onModulePin = 2;        // the pin to switch on the module (without press on
 int x=0;
 char data[1024];
 char incoming = 0;
-int riego;
-char port[]="80";
 
+char port[]="80";
 //MOVISTAR
 char apn[]="movistar.es";
 char userApn[]="MOVISTAR";
@@ -233,6 +237,7 @@ void setup(){
   pinMode(motor2Pin, OUTPUT); 
   pinMode(enable,OUTPUT);
   pinMode(led, OUTPUT);
+  pinMode(relePin, OUTPUT);
 
   Serial.begin(9600);      //RX0 Pin 0, TX0 Pin 1: USB 
   Serial1.begin(9600);     //RX1 Pin 19, TX1 Pin 18: Sheild 3G
@@ -248,6 +253,11 @@ void setup(){
   digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
   //Marcamos como apagado el  riego
   riego = 0;
+  //Desactivamos el rele
+  digitalWrite(relePin, LOW);
+  //Marcamos como apagado el rele
+  estadoRele = 0;
+
   //Encendemos el modulo 3G
   pinMode(onModulePin, OUTPUT);
   offModule();  // switches the module ON
@@ -422,6 +432,64 @@ void loop(){
             lcd.print(id_client);
 
             switch(comando){
+            case 0x61:  //activarRele: a 97 0x61
+              estadoRele = 1;
+              digitalWrite(relePin, HIGH);
+              delay(300);
+              break;
+            case 0x62:  //desactivarRele: b 98 0x62
+              estadoRele = 0;
+              digitalWrite(relePin, LOW);
+              delay(300);
+              break;
+            case 0x63:  //comprobarRele: c 99 0x63
+              Serial1.print("AT+ACTCLIENT=");    //Activamos la conexion con el cliente  
+              Serial1.println(id_client);
+              Serial1.flush();
+              esperarOK();  
+              Serial1.println("AT+TCPWRITE=1");        //Sends TCP data
+              Serial1.flush();
+              incoming = 0;
+              do{
+                if(Serial1.available()){
+                  incoming=Serial1.read();  
+                  if(verbose){
+                    Serial.print(incoming);  
+                    Serial.flush(); 
+                  }
+                }                     
+              }
+              while(incoming != '>');
+              //DATA
+              if(estadoRele == 1)
+                Serial1.println(1);
+              else
+                Serial1.println(0);
+              Serial1.flush();
+              if(esperarSendOk()){//Comunicacion enviada correctamente
+                if(verbose){
+                  Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
+                  Serial.flush();
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
+                }
+              }
+              else{
+                if(verbose){
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
+                  Serial.flush();
+                }
+              }
+              break;  
             case 0x64: //activarRiego: d 100 0x64
               riego = 1;
               digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
@@ -600,7 +668,6 @@ void loop(){
               if(argumento.length() < 16 ){
                 Serial.println("<<Argumento invalido>>");
                 Serial.flush();
-                break;
               }
               else{
                 delay(40);
@@ -618,98 +685,98 @@ void loop(){
                 ds.reset();
                 ds.select(sensor_id);
                 Serial.println("-->Sensor valido<--");
-                break; 
-              case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
-                byte type_s;
-                float celsius;
-                ds.write(0x44,1);         // start conversion, with parasite power on at the end
-
-                delay(1000);     // maybe 750ms is enough, maybe not
-                // we might do a ds.depower() here, but the reset will take care of it.
-
-                present = ds.reset();
-                ds.select(sensor_id);    
-                ds.write(0xBE);         // Read Scratchpad
-
-                Serial.print("Data = ");
-                Serial.print(present,HEX);
-                Serial.print(" ");
-                for (int  i = 0; i < 9; i++) {           // we need 9 bytes
-                  dataTemp[i] = ds.read();
-                  Serial.print(dataTemp[i], HEX);
-                  Serial.print(" ");
-                }
-                Serial.print(" CRC=");
-                Serial.print(OneWire::crc8(dataTemp, 8), HEX);
-                Serial.println();
-
-                // convert the data to actual temperature
-
-                unsigned int raw = (dataTemp[1] << 8) | dataTemp[0];
-                if (type_s) {
-                  raw = raw << 3; // 9 bit resolution default
-                  if (dataTemp[7] == 0x10) {
-                    // count remain gives full 12 bit resolution
-                    raw = (raw & 0xFFF0) + 12 - dataTemp[6];
-                  }
-                } 
-                else {
-                  byte cfg = (dataTemp[4] & 0x60);
-                  if (cfg == 0x00) raw = raw << 3;  // 9 bit resolution, 93.75 ms
-                  else if (cfg == 0x20) raw = raw << 2; // 10 bit res, 187.5 ms
-                  else if (cfg == 0x40) raw = raw << 1; // 11 bit res, 375 ms
-                  // default is 12 bit resolution, 750 ms conversion time
-                }
-                celsius = (float)raw / 16.0;
-                Serial.print("Temperatura = ");
-                Serial.println(celsius);
-
-                //Respondemos al cliente
-                Serial1.print("AT+ACTCLIENT=");    //Activamos la conexion con el cliente  
-                Serial1.println(id_client);
-                Serial1.flush();
-                esperarOK();  
-                Serial1.println("AT+TCPWRITE=6");        //Sends TCP data
-                Serial1.flush();
-                incoming = 0;
-                do{
-                  if(Serial1.available()){
-                    incoming=Serial1.read();  
-                    if(verbose){
-                      Serial.print(incoming);  
-                      Serial.flush(); 
-                    }
-                  }                     
-                }
-                while(incoming != '>');
-                //DATA
-                Serial1.println(celsius);
-                Serial1.flush();
-                if(esperarSendOk()){//Comunicacion enviada correctamente
-                  if(verbose){
-                    Serial.println("<--Comunicacion terminada correctamente con " + client + "-->"); 
-                    Serial.flush();
-                    //Mostramos en el display la IP y un mensaje
-                    lcd.clear(); //Limpia y pone en la primera posicion
-                    lcd.print(ip);
-                    lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
-                    if(estadoFTP)
-                      lcd.print("S");
-                    else
-                      lcd.print("E");
-                    lcd.setCursor(0, 1);
-                    lcd.print("Client OUT ");
-                    lcd.print(id_client);
-                  }
-                }
-                else{
-                  if(verbose){
-                    Serial.println("<<Comunicacion fallida con " + client + ">>"); 
-                    Serial.flush();
-                  }
-                }
-                break;
               }
+              break;
+            case 0x6E: //Obtener Tª del sensor seleccionado: n 110 0x6E
+              byte type_s;
+              float celsius;
+              ds.write(0x44,1);         // start conversion, with parasite power on at the end
+
+              delay(1000);     // maybe 750ms is enough, maybe not
+              // we might do a ds.depower() here, but the reset will take care of it.
+
+              present = ds.reset();
+              ds.select(sensor_id);    
+              ds.write(0xBE);         // Read Scratchpad
+
+              Serial.print("Data = ");
+              Serial.print(present,HEX);
+              Serial.print(" ");
+              for (int  i = 0; i < 9; i++) {           // we need 9 bytes
+                dataTemp[i] = ds.read();
+                Serial.print(dataTemp[i], HEX);
+                Serial.print(" ");
+              }
+              Serial.print(" CRC=");
+              Serial.print(OneWire::crc8(dataTemp, 8), HEX);
+              Serial.println();
+
+              // convert the data to actual temperature
+
+              unsigned int raw = (dataTemp[1] << 8) | dataTemp[0];
+              if (type_s) {
+                raw = raw << 3; // 9 bit resolution default
+                if (dataTemp[7] == 0x10) {
+                  // count remain gives full 12 bit resolution
+                  raw = (raw & 0xFFF0) + 12 - dataTemp[6];
+                }
+              } 
+              else {
+                byte cfg = (dataTemp[4] & 0x60);
+                if (cfg == 0x00) raw = raw << 3;  // 9 bit resolution, 93.75 ms
+                else if (cfg == 0x20) raw = raw << 2; // 10 bit res, 187.5 ms
+                else if (cfg == 0x40) raw = raw << 1; // 11 bit res, 375 ms
+                // default is 12 bit resolution, 750 ms conversion time
+              }
+              celsius = (float)raw / 16.0;
+              Serial.print("Temperatura = ");
+              Serial.println(celsius);
+
+              //Respondemos al cliente
+              Serial1.print("AT+ACTCLIENT=");    //Activamos la conexion con el cliente  
+              Serial1.println(id_client);
+              Serial1.flush();
+              esperarOK();  
+              Serial1.println("AT+TCPWRITE=6");        //Sends TCP data
+              Serial1.flush();
+              incoming = 0;
+              do{
+                if(Serial1.available()){
+                  incoming=Serial1.read();  
+                  if(verbose){
+                    Serial.print(incoming);  
+                    Serial.flush(); 
+                  }
+                }                     
+              }
+              while(incoming != '>');
+              //DATA
+              Serial1.println(celsius);
+              Serial1.flush();
+              if(esperarSendOk()){//Comunicacion enviada correctamente
+                if(verbose){
+                  Serial.println("<--Comunicacion terminada correctamente con " + client + "-->"); 
+                  Serial.flush();
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
+                }
+              }
+              else{
+                if(verbose){
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
+                  Serial.flush();
+                }
+              }
+              break;
             }
           }
         }
@@ -836,6 +903,8 @@ unsigned char charToHexDigit(char c){
   else
     return c - '0';
 }
+
+
 
 
 
