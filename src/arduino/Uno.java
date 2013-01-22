@@ -290,6 +290,71 @@ public class Uno implements SerialPortEventListener, Arduino {
 	}
 
 	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
+	 * Enviamos a la placa una señal para que active el relé
+	 * Como aun no está instalado el rele en dicha placa
+	 * actua como startReg
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
+	public boolean startRele() {
+		try {
+			output.write(0x64); // CAMBIAR por 0x61
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
+	 * Enviamos a la placa una señal para que desactive el relé 
+	 * Como aun no está instalado el rele en dicha
+	 * placa actua como stopReg
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
+	public boolean stopRele() {
+		try {
+			output.write(0x65); // CAMBIAR por 0x62
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
+	 * Devuelve el estado del relé
+	 * Como aun no está instalado el relé en dicha placa actua como ComprobarReg
+	 * 
+	 * @return true: Relé activo; false: En otro caso
+	 */
+	public boolean comprobarRele() {
+		try {
+			output.write(0x66); // CAMBIAR por 0x63
+			String res = leerArduino();
+			if (res != null) {
+				int estado = Integer.parseInt(res);
+				if (estado == 1)
+					return true;
+				else
+					return false;
+			} else {
+				return false;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
 	 * Envía a la placa el comando para contar el número de sensores de
 	 * temperatura DS18B20 conectados al protocolo One Wire
 	 * 
@@ -385,7 +450,7 @@ public class Uno implements SerialPortEventListener, Arduino {
 			if (i == sensores_t.length)// No se ha encontrado el sensor
 				return null;
 			else {// Los dos índices coinciden --> Se ha encontrado el sensor
-				// Seleccionamos el sensor
+					// Seleccionamos el sensor
 				if (seleccionarSensorT(sensores_tRaw[i]) != 1)
 					return null;
 				else {

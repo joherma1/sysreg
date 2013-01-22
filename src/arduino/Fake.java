@@ -7,6 +7,7 @@ public class Fake implements Arduino {
 	int n_sensores_t;
 	public String sensores_t[];
 	boolean regando;
+	boolean rele;
 	int n_alarmas;
 	long[] alarmas = new long[56];// Número máximo de alarmas en la placa
 
@@ -118,5 +119,21 @@ public class Fake implements Arduino {
 	public boolean eliminarAlarmas() {
 		n_alarmas = 0;
 		return false;
+	}
+
+	public boolean startRele() {
+		regando = true;
+		return true;
+	}
+
+	public boolean stopRele() {
+		rele = false;
+		return false;
+	}
+
+	public boolean comprobarRele() {
+		// Con rele simulamos el ultimo estado que hayamos puesto
+		// iniciando la placa en off
+		return rele; // Siempre off
 	}
 }

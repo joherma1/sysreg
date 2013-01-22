@@ -138,6 +138,8 @@ public class Interfaz {
 	private JButton b_recargaHumedadSuelo;
 	private JCheckBox chckbxActualizarSensores;
 	private JSpinner spiActualizarSensores;
+	private JButton btnIniciarRel;
+	private JButton btnFinalizarRel;
 
 	/**
 	 * This method initializes f_interfaz
@@ -147,7 +149,7 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(736, 490));
+			f_interfaz.setSize(new Dimension(736, 546));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -180,7 +182,7 @@ public class Interfaz {
 			gridBagConstraints14.gridx = 0;
 			gridBagConstraints14.anchor = GridBagConstraints.NORTHWEST;
 			gridBagConstraints14.insets = new Insets(5, 20, 5, 5);
-			gridBagConstraints14.gridy = 3;
+			gridBagConstraints14.gridy = 5;
 			l_hora = new JLabel();
 			l_hora.setText("Hora:");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
@@ -191,7 +193,7 @@ public class Interfaz {
 			gridBagConstraints10.ipadx = 0;
 			gridBagConstraints10.weightx = 0.0;
 			gridBagConstraints10.ipady = 0;
-			gridBagConstraints10.gridy = 3;
+			gridBagConstraints10.gridy = 5;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.gridy = 0;
@@ -232,24 +234,34 @@ public class Interfaz {
 			p_interfaz = new JPanel();
 			GridBagLayout gbl_p_interfaz = new GridBagLayout();
 			gbl_p_interfaz.columnWidths = new int[] { 202, 0, 185, 57 };
-			gbl_p_interfaz.rowHeights = new int[] { 0, 0, 27, 0, 174, 0 };
-			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+			gbl_p_interfaz.rowHeights = new int[] { 0, 0, 27, 0, 0, 0, 174, 0 };
+			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0 };
 			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 			p_interfaz.setLayout(gbl_p_interfaz);
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			p_interfaz.add(getB_activarRiego(), gridBagConstraints4);
 			p_interfaz.add(getB_desactivarRiego(), gridBagConstraints5);
+			GridBagConstraints gbc_btnIniciarRel = new GridBagConstraints();
+			gbc_btnIniciarRel.insets = new Insets(0, 0, 5, 5);
+			gbc_btnIniciarRel.gridx = 0;
+			gbc_btnIniciarRel.gridy = 3;
+			p_interfaz.add(getBtnIniciarRel(), gbc_btnIniciarRel);
+			GridBagConstraints gbc_btnFinalizarRel = new GridBagConstraints();
+			gbc_btnFinalizarRel.insets = new Insets(0, 0, 5, 5);
+			gbc_btnFinalizarRel.gridx = 0;
+			gbc_btnFinalizarRel.gridy = 4;
+			p_interfaz.add(getBtnFinalizarRel(), gbc_btnFinalizarRel);
 			GridBagConstraints gbc_cb_Desactivar = new GridBagConstraints();
 			gbc_cb_Desactivar.insets = new Insets(0, 0, 5, 5);
 			gbc_cb_Desactivar.gridx = 1;
-			gbc_cb_Desactivar.gridy = 3;
+			gbc_cb_Desactivar.gridy = 5;
 			p_interfaz.add(getCb_Desactivar(), gbc_cb_Desactivar);
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 2;
 			gridBagConstraints13.anchor = GridBagConstraints.WEST;
 			gridBagConstraints13.insets = new Insets(0, 10, 5, 5);
-			gridBagConstraints13.gridy = 3;
+			gridBagConstraints13.gridy = 5;
 			l_ultimaact = new JLabel();
 			l_ultimaact.setText("Última actualización:");
 			p_interfaz.add(l_ultimaact, gridBagConstraints13);
@@ -258,33 +270,33 @@ public class Interfaz {
 			gridBagConstraints3.fill = GridBagConstraints.BOTH;
 			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints3.gridy = 4;
+			gridBagConstraints3.gridy = 6;
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
 			GridBagConstraints gbc_p_BMP085 = new GridBagConstraints();
 			gbc_p_BMP085.insets = new Insets(5, 5, 5, 5);
 			gbc_p_BMP085.fill = GridBagConstraints.BOTH;
 			gbc_p_BMP085.gridx = 2;
-			gbc_p_BMP085.gridy = 4;
+			gbc_p_BMP085.gridy = 6;
 			p_interfaz.add(getP_BMP085(), gbc_p_BMP085);
 			GridBagConstraints gbc_p_HH10D = new GridBagConstraints();
 			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
 			gbc_p_HH10D.anchor = GridBagConstraints.WEST;
 			gbc_p_HH10D.insets = new Insets(5, 5, 5, 0);
 			gbc_p_HH10D.gridx = 3;
-			gbc_p_HH10D.gridy = 4;
+			gbc_p_HH10D.gridy = 6;
 			p_interfaz.add(getPanel_1(), gbc_p_HH10D);
 			GridBagConstraints gbc_chckbxActualizarSensores = new GridBagConstraints();
 			gbc_chckbxActualizarSensores.anchor = GridBagConstraints.WEST;
 			gbc_chckbxActualizarSensores.insets = new Insets(0, 0, 0, 5);
 			gbc_chckbxActualizarSensores.gridx = 0;
-			gbc_chckbxActualizarSensores.gridy = 5;
+			gbc_chckbxActualizarSensores.gridy = 7;
 			p_interfaz.add(getChckbxActualizarSensores(),
 					gbc_chckbxActualizarSensores);
 			GridBagConstraints gbc_spiActualizarSensores = new GridBagConstraints();
 			gbc_spiActualizarSensores.anchor = GridBagConstraints.WEST;
 			gbc_spiActualizarSensores.insets = new Insets(0, 0, 0, 5);
 			gbc_spiActualizarSensores.gridx = 1;
-			gbc_spiActualizarSensores.gridy = 5;
+			gbc_spiActualizarSensores.gridy = 7;
 			p_interfaz.add(getSpiActualizarSensores(),
 					gbc_spiActualizarSensores);
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -292,7 +304,7 @@ public class Interfaz {
 			gridBagConstraints6.gridx = 3;
 			gridBagConstraints6.insets = new Insets(0, 5, 0, 10);
 			gridBagConstraints6.ipady = 0;
-			gridBagConstraints6.gridy = 5;
+			gridBagConstraints6.gridy = 7;
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
 			p_interfaz.add(getCp_horario(), gridBagConstraints12);
 			p_interfaz.add(getB_recargar(), gridBagConstraints10);
@@ -1927,4 +1939,26 @@ public class Interfaz {
 		return spiActualizarSensores;
 	}
 
+	private JButton getBtnIniciarRel() {
+		if (btnIniciarRel == null) {
+			btnIniciarRel = new JButton("Iniciar relé");
+			btnIniciarRel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					logica.iniciarRele();
+				}
+			});
+		}
+		return btnIniciarRel;
+	}
+	private JButton getBtnFinalizarRel() {
+		if (btnFinalizarRel == null) {
+			btnFinalizarRel = new JButton("Finalizar relé");
+			btnFinalizarRel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					logica.pararRele();
+				}
+			});
+		}
+		return btnFinalizarRel;
+	}
 }

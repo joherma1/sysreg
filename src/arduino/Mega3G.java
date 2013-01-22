@@ -20,7 +20,6 @@ public class Mega3G implements Arduino {
 	// -----------------
 	private int n_sensores_t;
 	public String sensores_t[];
-	private boolean regando;
 	private int n_alarmas;
 	private long[] alarmas = new long[56];// Número máximo de alarmas en la
 											// placa
@@ -79,6 +78,29 @@ public class Mega3G implements Arduino {
 		}
 	}
 
+	public boolean startRele() {
+		salida.println("sysreg a");
+		return true;
+	}
+
+	public boolean stopRele() {
+		salida.println("sysreg b");
+		return false;
+	}
+
+	public boolean comprobarRele() {
+		try {
+			salida.println("sysreg c");
+			char[] leido_char = new char[2];
+			entrada.read(leido_char);
+			if (leido_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean startReg() {
 		salida.println("sysreg d");
 		return true;

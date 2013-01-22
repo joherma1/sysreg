@@ -47,6 +47,7 @@ public class Negocio {
 	private String[] sensores_t;
 	private List<Evento> sortedEvents;
 	private boolean regando;
+	private boolean estadoRele;
 
 	private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private final JsonFactory JSON_FACTORY = new JacksonFactory();
@@ -113,13 +114,14 @@ public class Negocio {
 	 *         incorrecto; -6: En otro caso
 	 */
 	public int inicializar() {
-		int value_due = ino.initialize();
-		if (value_due == 0) {
+		int valueIno = ino.initialize();
+		if (valueIno == 0) {
 			// Comprobamos el estado actual del riego
 			regando = ino.comprobarReg();
+			estadoRele = ino.comprobarRele();
 			cargarConfiguracion();
 		}
-		return value_due;
+		return valueIno;
 	}
 
 	/**
@@ -139,6 +141,60 @@ public class Negocio {
 	 */
 	public String[] getSensoresT() {
 		return sensores_t;
+	}
+	
+	/**
+	 * Envía la señal de activar el relé a la placa Arduino. Esta señal solo se
+	 * envía si el relé no está activo.
+	 * 
+	 * @return true si se ha iniciado el relé; false en otro caso;
+	 */
+	public boolean iniciarRele() {
+		if (!estadoRele) {
+			System.out.println("Señal activar relé");
+			estadoRele = true;
+			return ino.startRele();
+		} else
+			return true;
+	}
+	
+	/**
+	 * Envía la señal de parar el relé a la placa Arduino. Esta señal solo se
+	 * envía si el relé está activo.
+	 * 
+	 * @return true si se ha detenido el relé; false en otro caso;
+	 */
+	public boolean pararRele() {
+		if (estadoRele) {
+			System.out.println("Señal desactivar relé");
+			estadoRele = false;
+			return ino.stopRele();
+		} else
+			return true;
+	}
+	
+	/**
+	 * Fuerza el envío de la señal de parar el relé a la placa Arduino. Esta
+	 * señal se envía siempre.
+	 * 
+	 * @return true si se ha iniciado el relé; false en otro caso;
+	 */
+	public boolean forzarIniciarRele() {
+		System.out.println("Señal activar relé");
+		estadoRele = true;
+		return ino.startRele();
+	}
+
+	/**
+	 * Fuerza el envío de la señal de parar el relé a la placa Arduino. Esta
+	 * señal se envía siempre.
+	 * 
+	 * @return true si se ha detenido el relé; false en otro caso;
+	 */
+	public boolean forzarPararRele() {
+		System.out.println("Señal desactivar relé");
+		estadoRele = false;
+		return ino.stopRele();
 	}
 
 	/**
@@ -173,7 +229,7 @@ public class Negocio {
 
 	/**
 	 * Fuerza el envío de la señal de parar el riego a la placa Arduino. Esta
-	 * señal solo se envía si el dispositivo no está regando.
+	 * señal se envia siempre.
 	 * 
 	 * @return true si se ha iniciado el riego; false en otro caso;
 	 */
@@ -185,7 +241,7 @@ public class Negocio {
 
 	/**
 	 * Fuerza el envío de la señal de parar el riego a la placa Arduino. Esta
-	 * señal solo se envía si el dispositivo está regando.
+	 * señal se envía siempre.
 	 * 
 	 * @return true si se ha detenido el riego; false en otro caso;
 	 */

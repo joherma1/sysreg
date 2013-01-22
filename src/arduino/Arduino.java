@@ -11,6 +11,12 @@ public interface Arduino {
 	public int initialize();
 
 	public void close();
+	
+	public boolean startRele();
+
+	public boolean stopRele();
+
+	public boolean comprobarRele();
 
 	public boolean startReg();
 
