@@ -157,7 +157,8 @@ public class Interfaz {
 	private JFrame getF_interfaz() {
 		if (f_interfaz == null) {
 			f_interfaz = new JFrame();
-			f_interfaz.setSize(new Dimension(614, 556));
+			f_interfaz.setMinimumSize(new Dimension(720, 556));
+			f_interfaz.setSize(new Dimension(720, 556));
 			f_interfaz.setTitle("RegAdmin");
 			f_interfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			f_interfaz.setVisible(false);
@@ -223,7 +224,7 @@ public class Interfaz {
 			gbl_p_interfaz.rowHeights = new int[] { 80, 0, 0, 27, 0, 0, 30, 0, 174, 0 };
 			gbl_p_interfaz.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0 };
-			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+			gbl_p_interfaz.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0 };
 			p_interfaz.setLayout(gbl_p_interfaz);
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridwidth = 2;
@@ -331,13 +332,13 @@ public class Interfaz {
 			p_interfaz.add(getP_sensor(), gridBagConstraints3);
 			GridBagConstraints gbc_p_BMP085 = new GridBagConstraints();
 			gbc_p_BMP085.insets = new Insets(5, 5, 5, 5);
-			gbc_p_BMP085.fill = GridBagConstraints.BOTH;
+			gbc_p_BMP085.fill = GridBagConstraints.VERTICAL;
 			gbc_p_BMP085.gridx = 3;
 			gbc_p_BMP085.gridy = 8;
 			p_interfaz.add(getP_BMP085(), gbc_p_BMP085);
 			GridBagConstraints gbc_p_HH10D = new GridBagConstraints();
 			gbc_p_HH10D.fill = GridBagConstraints.VERTICAL;
-			gbc_p_HH10D.anchor = GridBagConstraints.WEST;
+			gbc_p_HH10D.anchor = GridBagConstraints.EAST;
 			gbc_p_HH10D.insets = new Insets(5, 5, 5, 5);
 			gbc_p_HH10D.gridx = 4;
 			gbc_p_HH10D.gridy = 8;
@@ -345,14 +346,14 @@ public class Interfaz {
 			GridBagConstraints gbc_chckbxActualizarSensores = new GridBagConstraints();
 			gbc_chckbxActualizarSensores.gridwidth = 3;
 			gbc_chckbxActualizarSensores.anchor = GridBagConstraints.WEST;
-			gbc_chckbxActualizarSensores.insets = new Insets(0, 0, 0, 5);
+			gbc_chckbxActualizarSensores.insets = new Insets(0, 0, 5, 5);
 			gbc_chckbxActualizarSensores.gridx = 0;
 			gbc_chckbxActualizarSensores.gridy = 9;
 			p_interfaz.add(getChckbxActualizarSensores(),
 					gbc_chckbxActualizarSensores);
 			GridBagConstraints gbc_spiActualizarSensores = new GridBagConstraints();
 			gbc_spiActualizarSensores.anchor = GridBagConstraints.WEST;
-			gbc_spiActualizarSensores.insets = new Insets(0, 0, 0, 5);
+			gbc_spiActualizarSensores.insets = new Insets(0, 0, 5, 5);
 			gbc_spiActualizarSensores.gridx = 3;
 			gbc_spiActualizarSensores.gridy = 9;
 			p_interfaz.add(getSpiActualizarSensores(),
@@ -360,7 +361,7 @@ public class Interfaz {
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints6.gridx = 4;
-			gridBagConstraints6.insets = new Insets(0, 5, 0, 10);
+			gridBagConstraints6.insets = new Insets(0, 5, 5, 5);
 			gridBagConstraints6.ipady = 0;
 			gridBagConstraints6.gridy = 9;
 			p_interfaz.add(getPb_procesando(), gridBagConstraints6);
@@ -1989,7 +1990,7 @@ public class Interfaz {
 		if (spiActualizarSensores == null) {
 			spiActualizarSensores = new JSpinner();
 			spiActualizarSensores.setModel(new SpinnerNumberModel(
-					new Integer(1), new Integer(1), null, new Integer(1)));
+					new Integer(3), new Integer(1), null, new Integer(1)));
 			spiActualizarSensores.setEnabled(false);
 			spiActualizarSensores.setPreferredSize(new Dimension(40, 20));
 			spiActualizarSensores.setMinimumSize(new Dimension(40, 20));
