@@ -23,6 +23,12 @@ public interface Arduino {
 	public boolean stopReg();
 
 	public boolean comprobarReg();
+	
+	public boolean startSolenoide3V();
+	
+	public boolean stopSolenoide3V();
+	
+	public boolean comprobarSolenoide3V();
 
 	public int contarSensoresT();
 

@@ -2023,12 +2023,22 @@ public class Interfaz {
 	private JButton getBtnIniciarValvula() {
 		if (btnIniciarValvula == null) {
 			btnIniciarValvula = new JButton("ON");
+			btnIniciarValvula.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					logica.iniciarSolenoide3V();
+				}
+			});
 		}
 		return btnIniciarValvula;
 	}
 	private JButton getBtnFinalizarValvula() {
 		if (btnFinalizarValvula == null) {
 			btnFinalizarValvula = new JButton("OFF");
+			btnFinalizarValvula.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					logica.pararSolenoide3V();
+				}
+			});
 		}
 		return btnFinalizarValvula;
 	}

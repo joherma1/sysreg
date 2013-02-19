@@ -123,6 +123,29 @@ public class Mega3G implements Arduino {
 		}
 		return false;
 	}
+	
+	public boolean startSolenoide3V() {
+		salida.println("sysreg g");
+		return true;
+	}
+
+	public boolean stopSolenoide3V() {
+		salida.println("sysreg h");
+		return false;
+	}
+
+	public boolean comprobarSolenoide3V() {
+		try {
+			salida.println("sysreg i");
+			char[] leido_char = new char[2];
+			entrada.read(leido_char);
+			if (leido_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	public int contarSensoresT() {
 		try {

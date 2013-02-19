@@ -48,6 +48,7 @@ public class Negocio {
 	private List<Evento> sortedEvents;
 	private boolean regando;
 	private boolean estadoRele;
+	private boolean estadoSolenoide3V;
 
 	private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private final JsonFactory JSON_FACTORY = new JacksonFactory();
@@ -119,6 +120,7 @@ public class Negocio {
 			// Comprobamos el estado actual del riego
 			regando = ino.comprobarReg();
 			estadoRele = ino.comprobarRele();
+			estadoSolenoide3V = ino.comprobarSolenoide3V();
 			cargarConfiguracion();
 		}
 		return valueIno;
@@ -249,6 +251,61 @@ public class Negocio {
 		System.out.println("Señal desactivar riego");
 		regando = false;
 		return ino.stopReg();
+	}
+	
+
+	/**
+	 * Envía la señal de activar el solenoide la placa Arduino. Esta señal solo se
+	 * envía si el dispositivo no está activo.
+	 * 
+	 * @return true si se ha iniciado el riego; false en otro caso;
+	 */
+	public boolean iniciarSolenoide3V() {
+		if (!estadoSolenoide3V) {
+			System.out.println("Señal activar solenoide de 3 vías");
+			estadoSolenoide3V = true;
+			return ino.startSolenoide3V();
+		} else
+			return true;
+	}
+
+	/**
+	 * Envía la señal de parar el solenoide a la placa Arduino. Esta señal solo se
+	 * envía si el dispositivo está activo.
+	 * 
+	 * @return true si se ha detenido el riego; false en otro caso;
+	 */
+	public boolean pararSolenoide3V() {
+		if (estadoSolenoide3V) {
+			System.out.println("Señal desactivar solenoide de 3 vías");
+			estadoSolenoide3V = false;
+			return ino.stopSolenoide3V();
+		} else
+			return true;
+	}
+
+	/**
+	 * Fuerza el envío de la señal de parar el solenoide a la placa Arduino. Esta
+	 * señal se envia siempre.
+	 * 
+	 * @return true si se ha iniciado el riego; false en otro caso;
+	 */
+	public boolean forzarIniciarSolenoide3V() {
+		System.out.println("Señal activar solenoide de 3 vías");
+		estadoSolenoide3V = true;
+		return ino.startSolenoide3V();
+	}
+
+	/**
+	 * Fuerza el envío de la señal de parar el solenoide a la placa Arduino. Esta
+	 * señal se envía siempre.
+	 * 
+	 * @return true si se ha detenido el riego; false en otro caso;
+	 */
+	public boolean forzarPararSolenoide3V() {
+		System.out.println("Señal desactivar solenoide de 3 vías");
+		estadoSolenoide3V = false;
+		return ino.stopSolenoide3V();
 	}
 
 	/**

@@ -8,6 +8,7 @@ public class Fake implements Arduino {
 	public String sensores_t[];
 	boolean regando;
 	boolean rele;
+	boolean solenoide3V;
 	int n_alarmas;
 	long[] alarmas = new long[56];// Número máximo de alarmas en la placa
 
@@ -135,5 +136,21 @@ public class Fake implements Arduino {
 		// Con rele simulamos el ultimo estado que hayamos puesto
 		// iniciando la placa en off
 		return rele; // Siempre off
+	}
+
+	public boolean startSolenoide3V() {
+		solenoide3V = true;
+		return true;
+	}
+
+	public boolean stopSolenoide3V() {
+		solenoide3V = false;
+		return false;
+	}
+
+	public boolean comprobarSolenoide3V() {
+		// Con el solenoide simulamos el ultimo estado que hayamos puesto
+		// iniciando la placa en off
+		return solenoide3V; // Siempre off
 	}
 }

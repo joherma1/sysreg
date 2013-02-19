@@ -355,6 +355,72 @@ public class Uno implements SerialPortEventListener, Arduino {
 	}
 
 	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE 
+	 * Enviamos a la placa una señal para que active el solenoide
+	 * Como aun no está instalado los transistores en dicha placa
+	 * actua como startReg
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
+	public boolean startSolenoide3V() {
+		try {
+			output.write(0x64); // CAMBIAR por 0x67
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE
+	 * Enviamos a la placa una señal para que desactive el solenoide 
+	 * Como aun no está instalado los transistores en dicha
+	 * placa actua como stopReg
+	 * 
+	 * @return true: Señal enviada correctamente; false: En otro caso
+	 */
+	public boolean stopSolenoide3V() {
+		try {
+			output.write(0x65); // CAMBIAR por 0x68
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE
+	 * Devuelve el estado del solenoide
+	 * Como aun no está instalado los transistores en dicha placa actua como ComprobarReg
+	 * 
+	 * @return true: Relé activo; false: En otro caso
+	 */
+	public boolean comprobarSolenoide3V() {
+		try {
+			output.write(0x66); // CAMBIAR por 0x69
+			String res = leerArduino();
+			if (res != null) {
+				int estado = Integer.parseInt(res);
+				if (estado == 1)
+					return true;
+				else
+					return false;
+			} else {
+				return false;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
+	/**
 	 * Envía a la placa el comando para contar el número de sensores de
 	 * temperatura DS18B20 conectados al protocolo One Wire
 	 * 
