@@ -8,11 +8,15 @@
 #define enable 14 // H-bridge enable
 #define led 13
 #define relePin 7 // Pin que activa el transistor para activar el Rele
+#define solenoide3VOn 10 // Cable negro, pulso abre
+#define solenoide3VOff 11 //Cable rojo, pulso cierra, mantiene abre
+
 int verbose = 1;
 
 // Estado de los actuadores
 int riego;
 int estadoRele;
+int solenoide3V;
 
 // Display PINS (rs, enable, d4, d5, d6, d7) 
 LiquidCrystal lcd(29, 28, 25, 24, 23, 22);
@@ -27,11 +31,6 @@ char port[]="80";
 char apn[]="movistar.es";
 char userApn[]="MOVISTAR";
 char passApn[]="MOVISTAR";
-
-//SIMYO
-//char apn[]="gprs-service.com";
-//char userApn[]="";
-//char passApn[]="";
 
 char serverFTP[ ]="arroveitor.no-ip.org";
 char portFTP[ ]="21";
@@ -238,7 +237,9 @@ void setup(){
   pinMode(enable,OUTPUT);
   pinMode(led, OUTPUT);
   pinMode(relePin, OUTPUT);
-
+  pinMode(solenoide3VOn, OUTPUT);
+  pinMode(solenoide3VOff, OUTPUT);
+  
   Serial.begin(9600);      //RX0 Pin 0, TX0 Pin 1: USB 
   Serial1.begin(9600);     //RX1 Pin 19, TX1 Pin 18: Sheild 3G
   delay(2000);
@@ -257,6 +258,9 @@ void setup(){
   digitalWrite(relePin, LOW);
   //Marcamos como apagado el rele
   estadoRele = 0;
+  //Desactivamos el solenoide de 3 vias
+  digitalWrite(solenoide3VOn, LOW);
+  digitalWrite(solenoide3VOff, LOW);
 
   //Encendemos el modulo 3G
   pinMode(onModulePin, OUTPUT);
@@ -528,6 +532,66 @@ void loop(){
               while(incoming != '>');
               //DATA
               if(riego == 1)
+                Serial1.println(1);
+              else
+                Serial1.println(0);
+              Serial1.flush();
+              if(esperarSendOk()){//Comunicacion enviada correctamente
+                if(verbose){
+                  Serial.println("-->Comunicacion terminada correctamente con " + client + "<--"); 
+                  Serial.flush();
+                  //Mostramos en el display la IP y un mensaje
+                  lcd.clear(); //Limpia y pone en la primera posicion
+                  lcd.print(ip);
+                  lcd.setCursor(15,0);  //El estado de la sincronizacion con el FTP
+                  if(estadoFTP)
+                    lcd.print("S");
+                  else
+                    lcd.print("E");
+                  lcd.setCursor(0, 1);
+                  lcd.print("Client OUT ");
+                  lcd.print(id_client);
+                }
+              }
+              else{
+                if(verbose){
+                  Serial.println("<<Comunicacion fallida con " + client + ">>"); 
+                  Serial.flush();
+                }
+              }
+              break;
+            case 0x67: //activarSolenoide3V: g 103 0x67
+              solenoide3V = 1;
+              digitalWrite(solenoide3VOn, HIGH);  // Activamos la via ON (cable negro) 
+              delay(300);
+              digitalWrite(solenoide3VOn, LOW);  // set leg 1 of the H-bridge high
+              break;
+            case 0x68:  //desactivarSolenoide3V: h 104 0x68
+              solenoide3V = 0;
+              digitalWrite(solenoide3VOff, HIGH);  
+              delay(300);
+              digitalWrite(solenoide3VOff, LOW);  // Activamos la via OFF (cable rojo)
+              break;
+            case 0x69:	//comprobarSolenoide3V: i 105 0x69 
+              Serial1.print("AT+ACTCLIENT=");    //Activamos la conexion con el cliente  
+              Serial1.println(id_client);
+              Serial1.flush();
+              esperarOK();  
+              Serial1.println("AT+TCPWRITE=1");        //Sends TCP data
+              Serial1.flush();
+              incoming = 0;
+              do{
+                if(Serial1.available()){
+                  incoming=Serial1.read();  
+                  if(verbose){
+                    Serial.print(incoming);  
+                    Serial.flush(); 
+                  }
+                }                     
+              }
+              while(incoming != '>');
+              //DATA
+              if(solenoide3V == 1)
                 Serial1.println(1);
               else
                 Serial1.println(0);
@@ -903,6 +967,7 @@ unsigned char charToHexDigit(char c){
   else
     return c - '0';
 }
+
 
 
 
