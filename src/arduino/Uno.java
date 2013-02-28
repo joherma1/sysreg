@@ -223,7 +223,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			int res = Integer.parseInt(res1);
 			return res;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -2;
@@ -242,7 +241,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x64);
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -258,7 +256,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x65);
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -282,17 +279,15 @@ public class Uno implements SerialPortEventListener, Arduino {
 			} else {
 				return false;
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {			
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
-	 * Enviamos a la placa una señal para que active el relé
-	 * Como aun no está instalado el rele en dicha placa
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ Enviamos a la placa una señal
+	 * para que active el relé Como aun no está instalado el rele en dicha placa
 	 * actua como startReg
 	 * 
 	 * @return true: Señal enviada correctamente; false: En otro caso
@@ -302,16 +297,14 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x64); // CAMBIAR por 0x61
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
-	 * Enviamos a la placa una señal para que desactive el relé 
-	 * Como aun no está instalado el rele en dicha
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ Enviamos a la placa una señal
+	 * para que desactive el relé Como aun no está instalado el rele en dicha
 	 * placa actua como stopReg
 	 * 
 	 * @return true: Señal enviada correctamente; false: En otro caso
@@ -321,15 +314,13 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x65); // CAMBIAR por 0x62
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ 
-	 * Devuelve el estado del relé
+	 * PENDIENTE INSTALAR EN LA PLACA UNO EL RELÉ Devuelve el estado del relé
 	 * Como aun no está instalado el relé en dicha placa actua como ComprobarReg
 	 * 
 	 * @return true: Relé activo; false: En otro caso
@@ -348,17 +339,15 @@ public class Uno implements SerialPortEventListener, Arduino {
 				return false;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE 
-	 * Enviamos a la placa una señal para que active el solenoide
-	 * Como aun no está instalado los transistores en dicha placa
-	 * actua como startReg
+	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE
+	 * Enviamos a la placa una señal para que active el solenoide Como aun no
+	 * está instalado los transistores en dicha placa actua como startReg
 	 * 
 	 * @return true: Señal enviada correctamente; false: En otro caso
 	 */
@@ -367,7 +356,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x64); // CAMBIAR por 0x67
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -375,9 +363,8 @@ public class Uno implements SerialPortEventListener, Arduino {
 
 	/**
 	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE
-	 * Enviamos a la placa una señal para que desactive el solenoide 
-	 * Como aun no está instalado los transistores en dicha
-	 * placa actua como stopReg
+	 * Enviamos a la placa una señal para que desactive el solenoide Como aun no
+	 * está instalado los transistores en dicha placa actua como stopReg
 	 * 
 	 * @return true: Señal enviada correctamente; false: En otro caso
 	 */
@@ -386,7 +373,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x65); // CAMBIAR por 0x68
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -394,8 +380,8 @@ public class Uno implements SerialPortEventListener, Arduino {
 
 	/**
 	 * PENDIENTE INSTALAR EN LA PLACA UNO LOS TRANSISTORES DEL SOLENOIDE
-	 * Devuelve el estado del solenoide
-	 * Como aun no está instalado los transistores en dicha placa actua como ComprobarReg
+	 * Devuelve el estado del solenoide Como aun no está instalado los
+	 * transistores en dicha placa actua como ComprobarReg
 	 * 
 	 * @return true: Relé activo; false: En otro caso
 	 */
@@ -413,13 +399,11 @@ public class Uno implements SerialPortEventListener, Arduino {
 				return false;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 	}
 
-	
 	/**
 	 * Envía a la placa el comando para contar el número de sensores de
 	 * temperatura DS18B20 conectados al protocolo One Wire
@@ -437,7 +421,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				this.n_sensores_t = -1;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			this.n_sensores_t = -1;
 		}
@@ -469,7 +452,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			return this.sensores_t;
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -528,7 +510,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -546,7 +527,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			long res_l = Long.parseLong(res);
 			return res_l;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -564,7 +544,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -582,7 +561,23 @@ public class Uno implements SerialPortEventListener, Arduino {
 			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Obtiene la estimación del tiempo basandose en la altura y en la presión
+	 * obtenida por el sensor BMP085
+	 * 
+	 * @return String con la descripción del tiempo: Soleado, nublado o lluvia
+	 */
+	public String obtenerEstimacionTiempoBMP085() {
+		try {
+			output.write(0x73);
+			String res = leerArduino();
+			return res;
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -600,7 +595,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			Float res_f = Float.parseFloat(res);
 			return res_f;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -618,7 +612,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			Integer res_i = Integer.parseInt(res);
 			return res_i;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -1;
 		}
@@ -658,7 +651,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			else
 				return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -695,7 +687,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				// error
 				return -1;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -2;
 		}
@@ -732,7 +723,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				// error
 				return -1;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -2;
 		}
@@ -767,7 +757,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				// error
 				return -1;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -2;
 		}
@@ -802,7 +791,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 				// error
 				return -1;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -2;
 		}
@@ -837,7 +825,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			} // error
 			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -855,7 +842,6 @@ public class Uno implements SerialPortEventListener, Arduino {
 			output.write(0x47);
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -962,7 +948,7 @@ public class Uno implements SerialPortEventListener, Arduino {
 		// }
 		//
 		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
+		//
 		// e.printStackTrace();
 		// }
 		d.close();

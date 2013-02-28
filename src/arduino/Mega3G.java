@@ -244,6 +244,10 @@ public class Mega3G implements Arduino {
 	public Float obtenerAlturaBMP085() {
 		return new Float(0);
 	}
+	
+	public String obtenerEstimacionTiempoBMP085() {
+		return "Soleado";
+	}
 
 	public Float obtenerHumedadHH10D() {
 		return new Float(45.5);

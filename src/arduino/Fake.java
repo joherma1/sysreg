@@ -33,7 +33,6 @@ public class Fake implements Arduino {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 2;
@@ -59,7 +58,6 @@ public class Fake implements Arduino {
 		try {
 			Thread.sleep(800);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Long(101325);
@@ -71,6 +69,10 @@ public class Fake implements Arduino {
 
 	public Float obtenerAlturaBMP085() {
 		return new Float(0);
+	}
+
+	public String obtenerEstimacionTiempoBMP085() {
+		return "Soleado";
 	}
 
 	public Float obtenerHumedadHH10D() {

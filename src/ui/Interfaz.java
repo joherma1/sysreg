@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -51,6 +52,7 @@ import javax.swing.text.StyledDocument;
 
 import logic.Evento;
 import logic.Negocio;
+import logic.Negocio.IPMode;
 
 public class Interfaz {
 
@@ -148,6 +150,8 @@ public class Interfaz {
 	private JButton btnIniciarSol2;
 	private JButton btnFinalizarSol2;
 	private JLabel lblSol_1;
+	private JLabel l_TextoTiempo;
+	private JLabel l_Tiempo;
 
 	/**
 	 * This method initializes f_interfaz
@@ -1102,6 +1106,7 @@ public class Interfaz {
 
 		dialog_selector.setVisible(true);// Ventana modal de selección
 		String IP = dialog_selector.getIP();
+		IPMode mode =  dialog_selector.getIPMode();
 		if (IP == null) { // Conexión USB
 			frame_iniciando.setVisible(true);
 			if (args.length > 0 && args[0].compareTo("debug") == 0)
@@ -1114,7 +1119,7 @@ public class Interfaz {
 			System.exit(-1);
 		} else {// IP Valida
 			frame_iniciando.setVisible(true);
-			main.inicializar(IP);
+			main.inicializar(IP, mode);
 		}
 	}
 
@@ -1145,10 +1150,10 @@ public class Interfaz {
 		inicializarNegocio();
 	}
 
-	void inicializar(String IP) {
+	void inicializar(String IP, IPMode mode) {
 
 		System.out.println("----Inicializar");
-		logica = new Negocio(IP);
+		logica = new Negocio(IP, mode);
 		inicializarNegocio();
 	}
 
@@ -1418,7 +1423,9 @@ public class Interfaz {
 			l_Temperatura.setText(temp.toString());
 			Float alt = logica.obtenerAlturaBMP085();
 			l_Altura.setText(alt.toString());
-
+			String tiempo = logica.obtenerEstimacionTiempoBMP085();
+			l_Tiempo.setText(tiempo);
+			
 			// Sensor HH10D
 			Float humedad = logica.obtenerHumedadHH10D();
 			l_humedad.setText(humedad.toString());
@@ -1548,6 +1555,8 @@ public class Interfaz {
 					l_Temperatura.setText(temp.toString());
 					Float alt = logica.obtenerAlturaBMP085();
 					l_Altura.setText(alt.toString());
+					String tiempo = logica.obtenerEstimacionTiempoBMP085();
+					l_Tiempo.setText(tiempo);
 
 					// Sensor HH10D
 					Float humedad = logica.obtenerHumedadHH10D();
@@ -1572,10 +1581,10 @@ public class Interfaz {
 			p_BMP085.setBorder(new LineBorder(new Color(0, 0, 0)));
 			GridBagLayout gbl_p_BMP085 = new GridBagLayout();
 			gbl_p_BMP085.columnWidths = new int[] { 106, 55, 0 };
-			gbl_p_BMP085.rowHeights = new int[] { 16, 0, 16, 0, 0, 0 };
+			gbl_p_BMP085.rowHeights = new int[] { 16, 0, 16, 0, 0, 0, 0 };
 			gbl_p_BMP085.columnWeights = new double[] { 0.0, 1.0,
 					Double.MIN_VALUE };
-			gbl_p_BMP085.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0,
+			gbl_p_BMP085.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 					Double.MIN_VALUE };
 			p_BMP085.setLayout(gbl_p_BMP085);
 			GridBagConstraints gbc_l_SensorMP085 = new GridBagConstraints();
@@ -1621,10 +1630,22 @@ public class Interfaz {
 			gbc_l_Altura.gridx = 1;
 			gbc_l_Altura.gridy = 3;
 			p_BMP085.add(getL_Altura(), gbc_l_Altura);
+			GridBagConstraints gbc_l_TextoTiempo = new GridBagConstraints();
+			gbc_l_TextoTiempo.anchor = GridBagConstraints.WEST;
+			gbc_l_TextoTiempo.insets = new Insets(0, 5, 5, 5);
+			gbc_l_TextoTiempo.gridx = 0;
+			gbc_l_TextoTiempo.gridy = 4;
+			p_BMP085.add(getL_TextoTiempo(), gbc_l_TextoTiempo);
+			GridBagConstraints gbc_l_Tiempo = new GridBagConstraints();
+			gbc_l_Tiempo.anchor = GridBagConstraints.WEST;
+			gbc_l_Tiempo.insets = new Insets(0, 5, 5, 0);
+			gbc_l_Tiempo.gridx = 1;
+			gbc_l_Tiempo.gridy = 4;
+			p_BMP085.add(getL_Tiempo(), gbc_l_Tiempo);
 			GridBagConstraints gbc_b_RecargarBMP085 = new GridBagConstraints();
 			gbc_b_RecargarBMP085.anchor = GridBagConstraints.SOUTHEAST;
 			gbc_b_RecargarBMP085.gridx = 1;
-			gbc_b_RecargarBMP085.gridy = 4;
+			gbc_b_RecargarBMP085.gridy = 5;
 			p_BMP085.add(getB_RecargarBMP085(), gbc_b_RecargarBMP085);
 		}
 		return p_BMP085;
@@ -1693,6 +1714,8 @@ public class Interfaz {
 					l_Temperatura.setText(temp.toString());
 					Float alt = logica.obtenerAlturaBMP085();
 					l_Altura.setText(alt.toString());
+					String tiempo = logica.obtenerEstimacionTiempoBMP085();
+					l_Tiempo.setText(tiempo);
 				}
 			});
 			b_RecargarBMP085.setIcon(new ImageIcon(Interfaz.class
@@ -2077,5 +2100,17 @@ public class Interfaz {
 			lblSol_1 = new JLabel("Sol 2");
 		}
 		return lblSol_1;
+	}
+	private JLabel getL_TextoTiempo() {
+		if (l_TextoTiempo == null) {
+			l_TextoTiempo = new JLabel("Tiempo");
+		}
+		return l_TextoTiempo;
+	}
+	private JLabel getL_Tiempo() {
+		if (l_Tiempo == null) {
+			l_Tiempo = new JLabel("Soleado");
+		}
+		return l_Tiempo;
 	}
 }

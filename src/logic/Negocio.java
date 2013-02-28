@@ -26,6 +26,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import arduino.Arduino;
+import arduino.Ethernet;
 import arduino.Fake;
 import arduino.Mega3G;
 import arduino.Uno;
@@ -63,6 +64,10 @@ public class Negocio {
 	public boolean validarIP(final String s) {
 		return IPV4_PATTERN.matcher(s).matches();
 	}
+	
+	public enum IPMode{
+		Ethernet, Wifi, UMTS
+	}
 
 	/**
 	 * Constructor de la clase negocio que implementa la lógica del software
@@ -99,9 +104,12 @@ public class Negocio {
 	 * @param IP
 	 *            Dirección IP de la placa AlReg3G
 	 */
-	public Negocio(String IP) {
+	public Negocio(String IP, IPMode mode ) {
 		if (IP != null && IP.length() > 0 && validarIP(IP)) {
-			ino = new Mega3G(IP);
+			if(mode == IPMode.UMTS)
+				ino = new Mega3G(IP);
+			else if(mode == IPMode.Ethernet)
+				ino =  new Ethernet(IP);
 		} else
 			System.err.println("IP no válida");
 	}
@@ -360,10 +368,20 @@ public class Negocio {
 	 * Obtiene la altura estimada, en función de la presión, del sensor
 	 * barométrico BMP085 conectado a la placa.
 	 * 
-	 * @return La temperatura del sensor BPM085
+	 * @return La altura del sensor BPM085
 	 */
 	public Float obtenerAlturaBMP085() {
 		return ino.obtenerAlturaBMP085();
+	}
+	
+	/**
+	 * Obtiene la estimación del tiempo en función de la presión, del sensor
+	 * barométrico BMP085 conectado a la placa.
+	 * 
+	 * @return La estimación del tiempo sensor BPM085
+	 */
+	public String obtenerEstimacionTiempoBMP085() {
+		return ino.obtenerEstimacionTiempoBMP085();
 	}
 
 	/**
@@ -800,7 +818,7 @@ public class Negocio {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Negocio main = new Negocio("95.126.199.162");
+		Negocio main = new Negocio("95.126.199.162", IPMode.UMTS);
 		main.inicializar();
 		for (String s : main.listarSensoresT()) {
 			System.out.println(main.obtenerTemperatura(s));

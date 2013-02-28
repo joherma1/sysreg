@@ -42,6 +42,8 @@ public interface Arduino {
 
 	public Float obtenerAlturaBMP085();
 
+	public String obtenerEstimacionTiempoBMP085();
+
 	public Float obtenerHumedadHH10D();
 	
 	public int obtenerHumedadSuelo();
