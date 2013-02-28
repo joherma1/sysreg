@@ -48,6 +48,7 @@ boolean timeout = false;
 //Temperatura
 OneWire  ds(12);
 byte sensor_id[8];
+char dato_sensor[2];
 int command;
 int contador = 0;
 int present = 0;
@@ -382,7 +383,7 @@ void loop(){
           int input_ans_length  = input_ans.length();
           if(input_ans_length > 12 ){//Si tiene argumento
             //En Windows y OS X envia finales de linea diferentes, si queremos ver lo que envia
-            //for(int i=0; i<length;i++)
+            //for(int i=0; i<input_ans_length;i++)
             //  Serial.print(input_ans[i],HEX);
             argumento = input_ans.substring(9,input_ans_length);
           }
@@ -735,11 +736,13 @@ void loop(){
               }
               else{
                 delay(40);
-                char dato[2];
+                dato_sensor[0] = '0';
+                dato_sensor[1] = '0';
                 for(int i=0; i<argumento.length(); i+=2){
-                  dato[0] = argumento[i];
-                  dato[1] =  argumento[i+1];
-                  sensor_id[i/2]  = strtol(dato,NULL,16);
+                  dato_sensor[0] = argumento[i];
+                  dato_sensor[1] = argumento[i+1];
+                  sensor_id[i/2] = 0;
+                  sensor_id[i/2] = (byte)strtol(dato_sensor,NULL,16);
                 }
                 if ( OneWire::crc8( sensor_id, 7) != sensor_id[7]) {//CRC no valido
                   Serial.println("<<Sensor no valido>>");
