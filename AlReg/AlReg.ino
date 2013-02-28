@@ -235,7 +235,7 @@ void loop(void){
       }
       Serial.write(4); //señal EOF
       break;
-    case  0x45: //establecerAlarmaRepOff: D 68 0x44
+    case  0x45: //establecerAlarmaRepOff: E 69 0x45
       //D(HHMMSS):Establecemos una alarma todos los dias a la HH,MM,SS: -1 error  AlarmID otro caso
       delay(40);
       horas = 0;
@@ -443,11 +443,11 @@ void loop(void){
       pressure = bmp085GetPressure(bmp085ReadUP());  
       weatherDiff = pressure - ePressure;
       if(weatherDiff > 250)
-        Serial.print(Sunny);
+        Serial.print("Soleado");
       else if ((weatherDiff <= 250) || (weatherDiff >= -250))
-        Serial.print(Partly_Cloudy);
+        Serial.print("Nublado");
       else if (weatherDiff > -250)
-        Serial.print(Rain);
+        Serial.print("Lluvia");
       Serial.write(4);
       //Por precaucion      
       delay(1000);  
@@ -697,8 +697,8 @@ float hh10dReadHumidity(){
   //Get Frequency
   FreqCounter::f_comp= 8;             // Set compensation to 12
   FreqCounter::start(1000);            // Start counting with gatetime of 1000ms
-  while (FreqCounter::f_ready == 0)       // wait until counter ready 
-    freq=FreqCounter::f_freq;            // read result
+  while (FreqCounter::f_ready == 0)    // wait until counter ready 
+      freq=FreqCounter::f_freq;            // read result
   //Calculate RH
   float RH =  (offset-freq)*sens/4096; //Sure, you can use int - depending on what do you need
   return RH;
