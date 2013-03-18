@@ -1,0 +1,71 @@
+apt-get install vsftpd
+
+vi /etc/vsftpd.conf (con las siguientes peculiaridades)
+  #Añadir las siguiente directivas en el fichero vsftpd.conf para evitar los errores de chroot y bad IP connection
+  #Para que no aparezca el error "vsftpd: refusing to run with writable root inside chroot ()"
+  local_root=/home
+  #Para permitir que una coneccion pasiva cree fichero y evitar el "Bad IP connecting"
+  pasv_promiscuous=YES 
+
+
+#Creamos un usuario y una carpeta para guardar en el servidor FTP de manera segura
+root@server-roveitor:/home# mkdir alreg
+root@server-roveitor:/home# cd alreg/
+root@server-roveitor:/home/alreg# mkdir proto1
+
+#Grupo de usuarios que guardaran en el ftp: Placas alreg
+root@server-roveitor:/home/alreg# groupadd alreg
+
+#Cada placa tendra un usuario que guardara en una carpeta con su nombre: proto1 (Placa prototipo numero 1)
+root@server-roveitor:/home/alreg# useradd -g alreg -d /home/alreg/proto1/ -c "Prototipo numero 1" proto1
+#y el administrador de las placas (adminFTP)
+root@server-roveitor:/home/alreg# useradd -g alreg -d /home/alreg/ -c "Adminstrador servidor FTP" adminFTP
+
+passwd proto1
+passwd adminFTP
+
+#Ficheo con los usuarios encarcelados
+vi /etc/vsftpd.chroot_list:
+
+
+#Ahora creamos una shell fantasma en el directorio correspondiente.
+mkdir /bin/alreg
+
+#Editamos el fichero /etc/shells y la añadimos en la ultima línea “/bin/alreg" y guardamos:
+vi /etc/shells
+
+#Editamos el fichero /etc/passwd y buscamos las líneas donde están definidos los usuarios que hemos creado antes y les añadimos el shell falso
+vi /etc/passwd
+  proto1:x:1001:1001:Prototipo numero 1:/home/alreg/proto1/:/bin/alreg
+  adminFTP:x:1002:1001:Adminstrador servidor FTP:/home/alreg/:/bin/alreg
+
+
+#Editamos los permisos de /home
+chown adminFTP alreg/
+chgrp alreg alreg/
+chmod o= jose
+ls -la 
+  drwxr-xr-x  4 root     root  4096 dic  4 18:17 .
+  drwxr-xr-x 23 root     root  4096 oct 13 23:16 ..
+  drwxr-xr-x  3 adminFTP alreg 4096 dic  4 18:27 alreg
+  drwxr-x---  4 jose     jose  4096 dic  4 18:29 jose
+
+#y proto1
+chown proto1 proto1/
+chgrp alreg proto1/
+ls-la
+  drwxr-xr-x 3 adminFTP alreg 4096 dic  4 18:17 .
+  drwxr-xr-x 4 root     root  4096 dic  4 18:17 ..
+  drwxr-xr-x 2 proto1   alreg 4096 dic  4 18:17 proto1
+
+#Reiniciamos
+sudo /etc/init.d/vsftpd restart
+#o
+service vsftpd restart
+
+#Passwords
+proto1:agricultura.1
+adminFTP:Soluciones13
+
+
+
