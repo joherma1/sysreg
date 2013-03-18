@@ -1,3 +1,0 @@
-# Module regadminweb
-# RPC service class, partial path of RPC policy file
-org.sysreg.regadmin.client.service.AlRegService, F275916BE4A269DBA27248495BB33EF3.gwt.rpc

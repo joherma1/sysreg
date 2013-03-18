@@ -1,2 +1,0 @@
-serviceClass: org.sysreg.regadmin.client.service.AlRegService
-path: F275916BE4A269DBA27248495BB33EF3.gwt.rpc
