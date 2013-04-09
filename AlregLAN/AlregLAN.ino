@@ -4,11 +4,15 @@
 #include <Wire.h>
 #include <FreqCounter.h>
 
+#define enable 2 // H-bridge enable
+#define motorPin 3 // H-bridge leg 1 (pin 2, 1A) && !leg 2 (pin 7, 2A); con puerta inversora
 #define relePin 7 // Pin que activa el transistor para activar el Rele
+#define solenoide3VOn 8 // Cable negro, pulso abre
+#define solenoide3VOff 9 //Cable rojo, pulso cierra, mantiene abre
 #define BMP085_ADDRESS 0x77  // Direccion I2C del sensor BMP085
 
 //Estado de los actuadores
-int riego;
+int riego; //Solenoide 2 vias
 int estadoRele;
 int solenoide3V;
 
@@ -73,15 +77,33 @@ String message;
 void setup()
 {
   //Inicializamos las salidas digitales
+  pinMode(enable,OUTPUT);
+  pinMode(motorPin, OUTPUT); 
   pinMode(relePin, OUTPUT);
+  pinMode(solenoide3VOn, OUTPUT);
+  pinMode(solenoide3VOff, OUTPUT);
   //Inicializamos el puerto de serie
   Serial.begin(9600);
+
   //Activamos comunicacion I2C 
   Wire.begin();  
-  //Calibramos el sensor de presion con los valores de fabrica
+  //Calibramos el sensor de presion con los valores de 
   bmp085Calibration();
   //Obtenemos los datos para calibrar el sensor de humedad HH10D
   hh10dCalibration();
+
+  //Desactivamos el puente H
+  digitalWrite(enable, LOW);  // set leg 0 of the H-bridge high  
+  //Marcamos como apagado el  riego
+  riego = 0;
+  //Marcamos como apagado el rele
+  estadoRele = 0;
+  //Desactivamos el solenoide de 3 vias
+  digitalWrite(solenoide3VOn, LOW);
+  digitalWrite(solenoide3VOff, LOW);
+  //Marcamos como apagado el solenoide de 3 vias
+  solenoide3V = 0;  
+  
   //Solicitamos IP por DHCP, devuleve 1 si es correcto
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
@@ -89,6 +111,7 @@ void setup()
     for(;;)
       ;
   }
+
   // print your local IP address:
   Serial.println(Ethernet.localIP());
   //Iniciamos el servidor y empezamos a escuchar
@@ -133,10 +156,50 @@ void loop () {
             case 0x63:  //comprobarRele: c 99 0x63
               //DATA
               if(estadoRele == 1)
-                client.println(1);
+                client.print(1);
               else
-                client.println(0);
-              break;  
+                client.print(0);
+              break; 
+            case 0x64: //activarRiego: d 100 0x64
+              riego = 1;
+              digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
+              digitalWrite(motorPin, LOW);   // set leg 1 of the H-bridge low
+              //Con la puerta inversora: set leg 2 of the H-bridge high
+              delay(300);
+              digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
+              break;
+            case 0x65:  //desactivarRiego: e 101 0x65
+              riego = 0;
+              digitalWrite(enable, HIGH);  // set leg 1 of the H-bridge high
+              digitalWrite(motorPin, HIGH);  // set leg 1 of the H-bridge high
+              //Con la puerta inversora: set leg 2 of the H-bridge low
+              delay(300);
+              digitalWrite(enable, LOW);  // set leg 1 of the H-bridge high
+              break;
+            case 0x66:	//comprobarRiego: f 102 0x66
+              if(riego == 1)
+                client.print(1);
+              else
+                client.print(0);
+              break;
+            case 0x67: //activarSolenoide3V: g 103 0x67
+              solenoide3V = 1;
+              digitalWrite(solenoide3VOn, HIGH);  // Activamos la via ON (cable negro) 
+              delay(300);
+              digitalWrite(solenoide3VOn, LOW);  // set leg 1 of the H-bridge high
+              break;
+            case 0x68:  //desactivarSolenoide3V: h 104 0x68
+              solenoide3V = 0;
+              digitalWrite(solenoide3VOff, HIGH);  
+              delay(300);
+              digitalWrite(solenoide3VOff, LOW);  // Activamos la via OFF (cable rojo)
+              break;
+            case 0x69:	//comprobarSolenoide3V: i 105 0x69 
+              if(solenoide3V == 1)
+                client.print(1);
+              else
+                client.print(0);
+              break;
             case 0x6A: //contarSensores: j 106 0x6A
               //Lo enviamos como texto, si lo enviamos como Byte (RAW) solo podremos enviar 1 Byte en Ca2
               client.print(contarSensores());
@@ -283,6 +346,7 @@ void loop () {
               }
               break;
             }
+            client.write(4);//Codigo EOT
             // give the Client time to receive the data
             delay(100);
             message = "";//mensaje terminado empezamos con una nueva orden
@@ -495,6 +559,12 @@ float hh10dReadHumidity(){
   float RH =  (offset-freq)*sens/4096; //Sure, you can use int - depending on what do you need
   return RH;
 }
+
+
+
+
+
+
 
 
 
