@@ -2,16 +2,16 @@ package org.sysreg.regadmin.client.gui;
 
 import org.sysreg.regadmin.client.service.AlRegServiceClientImpl;
 
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MainView extends Composite {
 	private String server = null;
 	private VerticalPanel contentPanel;
 	private AlRegServiceClientImpl alregImpl;
 	private SensorsView sensorsPage;
+	private ActuatorsView actuatorsPage;
 	private Label errorMessage;
 
 	public String getServer() {
@@ -71,7 +71,7 @@ public class MainView extends Composite {
 			contentPanel.add(errorMessage);
 		} else {
 			contentPanel.clear();
-			ActuatorsView actuatorsPage = new ActuatorsView(alregImpl);
+			actuatorsPage = new ActuatorsView(alregImpl);
 			contentPanel.add(actuatorsPage);
 		}
 	}
@@ -108,5 +108,17 @@ public class MainView extends Composite {
 	
 	public void updateLblHH10Humedad(Float value){
 		sensorsPage.updateLblHH10Humedad(value);
+	}
+	
+	public void updateTglBtnSol1(Boolean value){
+		actuatorsPage.updateTglBtnSol1(value);
+	}
+	
+	public void updateTglBtnRele(Boolean value){
+		actuatorsPage.updateTglBtnRele(value);
+	}
+	
+	public void updateTglBtnValvula3V(Boolean value){
+		actuatorsPage.updateTglBtnValvula3V(value);
 	}
 }

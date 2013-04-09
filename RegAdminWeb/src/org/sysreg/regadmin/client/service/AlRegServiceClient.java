@@ -1,6 +1,5 @@
 package org.sysreg.regadmin.client.service;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * La interfaz del servicio que el cliente implementara. Es la funcion que
@@ -14,6 +13,20 @@ public interface AlRegServiceClient {
 	void activarRele();
 
 	void desactivarRele();
+	
+	void activarReg();
+	
+	void comprobarRele();
+	
+	void desactivarReg();
+	
+	void comprobarReg();
+	
+	void activarSolenoide3V();
+	
+	void desactivarSolenoide3V();
+	
+	void comprobarSolenoide3V();
 
 	void contarSensoresTemp();
 

@@ -71,6 +71,197 @@ public class AlRegServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
+	public boolean comprobarRele(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg c");
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public void startReg(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg d");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void stopReg(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg e");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean comprobarReg(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg f");
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public void startSolenoide3V(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg g");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void stopSolenoide3V(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg h");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean comprobarSolenoide3V(String servidor) {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg i");
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
 	public int contarSensoresTemp(String servidor) {
 		try {
 			Socket socket = new Socket(servidor, puerto);
@@ -339,5 +530,4 @@ public class AlRegServiceImpl extends RemoteServiceServlet implements
 		}
 		return null;
 	}
-
 }

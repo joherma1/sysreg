@@ -11,8 +11,22 @@ public interface AlRegService extends RemoteService {
 	void activarRele(String servidor);
 
 	void desactivarRele(String servidor);
+	
+	boolean comprobarRele(String servidor);
+	
+	void startReg(String servidor);
+	
+	void stopReg(String servidor);
+	
+	boolean comprobarReg(String servidor);
+	
+	void startSolenoide3V(String servidor);
+	
+	void stopSolenoide3V(String servidor);
+	
+	boolean comprobarSolenoide3V(String servidor);
 
-	int contarSensoresTemp(String ip);
+	int contarSensoresTemp(String servidor);
 
 	String[] listarSensoresTemp(String servidor);
 

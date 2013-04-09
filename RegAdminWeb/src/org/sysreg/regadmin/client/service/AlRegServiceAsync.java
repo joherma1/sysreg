@@ -10,6 +10,20 @@ public interface AlRegServiceAsync {
 
 	void desactivarRele(String servidor, AsyncCallback<Void> callback);
 
+	void comprobarRele(String servidor, AsyncCallback<Boolean> callback);
+
+	void startReg(String servidor, AsyncCallback<Void> callback);
+
+	void stopReg(String servidor, AsyncCallback<Void> callback);
+
+	void comprobarReg(String servidor, AsyncCallback<Boolean> callback);
+
+	void startSolenoide3V(String servidor, AsyncCallback<Void> callback);
+
+	void stopSolenoide3V(String servidor, AsyncCallback<Void> callback);
+
+	void comprobarSolenoide3V(String servidor, AsyncCallback<Boolean> callback);
+
 	void contarSensoresTemp(String servidor, AsyncCallback<Integer> callback);
 
 	void listarSensoresTemp(String servidor, AsyncCallback<String[]> callback);
@@ -23,7 +37,8 @@ public interface AlRegServiceAsync {
 
 	void obtenerAlturaBMP085(String servidor, AsyncCallback<Float> callback);
 
-	void obtenerEstimacionTiempoBMP085(String servidor, AsyncCallback<String> callback);
+	void obtenerEstimacionTiempoBMP085(String servidor,
+			AsyncCallback<String> callback);
 
 	void obtenerHumedadHH10D(String servidor, AsyncCallback<Float> callback);
 }

@@ -1,6 +1,5 @@
 package org.sysreg.regadmin.client;
 
-import org.sysreg.regadmin.client.gui.MainView;
 import org.sysreg.regadmin.client.service.AlRegServiceClientImpl;
 
 import com.google.gwt.core.client.EntryPoint;

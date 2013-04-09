@@ -24,7 +24,6 @@ public class AlRegServiceClientImpl implements AlRegServiceClient {
 		 */
 		alregService = GWT.create(AlRegService.class);
 
-		// TODO
 		// Parte del tutorial
 		// Sets the URL of a service implementation
 		ServiceDefTarget endpoint = (ServiceDefTarget) alregService;
@@ -41,7 +40,6 @@ public class AlRegServiceClientImpl implements AlRegServiceClient {
 	public void activarRele() {
 		alregService.activarRele(mainView.getServer(),
 				new AsyncCallback<Void>() {
-
 					@Override
 					public void onSuccess(Void result) {
 						System.out.println("Rele activado");
@@ -59,7 +57,6 @@ public class AlRegServiceClientImpl implements AlRegServiceClient {
 	public void desactivarRele() {
 		alregService.desactivarRele(mainView.getServer(),
 				new AsyncCallback<Void>() {
-
 					@Override
 					public void onSuccess(Void result) {
 						System.out.println("Rele desactivado");
@@ -68,7 +65,122 @@ public class AlRegServiceClientImpl implements AlRegServiceClient {
 					@Override
 					public void onFailure(Throwable caught) {
 						System.err
-								.println("Error en el callback de activar rele");
+								.println("Error en el callback de deactivar rele");
+					}
+				});
+	}
+
+	@Override
+	public void comprobarRele() {
+		alregService.comprobarRele(mainView.getServer(),
+				new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						mainView.updateTglBtnRele(result);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err
+								.println("Error en el callback de comprobar rele");
+					}
+				});
+	}
+
+	@Override
+	public void activarReg() {
+		alregService.startReg(mainView.getServer(), new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Riego activado");
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.err.println("Error en el callback de activar riego");
+			}
+		});
+	}
+
+	@Override
+	public void desactivarReg() {
+		alregService.stopReg(mainView.getServer(), new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Riego desactivado");
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.err.println("Error en el callback de desactivar riego");
+			}
+		});
+	}
+
+	@Override
+	public void comprobarReg() {
+		alregService.comprobarReg(mainView.getServer(),
+				new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						mainView.updateTglBtnSol1(result);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err
+								.println("Error en el callback de comprobar riego");
+					}
+				});
+	}
+
+	@Override
+	public void activarSolenoide3V() {
+		alregService.startSolenoide3V(mainView.getServer(),
+				new AsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						System.out.println("Solenoide de 3 vias activado");
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err
+								.println("Error en el callback de activar solenoide de 3 vias");
+					}
+				});
+	}
+
+	@Override
+	public void desactivarSolenoide3V() {
+		alregService.stopSolenoide3V(mainView.getServer(),
+				new AsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						System.out.println("Solenoide de 3 vias desactivado");
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err
+								.println("Error en el callback de desactivar solenoide de 3 vias");
+					}
+				});
+	}
+
+	@Override
+	public void comprobarSolenoide3V() {
+		alregService.comprobarSolenoide3V(mainView.getServer(),
+				new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						mainView.updateTglBtnValvula3V(result);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err
+								.println("Error en el callback de comprobar solenoide de 3 vias");
 					}
 				});
 	}
