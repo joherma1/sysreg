@@ -262,6 +262,8 @@ void setup(){
   //Desactivamos el solenoide de 3 vias
   digitalWrite(solenoide3VOn, LOW);
   digitalWrite(solenoide3VOff, LOW);
+  //Marcamos como apagado el solenoide de 3 vias
+  solenoide3V = 0;
 
   //Encendemos el modulo 3G
   pinMode(onModulePin, OUTPUT);
