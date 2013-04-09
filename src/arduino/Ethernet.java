@@ -10,7 +10,9 @@ import java.net.UnknownHostException;
 
 /**
  * Implementación de la clase que establece la comunicación entre una placa
- * Arduino con el shield Ethernet el Software RegAdmin a través de sockets.
+ * Arduino con el shield Ethernet el Software RegAdmin a través de sockets. En
+ * este caso las conexiones se cerrarán despues de enviar cada comando, para
+ * poder liberar la placa
  * 
  * @author Jose Antonio Hernández Martínez (joherma1@gmail.com)
  */
@@ -25,9 +27,6 @@ public class Ethernet implements Arduino {
 	// Variables sockets
 	private final String servidor;
 	private final int puerto = 80;
-	private Socket socket;
-	private BufferedReader entrada;
-	private PrintWriter salida;
 
 	/**
 	 * Contructor de la clase Ethernet que inicializa la dirección IP del
@@ -41,20 +40,22 @@ public class Ethernet implements Arduino {
 	}
 
 	/**
-	 * Establece la conexión con la placa abriendo un socket con el servidor a
-	 * traves del puerto 80
-	 * 
-	 * @return 0 -> OK; -1 -> UnknownHostException; -2 -> IOException
+	 * En la inicialización comprobamos que todo esta correctamente, haciendo un
+	 * test de la conexión
 	 */
 	public int initialize() {
 		try {
-			socket = new Socket(servidor, puerto);
+			Socket socket = new Socket(servidor, puerto);
 			// conseguimos el canal de entrada
-			entrada = new BufferedReader(new InputStreamReader(
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			// conseguimos el canal de salida
-			salida = new PrintWriter(new OutputStreamWriter(
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
 					socket.getOutputStream()), true);
+
+			socket.close();
+			salida.close();
+			entrada.close();
 			return 0;
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -66,30 +67,83 @@ public class Ethernet implements Arduino {
 	}
 
 	public void close() {
-		try {
-			if (socket != null)
-				socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public boolean startRele() {
-		salida.println("sysreg a");
-		return true;
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg a");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public boolean stopRele() {
-		salida.println("sysreg b");
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg b");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	public boolean comprobarRele() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg c");
-			char[] leido_char = new char[2];
-			entrada.read(leido_char);
-			if (leido_char[0] == '1')
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
 				return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -97,185 +151,453 @@ public class Ethernet implements Arduino {
 		return false;
 	}
 
-	public int contarSensoresT() {
+	public boolean startReg() {
 		try {
-			char[] leido_char = new char[3];
-			salida.println("sysreg j");
-			Thread.sleep(2000);
-			entrada.read(leido_char);
-			String leido = new String(leido_char);
-			leido = leido.replace('\r', ' ').replace('\n', ' ').trim();
-			this.n_sensores_t = Integer.parseInt(leido);
-			return n_sensores_t;
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg d");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (InterruptedException e) {
+		}
+		return false;
+	}
+
+	public boolean stopReg() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg e");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean comprobarReg() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg f");
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean startSolenoide3V() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg g");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean stopSolenoide3V() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg h");
+			// Comprobamos que le ha llegado y responde
+			int res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			entrada.close();
+			salida.close();
+			socket.close();
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean comprobarSolenoide3V() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg i");
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			if (res_char[0] == '1')
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public int contarSensoresT() {
+		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			salida.println("sysreg j");
+			int i = 0, res = 0;
+			char[] res_char = new char[3];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);// Mientras no sea final de transmision seguimos
+								// leyendo
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Integer.parseInt(new String(res_char).trim());
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return -1;
 	}
 
-	private void resetearBusquedaT() {
-		salida.println("sysreg k");
-	}
-
+	/**
+	 * Lista el identificador de los sensores de temperatura DS18B20 conectados
+	 * al protocolo One Wire. Utiliza una única conexión
+	 * 
+	 * @return Matriz de bytes con los identificadores de los sensores de
+	 *         temperatura; null: En otro caso
+	 */
 	public String[] listarSensoresT() {
 		try {
-			this.contarSensoresT();
-			this.resetearBusquedaT();
-			this.sensores_t = new String[this.n_sensores_t];
-			char[] leido = new char[16];
-			for (int i = 0; i < this.n_sensores_t; i++) {
-				salida.println("sysreg l");
-				Thread.sleep(2000);
-				entrada.read(leido);
-				this.sensores_t[i] = new String(leido);
-			}
-			return this.sensores_t;
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
 
+			// Contamos los sensores
+			salida.println("sysreg j");
+			int i = 0, res = 0;
+			char[] res_char = new char[4];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);// Mientras no sea final de transmision seguimos
+								// leyendo
+
+			this.n_sensores_t = Integer.parseInt(new String(res_char).trim());
+
+			// Reseteamos la búsqueda
+			salida.println("sysreg k");
+			// Comprobamos que le ha llegado y responde
+			res = 0;
+			do {
+				res = entrada.read();
+			} while (res != 4);
+
+			// Obtenemos los sensores
+			this.sensores_t = new String[this.n_sensores_t];
+			res_char = new char[17]; // 16 identificador + EOT
+			for (int j = 0; j < n_sensores_t; j++) {
+				salida.println("sysreg l");
+				i = 0;
+				do {
+					res = entrada.read();
+					res_char[i] = (char) res;
+					i++;
+				} while (res != 4);// Mientras no sea final de transmision
+									// seguimos
+									// leyendo
+
+				sensores_t[j] = new String(res_char);
+			}
+
+			// Cerramos la conexión
+			salida.close();
+			entrada.close();
+			socket.close();
+			return this.sensores_t;
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	private void seleccionarSensorT(String sensor) {
-		// el comando es sysreg m sensor
-		try {
-			salida.println("sysreg m " + sensor);
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Obtiene la temperatura del sensor de temperatura DS18B20 conectados al
+	 * protocolo One Wire. Lo hacemos en una única conexión.
+	 * 
+	 * 
+	 * @param sensor
+	 *            Identificador del sensor DS18B20
+	 * 
+	 * @return Valor de temperatura leído; null: En otro caso
+	 */
 	public Float obtenerTemperatura(String sensor) {
 		try {
-			seleccionarSensorT(sensor);
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
+			// Seleccionamos el sensor
+			salida.println("sysreg m " + sensor);
+			int i = 0, res = 0;
+			char[] res_char = new char[2];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4); // Mientras no nos llegue el codigo de EOT
+
+			// Obtenemos la temperatura
 			salida.println("sysreg n");
-			Thread.sleep(2000);
 			// recibimos la respuesta del servidor
-			char[] temp_char = new char[6];
-			entrada.read(temp_char);
-			return Float.parseFloat(new String(temp_char));
+			i = res = 0;
+			res_char = new char[8]; // reinicializamos por si ha leido mas de la
+									// cuenta
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Float.parseFloat(new String(res_char).trim());
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	public Float obtenerTemperaturaBMP085() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg p");
-			Thread.sleep(2000);
 			// recibimos la respuesta del servidor
-			char[] temp_char = new char[6];
-			entrada.read(temp_char);
-			return Float.parseFloat(new String(temp_char));
+			int i = 0, res = 0;
+			char[] res_char = new char[8];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Float.parseFloat(new String(res_char));
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
-	
+
 	public Long obtenerPresionBMP085() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg q");
-			Thread.sleep(2000);
 			// recibimos la respuesta del servidor
-			char[] presion_char = new char[8];
-			entrada.read(presion_char);
-			return Long.parseLong(new String(presion_char).trim());
+			int i = 0, res = 0;
+			char[] res_char = new char[20];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Long.parseLong(new String(res_char).trim());
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	public Float obtenerAlturaBMP085() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg r");
-			Thread.sleep(2000);
-			// recibimos la respuesta del servidor
-			char[] altura_char = new char[6];
-			entrada.read(altura_char);
-			return Float.parseFloat(new String(altura_char));
+			int i = 0, res = 0;
+			char[] res_char = new char[10];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Float.parseFloat(new String(res_char));
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
-	
+
 	public String obtenerEstimacionTiempoBMP085() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg s");
-			Thread.sleep(2000);
-			// recibimos la respuesta del servidor
-			char[] estimacion_char = new char[25];
-			entrada.read(estimacion_char);
-			return new String(estimacion_char).trim();
+			int i = 0, res = 0;
+			char[] res_char = new char[25];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return new String(res_char).trim();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	public Float obtenerHumedadHH10D() {
 		try {
+			Socket socket = new Socket(servidor, puerto);
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			PrintWriter salida = new PrintWriter(new OutputStreamWriter(
+					socket.getOutputStream()), true);
+
 			salida.println("sysreg u");
-			Thread.sleep(2000);
 			// recibimos la respuesta del servidor
-			char[] hum_char = new char[6];
-			entrada.read(hum_char);
-			return Float.parseFloat(new String(hum_char));
+			int i = 0, res = 0;
+			char[] res_char = new char[6];
+			do {
+				res = entrada.read();
+				res_char[i] = (char) res;
+				i++;
+			} while (res != 4);
+
+			salida.close();
+			entrada.close();
+			socket.close();
+			return Float.parseFloat(new String(res_char));
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	// ------------------------------
 	// Métodos no implementados, copiados de FAKE.java
 	// ------------------------------
-	boolean regando;
-	boolean solenoide3V;
-
-	public boolean startReg() {
-		regando = true;
-		return true;
-	}
-
-	public boolean stopReg() {
-		regando = false;
-		return false;
-	}
-
-	public boolean comprobarReg() {
-		// Con regando simulamos el ultimo estado que hayamos puesto
-		// iniciando la placa en off
-		return regando; // Siempre off
-	}
-
 	public int obtenerHumedadSuelo() {
 		return 50;
 	}
@@ -313,23 +635,6 @@ public class Ethernet implements Arduino {
 		n_alarmas = 0;
 		return false;
 	}
-
-	public boolean startSolenoide3V() {
-		solenoide3V = true;
-		return true;
-	}
-
-	public boolean stopSolenoide3V() {
-		solenoide3V = false;
-		return false;
-	}
-
-	public boolean comprobarSolenoide3V() {
-		// Con el solenoide simulamos el ultimo estado que hayamos puesto
-		// iniciando la placa en off
-		return solenoide3V; // Siempre off
-	}
-
 
 	// Métodos por implementar, partimos de la base de Mega3G
 	// /**
