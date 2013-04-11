@@ -1,0 +1,15 @@
+apt-get install tomcat7
+
+/etc/init.d/tomcat7 restart
+
+#Opcion 1
+#Lo desplega automaticamente con el usuario correcto
+scp /Users/jose/Desktop/deploy/regadminweb.war root@10.0.1.19:/var/lib/tomcat7/webapps
+
+root@raspberrypi:/var/lib/tomcat7/webapps# ls -la
+total 21052
+drwxrwxr-x 4 tomcat7 tomcat7     4096 Mar 28 13:17 .
+drwxr-xr-x 6 root    root        4096 Mar 28 13:02 ..
+drwxr-xr-x 3 tomcat7 tomcat7     4096 Mar 28 13:17 regadminweb
+-rw-r--r-- 1 root    root    21538156 Mar 28 13:17 regadminweb.war
+drwxr-xr-x 3 root    root        4096 Mar 28 13:02 ROOT

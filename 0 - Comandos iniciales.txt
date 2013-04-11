@@ -1,0 +1,43 @@
+sudo raspi-config
+	disable overscan
+	ssh on login
+	fill space sd
+	configure keyboard
+		generic 105 keys
+			spanish-spanish
+			default
+			no special key
+			Control+alt+backspae terminate x-server ok
+
+startx
+
+#Usuario por defecto
+ssh pi@10.0.1.19
+	pi:Soluciones13
+
+#Password para el root
+sudo passwd
+	root:Soluciones13
+
+sudo adduser jose
+sudo usermod -a -G adm,sudo jose
+#Averiguar grupos del usuario
+id pi
+uid=1000(pi) gid=1000(pi) groups=1000(pi),4(adm),20(dialout),24(cdrom),27(sudo),29(audio),44(video),46(plugdev),60(games),100(users),105(netdev),999(input),1001(indiecity)
+#Poner los mismos grupos que pi (para montar por ejemplo discos duros)
+sudo usermod -a -G dialout,cdrom,audio,video,plugdev,games,users,netdev,input jose
+
+ssh 10.0.1.19
+
+#En OS X eliminar en la preferencias de terminal 
+Desmarcar
+	Set locale enviroment variables on startup
+
+
+sudo apt-get update
+sudo apt-get upgrade
+
+
+
+scp /Users/jose/Desktop/RegAdminWeb.war root@10.0.1.19:/var/lib/tomcat7/webapps
+

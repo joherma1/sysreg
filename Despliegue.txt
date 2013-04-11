@@ -1,0 +1,17 @@
+Despliegue
+
+#Compilar en eclpse el proyecto
+#Ir a la carpeta war y comprimir en zip su contenido
+#Renombrar el fichero .zip a regadminweb.war
+
+#TOMCAT
+#Copiar por ssh a la carpeta tomcat el war (despliegue automatico)
+#Eliminamos antes lo anterior si existe
+scp /Users/jose/Desktop/deploy/regadminweb.war root@10.0.1.19:/var/lib/tomcat7/webapps
+
+#Apache
+#Eliminamos antes lo anterior si existe
+cp -r /var/lib/tomcat7/webapps/regadminweb .
+rm -r WEB-INF/
+service apache2 reload
+service apache2 restart

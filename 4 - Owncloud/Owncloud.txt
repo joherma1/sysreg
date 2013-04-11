@@ -1,0 +1,93 @@
+#Setup
+#disminuimos la memoria de video
+raspi-config
+	memory split to 16MB
+
+#Aumentamos la memoria de intercambio
+nano /etc/dphys-swapfile
+	512
+dphys-swapfile setup
+dphys-swapfile swapon
+
+
+echo 'deb http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_6.0/ /' >> /etc/apt/sources.list.d/owncloud.list 
+wget http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_6.0/Release.key
+apt-key add - < Release.key  
+
+#Configuracaión 1:
+#arroveitor.no-ip.org --> index.html
+#                    /regadmin  --> RegAdminWeb.html con usuario y contraseña apache
+#                    /owncloud  --> index.php
+#Para ello creamos un site que contenga las dos páginas: regadminweb y owncloud
+
+cd /etc/apache2/sites-available/
+cp default arroveitor.no-ip.org
+nano arroveitor.no-ip.org
+<VirtualHost *:80>
+        ServerAdmin joherma1@gmail.com
+        ServerName arroveitor.no-ip.org
+
+        DocumentRoot /var/www/
+        <Directory /var/www/regadminweb>
+                DirectoryIndex RegAdminWeb.html
+                Options Indexes FollowSymLinks MultiViews
+                AuthType Basic
+                AuthName "Zona privada RegAdminWeb"
+                AuthUserFile /etc/apache2/users
+                AuthGroupFile /etc/apache2/groups
+                require valid-user
+                #require user jose
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        <Directory /var/www/owncloud>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+
+#Tambien tenemos la opcion de definir cada pagina en un site diferente, por ejemplo por nombre
+#sysreg-arroveitor.no-ip.org, owncloud-arroveitor.no-ip.org
+#cada site en un fichero diferente
+
+a2ensite arroveitor.no-ip.org 
+service apache2 reload
+
+
+#Cambiar la ruta de la informacion (Custom Mount Configuration)
+#En la ruta de la aplicacion (por defecto /var/www/owncloud)
+nano /config/mount.php
+
+#Reducimos el numero de hilos minimo y máximo del servidor apache
+nano /etc/apache2/apache2.conf 
+<IfModule mpm_prefork_module>
+    StartServers          2
+    MinSpareServers       2
+    MaxSpareServers       3
+    MaxClients          150
+    MaxRequestsPerChild   0
+</IfModule>
+
+#overclockeamos la placa a nivel medium
+raspi-config 
+	overclock
+
+#o editando /boot/config.txt
+  ensureKeyValueShort "arm_freq" "800" "/boot/config.txt"
+  ensureKeyValueShort "sdram_freq" "450" "/boot/config.txt"
+  ensureKeyValueShort "core_freq" "350" "/boot/config.txt"
+
+

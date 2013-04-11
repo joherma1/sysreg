@@ -1,0 +1,31 @@
+Backup
+#Conectando la tarjeta SD
+
+Windows
+	Win32 Disk Imager
+	Read
+
+Linux & Mac
+dd if=/dev/sdx of=/path/to/image
+
+#or for compression:
+
+dd if=/dev/sdx | gzip > /path/to/image.gz
+
+#Where sdx is your SD card.
+#To restore the backup you reverse the commands:
+
+dd if=/path/to/image of=/dev/sdx
+
+#or when compressed:
+gzip -dc /path/to/image.gz | dd of=/dev/sdx 
+
+
+#Por SSH
+ssh root@raspberrypi gzip -c /dev/mmcblk0 > img.gz
+#Con compresion en el cliente
+ssh root@raspberrypi dd if=/dev/mmcblk0 | gzip -c > img.gz
+
+#Ejemplo
+ssh root@10.0.1.19 dd if=/dev/mmcblk0 | gzip -c > 07-04-13.gz
+

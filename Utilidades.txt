@@ -1,0 +1,9 @@
+watch -d cat /sys/class/thermal/thermal_zone0/temp
+
+#Utilizar el primer led
+#Está asociado a un trigger, io de la SD
+#para desactivarlo
+echo none >/sys/class/leds/led0/trigger
+
+#activarlo
+echo mmc0 > /sys/class/leds/led0/trigger
