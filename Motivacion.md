@@ -1,0 +1,13 @@
+# Motivación #
+
+La actual coyuntura económica, unida a la crisis permanente de precios en origen, a originado en los últimos años un abandono de los campos minifundistas de la Comunidad Valenciana. El principal motivo de este desvanecimiento en el sector es la elongación de la cadena alimentaria, con altos precios para el consumidor y bajos precios para el agricultor, propiciada por el aumento de intermediarios. Además la innovación agraria sigue siendo asignatura pendiente. Actualmente no encontramos mucha tecnología a nivel de productores, únicamente podemos hablar de la modernización del regadío, cuyos dispositivos más cercanos son los programadores de riego por goteo.
+Introducir métodos innovadores en un sector tan tradicional como es la agricultura es una tarea dura, especialmente debido a que la mayoría de labradores son personas mayores de 50 años (tan solo el 2% son jóvenes agricultores).
+Por otro lado el aumento de los costes de producción, en materias primas como son el petróleo, el agua de riego, los abonos… ha provocado que los márgenes económicos se vean reducidos aun más.
+Por si esto fuera poco el cambio climático ha agudizado fenómenos meteorológicos, como la gota fría, heladas, olas de calor…, que provocan duros episodios de perdidas.
+
+Es en este marco donde entra nuestro sistema agrario remoto e inteligente, pretendiendo:
+  * Mejorar la competitividad: SysReg es un sistema pensado para mejorar la competitividad de las parcelas agrarias aumentando la _productividad_ de los agricultores, ya que con el sistema que presentamos se puede aumentar el número de parcelas gestionadas y automatizar tareas.
+  * Motivar: En segundo lugar SysReg aspira a _motivar a los jóvenes agricultores_ de la mano de las tecnologías de la información, con la utilización de ordenadores personales, dispositivos móviles, Internet (incluyendo redes sociales). Está motivación no conlleva el aislamiento del resto de agricultores, sino todo lo contrario, la implantación de estos sistemas ayudan sumergir a los usuarios en las nuevas tecnologías.
+  * Controlar: El uso de estas tecnologías favorecerá el _control y racionamiento_ de las materias primas, ya que con la monitorización en tiempo real conseguiremos ahorrar materia prima.
+  * Tiempo real: Por otro lado con el sistema que presentamos podemos controlar de una manera mas precisa y rápida la _condiciones_ climática _cambiantes_, activando instantáneamente sensores, válvulas a distancia, …
+  * Liberalizar: El proyecto se fundamentara en tecnologías _libres_: El proyecto de hardware libre Arduino y en software Open Source; y tecnologías de muy _bajo coste_: Placas Arduino, sensores digitales baratos, actuadores de perfil bajo (Solenoides de tipo lach, relés, leds…).
