@@ -1,0 +1,571 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+
+<title>Crear un instalador Mac OS X para una aplicación Java &raquo; Mackiermel</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta http-equiv="imagetoolbar" content="no" />
+	<meta name="MSSmartTagsPreventParsing" content="true" />
+	<meta name="description" content="" />
+	<link rel="stylesheet" href="http://www.llermania.com/mac/wp-content/themes/andyblue/style.css" type="text/css" media="screen" />
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.llermania.com/mac/?feed=rss2" />
+	<link rel="alternate" type="text/xml" title="RSS .92" href="http://www.llermania.com/mac/?feed=rss" />
+	<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://www.llermania.com/mac/?feed=atom" />
+	<link rel="alternate" type="application/rss+xml" title="Mackiermel &raquo; Crear un instalador Mac OS X para una aplicación Java RSS de los comentarios" href="http://www.llermania.com/mac/?feed=rss2&amp;p=116" />
+<script type='text/javascript' src='http://www.llermania.com/mac/wp-includes/js/jquery/jquery.js?ver=1.4.2'></script>
+<script type='text/javascript' src='http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/es_ES?ver=0.4'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.llermania.com/mac/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.llermania.com/mac/wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='Mackiermel' href='http://www.llermania.com/mac' />
+<link rel='start' title='VoodooPad Lite' href='http://www.llermania.com/mac/?p=1' />
+<link rel='prev' title='Fluid' href='http://www.llermania.com/mac/?p=101' />
+<link rel='next' title='MailGmail' href='http://www.llermania.com/mac/?p=122' />
+<meta name="generator" content="WordPress 3.0.1" />
+<link rel='canonical' href='http://www.llermania.com/mac/?p=116' />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Crear un instalador Mac OS X para una aplicación Java" />
+<meta property="og:image" content="http://docs.google.com/File?id=dfcg3hdf_90hjcxpwgt_b" />
+<meta name="title" content="Crear un instalador Mac OS X para una aplicación Java" />
+<meta name="description" content="(Actualizado para Mac OS X 10.5 — Leopard &#8211; Traducido por Kiermel) Comunidad Java Artículo original en inglés Con algunos simples pasos puedes convertir un programa java (.jar) en una apropiada aplicación Mac OS X con un instalador nativo. Las instrucciones más abajo te guían paso a paso en el proceso de crear un programa [...]" />
+<meta name="medium" content="blog" />
+<link rel="image_src" href="http://docs.google.com/File?id=dfcg3hdf_90hjcxpwgt_b" />
+<meta property='fb:app_id' content='167482223272141' />
+<meta property="og:site_name" content="Mackiermel" />
+<meta property='og:url' content='http://www.llermania.com/mac/?p=116' />
+<style type="text/css">.broken_link, a.broken_link {
+	text-decoration: line-through;
+}</style></head>
+<body>
+	<div id="header">
+	<h1><a id="top"></a><a href="http://www.llermania.com/mac/">Mackiermel</a></h1>
+	<h2>La experiencia de un switcher</h2>
+				<form class="qs" id="searchform" method="get" action="/mac/index.php">
+
+  <p>
+
+  <input type="text" class="textfield" id="s" name="s" value="" size="21" maxlength="255" />
+  <input type="submit" id="searchsubmit" value="Buscar" />
+
+  </p>
+
+</form>
+</div>
+<div id="navigation">
+<li class="selected"><a href=http://www.llermania.com/mac>Principal</a></li>
+<li class="page_item page-item-11"><a href="http://www.llermania.com/mac/?page_id=11" title="Buscar en Diccionarios">Buscar en Diccionarios</a></li>
+<li class="page_item page-item-34"><a href="http://www.llermania.com/mac/?page_id=34" title="Diccionarios">Diccionarios</a></li>
+<li class="page_item page-item-294"><a href="http://www.llermania.com/mac/?page_id=294" title="Planetaki">Planetaki</a></li>
+<li class="page_item page-item-78"><a href="http://www.llermania.com/mac/?page_id=78" title="Buscadores">Buscadores</a></li>
+<li class="page_item page-item-288"><a href="http://www.llermania.com/mac/?page_id=288" title="Vídeo">Vídeo</a></li>
+<li class="page_item page-item-324"><a href="http://www.llermania.com/mac/?page_id=324" title="Videotutoriales">Videotutoriales</a></li>
+<li class="page_item page-item-658"><a href="http://www.llermania.com/mac/?page_id=658" title="Deporte">Deporte</a></li>
+<li class="page_item page-item-739"><a href="http://www.llermania.com/mac/?page_id=739" title="Bookmarklets">Bookmarklets</a></li>
+</div><div class="navboxwrapleft">
+<div class="navboxleft">
+
+	<ul><form class="qs" id="searchform" method="get" action="/mac/index.php">
+
+  <p>
+
+  <input type="text" class="textfield" id="s" name="s" value="" size="21" maxlength="255" />
+  <input type="submit" id="searchsubmit" value="Buscar" />
+
+  </p>
+
+</form>
+</ul><ul><h5>Lo más buscado</h5><div><a href='http://www.llermania.com/mac/?tag=aplicacion' class='tag-link-134' title='2 temas' style='font-size: 8pt;'>aplicación</a>
+<a href='http://www.llermania.com/mac/?tag=audio' class='tag-link-165' title='3 temas' style='font-size: 10.6666666667pt;'>audio</a>
+<a href='http://www.llermania.com/mac/?tag=avi' class='tag-link-121' title='2 temas' style='font-size: 8pt;'>avi</a>
+<a href='http://www.llermania.com/mac/?tag=buscar' class='tag-link-128' title='5 temas' style='font-size: 14.6666666667pt;'>buscar</a>
+<a href='http://www.llermania.com/mac/?tag=calculadora' class='tag-link-53' title='2 temas' style='font-size: 8pt;'>calculadora</a>
+<a href='http://www.llermania.com/mac/?tag=carpeta' class='tag-link-21' title='2 temas' style='font-size: 8pt;'>carpeta</a>
+<a href='http://www.llermania.com/mac/?tag=compartir' class='tag-link-132' title='2 temas' style='font-size: 8pt;'>compartir</a>
+<a href='http://www.llermania.com/mac/?tag=conversion' class='tag-link-54' title='2 temas' style='font-size: 8pt;'>conversión</a>
+<a href='http://www.llermania.com/mac/?tag=conversor' class='tag-link-119' title='6 temas' style='font-size: 16.2222222222pt;'>conversor</a>
+<a href='http://www.llermania.com/mac/?tag=diccionario' class='tag-link-14' title='6 temas' style='font-size: 16.2222222222pt;'>diccionario</a>
+<a href='http://www.llermania.com/mac/?tag=doc' class='tag-link-266' title='3 temas' style='font-size: 10.6666666667pt;'>doc</a>
+<a href='http://www.llermania.com/mac/?tag=editor' class='tag-link-29' title='5 temas' style='font-size: 14.6666666667pt;'>editor</a>
+<a href='http://www.llermania.com/mac/?tag=eliminar' class='tag-link-60' title='2 temas' style='font-size: 8pt;'>eliminar</a>
+<a href='http://www.llermania.com/mac/?tag=epub' class='tag-link-199' title='8 temas' style='font-size: 18.4444444444pt;'>ePub</a>
+<a href='http://www.llermania.com/mac/?tag=escritorio' class='tag-link-112' title='2 temas' style='font-size: 8pt;'>Escritorio</a>
+<a href='http://www.llermania.com/mac/?tag=fb2' class='tag-link-262' title='4 temas' style='font-size: 12.8888888889pt;'>FB2</a>
+<a href='http://www.llermania.com/mac/?tag=firefox' class='tag-link-78' title='2 temas' style='font-size: 8pt;'>firefox</a>
+<a href='http://www.llermania.com/mac/?tag=fluid' class='tag-link-133' title='3 temas' style='font-size: 10.6666666667pt;'>Fluid</a>
+<a href='http://www.llermania.com/mac/?tag=fotos' class='tag-link-177' title='3 temas' style='font-size: 10.6666666667pt;'>fotos</a>
+<a href='http://www.llermania.com/mac/?tag=grabar' class='tag-link-18' title='2 temas' style='font-size: 8pt;'>grabar</a>
+<a href='http://www.llermania.com/mac/?tag=icono' class='tag-link-55' title='2 temas' style='font-size: 8pt;'>icono</a>
+<a href='http://www.llermania.com/mac/?tag=imagen' class='tag-link-10' title='3 temas' style='font-size: 10.6666666667pt;'>imagen</a>
+<a href='http://www.llermania.com/mac/?tag=incrustar' class='tag-link-58' title='2 temas' style='font-size: 8pt;'>incrustar</a>
+<a href='http://www.llermania.com/mac/?tag=ipad' class='tag-link-299' title='9 temas' style='font-size: 19.5555555556pt;'>iPad</a>
+<a href='http://www.llermania.com/mac/?tag=iphone' class='tag-link-227' title='11 temas' style='font-size: 21.3333333333pt;'>iPhone</a>
+<a href='http://www.llermania.com/mac/?tag=itunes' class='tag-link-46' title='2 temas' style='font-size: 8pt;'>itunes</a>
+<a href='http://www.llermania.com/mac/?tag=jdownloader' class='tag-link-155' title='3 temas' style='font-size: 10.6666666667pt;'>JDownloader</a>
+<a href='http://www.llermania.com/mac/?tag=mac' class='tag-link-176' title='4 temas' style='font-size: 12.8888888889pt;'>mac</a>
+<a href='http://www.llermania.com/mac/?tag=nomac' class='tag-link-82' title='3 temas' style='font-size: 10.6666666667pt;'>Mac</a>
+<a href='http://www.llermania.com/mac/?tag=ocultar' class='tag-link-111' title='2 temas' style='font-size: 8pt;'>ocultar</a>
+<a href='http://www.llermania.com/mac/?tag=p2p' class='tag-link-73' title='2 temas' style='font-size: 8pt;'>p2p</a>
+<a href='http://www.llermania.com/mac/?tag=papyre' class='tag-link-66' title='2 temas' style='font-size: 8pt;'>papyre</a>
+<a href='http://www.llermania.com/mac/?tag=rapidshare' class='tag-link-141' title='3 temas' style='font-size: 10.6666666667pt;'>rapidshare</a>
+<a href='http://www.llermania.com/mac/?tag=rar' class='tag-link-90' title='2 temas' style='font-size: 8pt;'>rar</a>
+<a href='http://www.llermania.com/mac/?tag=safari' class='tag-link-32' title='3 temas' style='font-size: 10.6666666667pt;'>Safari</a>
+<a href='http://www.llermania.com/mac/?tag=sears' class='tag-link-105' title='2 temas' style='font-size: 8pt;'>sears</a>
+<a href='http://www.llermania.com/mac/?tag=sincronizar' class='tag-link-189' title='3 temas' style='font-size: 10.6666666667pt;'>sincronizar</a>
+<a href='http://www.llermania.com/mac/?tag=spotlight' class='tag-link-31' title='3 temas' style='font-size: 10.6666666667pt;'>Spotlight</a>
+<a href='http://www.llermania.com/mac/?tag=subtitulos' class='tag-link-59' title='5 temas' style='font-size: 14.6666666667pt;'>subtítulos</a>
+<a href='http://www.llermania.com/mac/?tag=traductor' class='tag-link-129' title='3 temas' style='font-size: 10.6666666667pt;'>traductor</a>
+<a href='http://www.llermania.com/mac/?tag=video' class='tag-link-9' title='12 temas' style='font-size: 22pt;'>video</a>
+<a href='http://www.llermania.com/mac/?tag=voodoopad' class='tag-link-6' title='2 temas' style='font-size: 8pt;'>VoodooPad</a>
+<a href='http://www.llermania.com/mac/?tag=widget' class='tag-link-47' title='3 temas' style='font-size: 10.6666666667pt;'>widget</a>
+<a href='http://www.llermania.com/mac/?tag=wikipedia' class='tag-link-76' title='2 temas' style='font-size: 8pt;'>wikipedia</a>
+<a href='http://www.llermania.com/mac/?tag=windows' class='tag-link-152' title='3 temas' style='font-size: 10.6666666667pt;'>windows</a></div>
+</ul><ul><h5>&nbsp;</h5><div id="calendar_wrap"><table id="wp-calendar" summary="Calendario">
+	<caption>diciembre 2010</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="Lunes">L</th>
+		<th scope="col" title="Martes">M</th>
+		<th scope="col" title="Miércoles">X</th>
+		<th scope="col" title="Jueves">J</th>
+		<th scope="col" title="Viernes">V</th>
+		<th scope="col" title="Sábado">S</th>
+		<th scope="col" title="Domingo">D</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td colspan="3" id="prev"><a href="http://www.llermania.com/mac/?m=201011" title="Ver todas las entradas para noviembre 2010">&laquo; nov</a></td>
+		<td class="pad">&nbsp;</td>
+		<td colspan="3" id="next" class="pad">&nbsp;</td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="2" class="pad">&nbsp;</td><td>1</td><td>2</td><td>3</td><td>4</td><td><a href="http://www.llermania.com/mac/?m=20101205" title="Dragon Dictation para iPad/iPhone">5</a></td>
+	</tr>
+	<tr>
+		<td>6</td><td><a href="http://www.llermania.com/mac/?m=20101207" title="EasyFind: Buscando en tu Mac">7</a></td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td>
+	</tr>
+	<tr>
+		<td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td><a href="http://www.llermania.com/mac/?m=20101219" title="Añadir y borrar fotos del iPad">19</a></td>
+	</tr>
+	<tr>
+		<td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td>
+	</tr>
+	<tr>
+		<td><a href="http://www.llermania.com/mac/?m=20101227" title="Ver Megavideo incrustado en el iPad/iPhone">27</a></td><td id="today"><a href="http://www.llermania.com/mac/?m=20101228" title="Ofimática en el iPad">28</a></td><td>29</td><td>30</td><td>31</td>
+		<td class="pad" colspan="2">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table></div></ul><ul><h5>Categorías</h5>		<ul>
+	<li class="cat-item cat-item-1"><a href="http://www.llermania.com/mac/?cat=1" title="Ver todas las entradas archivadas en General">General</a>
+</li>
+	<li class="cat-item cat-item-148"><a href="http://www.llermania.com/mac/?cat=148" title="Ver todas las entradas archivadas en Idiomas">Idiomas</a>
+</li>
+	<li class="cat-item cat-item-299"><a href="http://www.llermania.com/mac/?cat=299" title="Ver todas las entradas archivadas en iPad">iPad</a>
+</li>
+	<li class="cat-item cat-item-227"><a href="http://www.llermania.com/mac/?cat=227" title="Ver todas las entradas archivadas en iPhone">iPhone</a>
+</li>
+	<li class="cat-item cat-item-33"><a href="http://www.llermania.com/mac/?cat=33" title="Ver todas las entradas archivadas en Juegos">Juegos</a>
+</li>
+	<li class="cat-item cat-item-69"><a href="http://www.llermania.com/mac/?cat=69" title="Ver todas las entradas archivadas en Libros-e">Libros-e</a>
+</li>
+	<li class="cat-item cat-item-20"><a href="http://www.llermania.com/mac/?cat=20" title="Ver todas las entradas archivadas en Sistema">Sistema</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://www.llermania.com/mac/?cat=3" title="Ver todas las entradas archivadas en Software">Software</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://www.llermania.com/mac/?cat=4" title="Ver todas las entradas archivadas en Tutoriales">Tutoriales</a>
+</li>
+		</ul>
+</ul><ul><h5>Archivos</h5>		<ul>
+			<li><a href='http://www.llermania.com/mac/?m=201012' title='diciembre 2010'>diciembre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201011' title='noviembre 2010'>noviembre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201010' title='octubre 2010'>octubre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201008' title='agosto 2010'>agosto 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201007' title='julio 2010'>julio 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201006' title='junio 2010'>junio 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201005' title='mayo 2010'>mayo 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201004' title='abril 2010'>abril 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201003' title='marzo 2010'>marzo 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201002' title='febrero 2010'>febrero 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201001' title='enero 2010'>enero 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200912' title='diciembre 2009'>diciembre 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200911' title='noviembre 2009'>noviembre 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200910' title='octubre 2009'>octubre 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200909' title='septiembre 2009'>septiembre 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200908' title='agosto 2009'>agosto 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200907' title='julio 2009'>julio 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200906' title='junio 2009'>junio 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200905' title='mayo 2009'>mayo 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200904' title='abril 2009'>abril 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200903' title='marzo 2009'>marzo 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200902' title='febrero 2009'>febrero 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200901' title='enero 2009'>enero 2009</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200812' title='diciembre 2008'>diciembre 2008</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200811' title='noviembre 2008'>noviembre 2008</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200810' title='octubre 2008'>octubre 2008</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200809' title='septiembre 2008'>septiembre 2008</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200808' title='agosto 2008'>agosto 2008</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=200807' title='julio 2008'>julio 2008</a></li>
+		</ul>
+</ul><ul><h5>Meta</h5>			<ul>
+			<li><a href="http://www.llermania.com/mac/wp-login.php?action=register">Registrarse</a></li>			<li><a href="http://www.llermania.com/mac/wp-login.php">Acceder</a></li>
+			<li><a href="http://www.llermania.com/mac/?feed=rss2" title="Suscribirse a este sitio usando RSS 2.0"><abbr title="Really Simple Syndication">RSS</abbr> de las entradas</a></li>
+			<li><a href="http://www.llermania.com/mac/?feed=comments-rss2" title="Últimos comentarios a todas las entradas en RSS"><abbr title="Really Simple Syndication">RSS</abbr> de los comentarios</a></li>
+			<li><a href="http://wordpress.org/" title="Gestionado con WordPress, una avanzada plataforma semántica de publicación personal.">WordPress.org</a></li>
+						</ul>
+</ul><ul><li><h5>Estadísticas</h5>
+<!-- Histats.com  START  -->
+<a href="http://www.histats.com/es/" target="_blank" title="contador gratis" ><script  type="text/javascript" language="javascript">
+var s_sid = 543180;var st_dominio = 4;
+var cimg = 375;var cwi =112;var che =48;
+</script></a>
+<script  type="text/javascript" language="javascript" src="http://s11.histats.com/js9.js"></script>
+<noscript><a href="http://www.histats.com/es/" target="_blank">
+<img  src="http://s103.histats.com/stats/0.gif?543180&1" alt="contador gratis" border="0"></a>
+</noscript>
+<!-- Histats.com  END  --></li></ul>
+</div>
+</div>
+</div>
+</div>
+<div class="navboxwrapright">
+<div class="navboxright">
+
+	
+<h5>Entradas recientes</h5>
+<ul>
+	<li><a href='http://www.llermania.com/mac/?p=942' title='Ofimática en el iPad'>Ofimática en el iPad</a></li>
+	<li><a href='http://www.llermania.com/mac/?p=936' title='Ver Megavideo incrustado en el iPad/iPhone'>Ver Megavideo incrustado en el iPad/iPhone</a></li>
+	<li><a href='http://www.llermania.com/mac/?p=928' title='Añadir y borrar fotos del iPad'>Añadir y borrar fotos del iPad</a></li>
+	<li><a href='http://www.llermania.com/mac/?p=906' title='EasyFind: Buscando en tu Mac'>EasyFind: Buscando en tu Mac</a></li>
+	<li><a href='http://www.llermania.com/mac/?p=902' title='Dragon Dictation para iPad/iPhone'>Dragon Dictation para iPad/iPhone</a></li>
+			
+</ul>
+
+<h5>Mensuales</h5>
+<ul>
+	<li><a href='http://www.llermania.com/mac/?m=201012' title='diciembre 2010'>diciembre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201011' title='noviembre 2010'>noviembre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201010' title='octubre 2010'>octubre 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201008' title='agosto 2010'>agosto 2010</a></li>
+	<li><a href='http://www.llermania.com/mac/?m=201007' title='julio 2010'>julio 2010</a></li>
+</ul>	
+
+
+
+	
+</div>
+</div>
+
+<div class="main">
+<div class="post-navigation">
+			<div class="alignleft">&laquo; <a href="http://www.llermania.com/mac/?p=101" rel="prev">Fluid</a></div>
+			<div class="alignright"><a href="http://www.llermania.com/mac/?p=122" rel="next">MailGmail</a> &raquo;</div>
+</div>	
+	<h4><a href="http://www.llermania.com/mac/?p=116" rel="bookmark" title="Permanent Link to Crear un instalador Mac OS X para una aplicación Java">Crear un instalador Mac OS X para una aplicación Java</a> 
+	</h4>
+	<div class="info-post">Por <b>kiermel</b> - <b>Última actualización:</b> Domingo, noviembre 23, 2008 - <a class="a2a_dd" style="font-size: 10px;font-weight:bold;" href="http://www.addtoany.com/share_save">Guardar y Compartir</a><script type="text/javascript">a2a_linkname=document.title;a2a_linkurl=location.href;</script><script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script> - <a style="font-size: 10px;font-weight:bold;" href="#respond">3 Comments</a></div>
+	<h2><small>(Actualizado para Mac OS X 10.5 — Leopard &#8211; Traducido por Kiermel)</small></h2>
+<div id="fxa:" style="padding: 1em 0pt; text-align: left;"><img style="width: 76px; height: 103px;" src="http://docs.google.com/File?id=dfcg3hdf_90hjcxpwgt_b" alt="" /></div>
+<p><a id="tqkf" title="Comunidad Java" href="http://community.java.net/mac/" target="_blank">Comunidad Java</a><br />
+<a id="z6zz" title="Artículo original en inglés" href="http://www.centerkey.com/mac/java/" target="_blank">Artículo original en inglés</a><br class="all" /></p>
+<div style="margin: 15px 0px 0px 15px; padding: 5px; float: right; font-size: 70%; text-align: right; text-transform: uppercase;"><span style="font-size: 250%;"><strong> </strong></span><strong> </strong></div>
+<p>Con algunos simples pasos puedes convertir un programa java (.jar) en una apropiada aplicación Mac OS X con un instalador nativo. Las instrucciones más abajo te guían paso a paso en el proceso de crear un programa ejemplo de la nada llamado &#8220;It&#8217;s Showtime!&#8221; que simplemente muestra la hora actual.  Una vez has completado con éxito el tutorial con el ejemplo del programa de Java, modifica los pasos para trabajar en tu propio programa Java.</p>
+<h3>1) Instalar Xcode</h3>
+<div id="vk4t" style="padding: 1em 0pt; text-align: left;"><img style="width: 49px; height: 66px;" src="http://docs.google.com/File?id=dfcg3hdf_82d5cprbhc_b" alt="" /></div>
+<p>La Suite Xcode de Apple incluye herramientas de desarrollo que necesitarás para empaquetar un programa Java. Primero, descarga <a title="Apple Developer Connection" href="http://developer.apple.com/technology/xcode.html">Xcode for Mac Development</a> (versión 3.1.1 o posterior) y abre el archivo <em>.dmg</em> descargado. Ahora ejecuta el archivo &#8220;XcodeTools.mpkg&#8221; y completa la instalación Xcode con todas las opciones por defecto.</p>
+<p>Antes de continuar con el siguiente paso, es una buena idea realizar una <a href="http://www.apple.com/softwareupdate/">&#8220;Actualización de Software&#8230;&#8221;</a> para asegurar que el SO está actualizado.</p>
+<h3>2) Lanzar Terminal Unix</h3>
+<div id="fclc" style="padding: 1em 0pt; text-align: left;"><img style="width: 55px; height: 67px;" src="http://docs.google.com/File?id=dfcg3hdf_83dthr7dc7_b" alt="" /></div>
+<p>Usando &#8220;Finder&#8221; ve a &#8220;Aplicaciones&#8221; y abre la carpeta &#8220;Utilidades&#8221;.  Baja hasta que veas &#8220;Terminal&#8221;.  Abre &#8220;Terminal&#8221; y está ahora en la consola Unix.<br />
+También puedes hacerlo usando SpotLight. Escribiendo <strong>Terminal</strong> en la caja de búsqueda.</p>
+<h3>3) Crear carpeta del proyecto</h3>
+<div id="rucr" style="padding: 1em 0pt; text-align: left;"><img style="width: 136px; height: 41px;" src="http://docs.google.com/File?id=dfcg3hdf_84gs4vrbcj_b" alt="" /></div>
+<p>En la Terminal Unix, escribe estos dos comandos:</p>
+<div class="command" style="color: #ff0000;"><em>mkdir ItsShowtime<br />
+cd ItsShowtime </em></div>
+<p>El primer comando crea una carpeta llamada &#8220;ItsShowtime&#8221;, y el segundo comando te mueve a la nueva carpeta.</p>
+<h3>4) Escribir algún código Java</h3>
+<div id="lgd9" style="padding: 1em 0pt; text-align: left;"><img style="width: 153px; height: 77px;" src="http://docs.google.com/File?id=dfcg3hdf_85d3brw6hn_b" alt="" /></div>
+<p>Mac OS X viene con un simple pero efectivo editor de texto llamado Pico. Usa los siguientes comandos para crear y editar un nuevo archivo Java:</p>
+<div class="command" style="color: #ff0000;"><em>pico ShowTime.java </em></div>
+<p>Escribe el siguiente código:</p>
+<div class="code" style="color: #ff0000;"><em> import java.util.Calendar;<br />
+import javax.swing.*;<br />
+public class ShowTime {<br />
+public static void main(String[] args) {<br />
+JFrame f = new JFrame();<br />
+f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);<br />
+f.setTitle(&#8220;It&#8217;s Showtime!&#8221;);<br />
+f.getContentPane().add(new JLabel( Calendar.getInstance().getTime().toString()));<br />
+f.pack();<br />
+f.setVisible(true);<br />
+}<br />
+} </em></div>
+<p><br class="all" /></p>
+<div class="legend">ver/descargar código</div>
+<p>Usa <em>&lt;<span style="color: #ff0000;">ctrl-x</span>&gt;</em> para salir de Pico.</p>
+<h3>5) Compilar el Programa Java</h3>
+<p><img class="stage_right" title="Screenshot" src="http://www.centerkey.com/mac/java/graphics/step-javac-icon.png" alt="Screen" /><br />
+Vuelve a la consola Unix, compila tu programa Java en un archivo class:</p>
+<div class="command"><em style="color: #ff0000;">javac ShowTime.java</em><br />
+<em style="color: #ff0000;">ls -la</em></div>
+<p>Podemos ejecutar el archivo <em>class</em> directamente, pero un archivo <em>class</em> es difícil de manejar. En vez de eso crearemos un archivo ejecutable JAR.</p>
+<h3>6) Crear el Ejecutable JAR</h3>
+<div id="u:j7" style="padding: 1em 0pt; text-align: left;"><img style="width: 196px; height: 41px;" src="http://docs.google.com/File?id=dfcg3hdf_86gcv4kzg4_b" alt="" /></div>
+<p>Antes vamos a crear el archivo ejecutable JAR, necesitamos un archivo manifest para indicar que class contiene la función &#8220;main&#8221;.  Vamos a usar Pico otra vez:</p>
+<div class="command" style="color: #ff0000;"><em>pico MainClass.txt </em></div>
+<p><em style="color: #ff0000;"> </em><span style="color: #000000;">Nuestro archivo manifest solo tendrá una línea:</span><em style="color: #ff0000;"><br />
+</em></p>
+<div class="code" style="color: #ff0000;"><em> Main-Class: ShowTime </em></div>
+<p><br class="all" /> Sal de Pico y usa el siguiente comando &#8220;jar&#8221; para crear el archivo &#8220;ShowTime.jar&#8221;:</p>
+<div class="command" style="color: #ff0000;"><em>jar cmf MainClass.txt ShowTime.jar *.class<br />
+ls -la </em></div>
+<p>Ahora prueba tu ejecutable JAR con el siguiente comando:</p>
+<div class="command"><em style="color: #ff0000;">java -jar ShowTime.jar</em></div>
+<p>La ventana &#8220;It&#8217;s Showtime!&#8221; con la hora actual se visualizará en la parte superior izquierda de la pantalla. Pulsa en el punto rojo para salir del programa.</p>
+<p>Aunque los comandos manuales para los pasos #5 y #6 de arriba funcionan bien, puedes automatizarlos usando <a href="http://ant.apache.org/manual/tutorial-HelloWorldWithAnt.html">Ant</a> con este archivo <a href="http://www.centerkey.com/mac/java/build.xml.php">build.xml</a>.</p>
+<h3>7) Crear el Icono de la Aplicación</h3>
+<div id="t18." style="padding: 1em 0pt; text-align: left;"><img style="width: 90px; height: 69px;" src="http://docs.google.com/File?id=dfcg3hdf_87dhd885qw_b" alt="" /></div>
+<p>El icono por defecto de un ejecutable JAR es una taza de café. Para añadir un icono personal, necesitamos usar &#8220;Icon Composer&#8221;.</p>
+<p>Descarga y guarda (<em>&lt;<span style="color: #ff0000;">ctrl-click</span>&gt;</em>) este archivo PNG ejemplo al &#8220;Escritorio&#8221;:  <a href="http://www.centerkey.com/mac/java/ShowTime.png">ShowTime.png</a></p>
+<p>Después mueve el archivo a la carpeta &#8220;ItsShowtime&#8221; con el siguiente comando:</p>
+<div class="command"><em style="color: #ff0000;">mv ../Desktop/ShowTime.png</em> .</div>
+<p>Ahora vamos a crear el archivo de icono.</p>
+<p>Pasos:</p>
+<ol>
+<li> Usa &#8220;Finder&#8221; para navegar a la carpeta &#8220;Developer:Applications:Utilities&#8221; y doble clic en &#8220;Icon Composer&#8221;.</li>
+<li> Vuelve al &#8220;Finder&#8221; y navega a tu carpeta &#8220;ItsShowtime&#8221;, que está en tu carpeta de usuario (home).</li>
+<li> Arrastra la imagen &#8220;ShowTime.png&#8221; en la caja de &#8220;128&#8243; en la pantalla &#8220;Icon Composer&#8221;. Cuando te pregunte el tamaño, elige &#8220;Copy to all smaller sizes&#8221; y pulsa en el botón &#8220;Import&#8221;.</li>
+<li> Ve al menú &#8220;File&#8221; y selecciona la opción &#8220;Save&#8221;. Ahora deselecciona la opción &#8220;Hide extension&#8221; y guarda como &#8220;ShowTime.icns&#8221;.</li>
+<li> Sal de &#8220;IconComposer&#8221;.</li>
+</ol>
+<p>Lo siguiente es crear una aplicación Mac (con tu icono nuevo).</p>
+<h3> <img src='http://www.llermania.com/mac/wp-includes/images/smilies/icon_cool.gif' alt='8)' class='wp-smiley' /> Empaquetar el JAR</h3>
+<div id="a-:t" style="padding: 1em 0pt; text-align: left;"><img style="width: 67px; height: 66px;" src="http://docs.google.com/File?id=dfcg3hdf_88hctc2zdf_b" alt="" /></div>
+<p>Usando &#8220;Finder&#8221;, navega a la carpeta &#8220;Developer:Applications:Utilities&#8221; y doble clic en &#8220;Jar Bundler&#8221;.</p>
+<p>Pasos:</p>
+<ol>
+<li> Para &#8220;Main Class:&#8221;, usa el botón &#8220;Choose&#8230;&#8221; y elige &#8220;ShowTime.jar&#8221;.</li>
+<li> Marca la opción &#8220;Use Macintosh Menu Bar&#8221;.</li>
+<li> Usa el botón &#8220;Choose Icon&#8230;&#8221; para elegir el archivo &#8220;SnapBackup.icns&#8221; (tendrás que navegar a un muy alto nivel de carpeta y dentro de la carpeta &#8220;Usuarios&#8221; a la de tu Usuario para encontrar la carpeta &#8220;ItsShowtime&#8221;).</li>
+<li> Pulsa en la pestaña &#8220;Properties&#8221; y escribe &#8220;1.0&#8243; en el campo &#8220;Version:&#8221;.</li>
+<li>También escribe&#8221;1.0&#8243; en el campo &#8220;Get-Info String:&#8221;.</li>
+<li> Pulsa en el botón &#8220;Create Application&#8230;&#8221;.</li>
+<li> Navega a la carpeta &#8220;ItsShowtime&#8221;.</li>
+<li> En el campo &#8220;File:&#8221;, escribe &#8220;Show Time&#8221;.</li>
+<li> Pulsa en el botón &#8220;Create&#8221;.</li>
+<li> Salir de &#8220;Jar Bundler&#8221;.</li>
+</ol>
+<p>Tienes ahora una aplicación Mac apropiada. Lo siguiente es crear un instalador para tu aplicación.</p>
+<h3>9) Crear Instalador Mac</h3>
+<div id="f4po" style="padding: 1em 0pt; text-align: left;"><img style="width: 85px; height: 71px;" src="http://docs.google.com/File?id=dfcg3hdf_89fwp5whcn_b" alt="" /></div>
+<p>Usando &#8220;Finder&#8221;, navega a la carpeta &#8220;Developer:Applications:Utilities&#8221; y doble clic en &#8220;PackageMaker&#8221;.</p>
+<p>Pasos:</p>
+<ol>
+<li> En el campo &#8220;Organization:&#8221; en la ventana &#8220;Install Properties&#8221;, escribe &#8220;com.centerkey&#8221;. Y pulsa &#8220;OK&#8221;.</li>
+<li> En el campo &#8220;Title:&#8221; escribe &#8220;Show Time&#8221;.</li>
+<li> Ve al menú &#8220;Project&#8221; y selecciona &#8220;Add Contents&#8230;&#8221;.  Navega a la carpeta &#8220;ItsShowtime&#8221; y selecciona &#8220;Show Time&#8221;.</li>
+<li> Pulsa en la pestaña &#8220;Contents&#8221;.  Marca la opción &#8220;Include root in package&#8221; y pulsa en el botón &#8220;Apply Recommendations&#8221;.</li>
+<li> Ahora pulsa en el botón &#8220;Build&#8221; (martillo). En el campo &#8220;Save As:&#8221;, escribe &#8220;ShowTimeInstaller.pkg&#8221;. Pulsa en el botón &#8220;Save&#8221; y después en el botón &#8220;Return&#8221;.</li>
+<li> Ve al menú &#8220;File&#8221; y selecciona &#8220;Save&#8221;. En el campo &#8220;Save As:&#8221;, escribe &#8220;ShowTime.pmdoc&#8221; y pulsa en &#8220;Save&#8221;.</li>
+<li> Sal de &#8220;PackageMaker&#8221;.</li>
+</ol>
+<p>¡Tu instalador está hecho! <img src='http://www.llermania.com/mac/wp-includes/images/smilies/icon_wink.gif' alt=';-)' class='wp-smiley' /> </p>
+			<div class="small box">
+	Publicado en <a href="http://www.llermania.com/mac/?cat=4" title="Ver todas las entradas en Tutoriales" rel="category">Tutoriales</a> &bull; Tags: <a href="http://www.llermania.com/mac/?tag=aplicacion" rel="tag">aplicación</a>, <a href="http://www.llermania.com/mac/?tag=instalador" rel="tag">instalador</a>, <a href="http://www.llermania.com/mac/?tag=java" rel="tag">java</a> &bull; <a href="#" title="Arriba de la página"/>Arriba de la página</a> 
+    </div>
+
+	<p>
+	<h3 id="comments">3 Respuestas to &#8220;Crear un instalador Mac OS X para una aplicación Java&#8221;</h3>
+
+
+<div class="comment">
+<div class="gravatarside"></div>
+<p class="commenticon">
+<strong>Pingback</strong> from <strong><a href="http://www.llermania.com/mac/?p=136">Mackiermel &raquo; Archivo del Blog &raquo; Babiloo</a></strong>
+<br />
+<strong>Time</strong> 1 diciembre 2008 en 19:27</p>
+<p>[...] OS X desde una aplicación java, y crear un paquete instalador. Eso lo habéis podido comprobar en un artículo anterior que he traducido del [...]</p>
+
+</div>
+
+
+<div class="comment">
+<div class="gravatarside"><img alt='' src='http://0.gravatar.com/avatar/a959c15738ffeb76f6837103782b57f8?s=48&amp;d=http%3A%2F%2F0.gravatar.com%2Favatar%2Fad516503a11cd5ca435acc9bb6523536%3Fs%3D48&amp;r=G' class='avatar avatar-48 photo' height='48' width='48' /></div>
+<p class="commenticon">
+<strong>Comment</strong> from <strong>rkultra</strong>
+<br />
+<strong>Time</strong> 15 diciembre 2009 en 18:19</p>
+<p>muy util el tutorial pero se me escapa algo es creado un instalador con “PackageMaker” a partir de un kext el instalador se ejecuta pero no da resultado ni aparece el kext en extensions.espero tu respuesta</p>
+
+</div>
+
+
+<div class="comment">
+<div class="gravatarside"><img alt='' src='http://1.gravatar.com/avatar/b0b20fa178cdb43d0553141f7accdc24?s=48&amp;d=http%3A%2F%2F1.gravatar.com%2Favatar%2Fad516503a11cd5ca435acc9bb6523536%3Fs%3D48&amp;r=G' class='avatar avatar-48 photo' height='48' width='48' /></div>
+<p class="commenticon">
+<strong>Comment</strong> from <strong><a href="http://n/a">juan</a></strong>
+<br />
+<strong>Time</strong> 4 noviembre 2010 en 5:11</p>
+<p>y si quiero hacer un dmg???? como le haria&#8230; he visto un programa P2P hecho en java que se instala atraves de un dmg!!! o eso es lo de menos????<br />
+Estoy haciendo una app en java para mac y tengo que entregarla al cliente para que la instale&#8230; otra de mis dudas es como hacerle con la bd&#8230; supongamos que hago una calculadora en java&#8230; con el .jar puedo ejecutarla y eso es todo.. pero si hago una app que usa una bd para almacenar datos ke mas necesito? instalar la bd mysql en cada maquina que use mi app o al hacer el .jar me proporciona los archivos para manejar los datos y las tablas&#8230; ????????????</p>
+
+</div>
+
+
+<div id="respond">
+<h3>Escribe un comentario</h3>
+<form action="http://www.llermania.com/mac/wp-comments-post.php" method="post" id="commentform">
+<p><input type="text" name="author" id="author" value="" size="22" tabindex="1" />
+<label for="author"><small>Nombre (required)</small></label></p>
+<p><input type="text" name="email" id="email" value="" size="22" tabindex="2" />
+<label for="email"><small>Correo-e (no se mostrará) (required)</small></label></p>
+<p><input type="text" name="url" id="url" value="" size="22" tabindex="3" />
+<label for="url"><small>Sitio Web</small></label></p>
+
+<p><textarea name="comment" id="area1" cols="50%" rows="10" tabindex="4"></textarea></p>    	
+<p><input type="hidden" name="comment_post_ID" value="116" />
+<input type="image" src="http://www.llermania.com/mac/wp-content/themes/andyblue/images/submit.gif" value="Add Comment" id="submit" name="submit" alt="Añadir Comentario"/>
+<p><p id="sfc_comm_send"></p></p>
+</form>
+</div>
+
+</p>
+	
+	</div>
+
+    <div class="footer"><script type="text/javascript">
+FB_RequireFeatures(["XFBML"], function() {
+  	FB.init("11925dda5fda6efbb8b296e6be1bb401", "http://www.llermania.com/mac/?xd_receiver=1", {"permsToRequestOnConnect":"email"});
+});
+</script>
+<style type="text/css">
+#fb-user { border: 1px dotted #C0C0C0; padding: 5px; display: block; height: 96px; }
+#fb-user .fb_profile_pic_rendered { margin-right: 5px; }
+#fb-user a.FB_Link img { float: left; }
+</style>
+
+<script type="text/javascript">
+var fb_connect_user = false;
+
+function sfc_update_user_details() {
+	fb_connect_user = true;
+
+	// Show their FB details TODO this should be configurable, or at least prettier...
+	if (!jQuery('#fb-user').length) {
+		jQuery('#comment-user-details').hide().after("<span id='fb-user'>" +
+		"<fb:profile-pic uid='loggedinuser' facebook-logo='true' size='normal' height='96'></fb:profile-pic>" +
+		"<span id='fb-msg'><strong><fb:intl>Hi</fb:intl> <fb:name uid='loggedinuser' useyou='false'></fb:name>!</strong><br /><fb:intl>You are connected with your Facebook account.</fb:intl>" +
+		"<a href='#' onclick='FB.Connect.logoutAndRedirect(\"http://www.llermania.com/mac/?p=116\"); return false;'>Logout</a>" +
+		"</span></span>");
+		jQuery('#sfc_comm_send').html('<input style="width: auto;" type="checkbox" id="sfc_comm_share" /><label for="sfc_comm_send"><fb:intl>Share Comment on Facebook</fb:intl></label>');
+	}
+
+	// Refresh the DOM
+	FB.XFBML.Host.parseDomTree();
+}
+
+jQuery("#commentform").bind('submit',sfc_handle_submit_share);
+function sfc_handle_submit_share() {
+	if (jQuery('#sfc_comm_share:checked').val() == 'on') {
+		sfc_setCookie('sfc_share', 'yes');
+	}
+	return true;
+}
+
+// first, check if we already have email permission
+var sfc_comm_email_perm = false;
+FB.ensureInit ( function () { 
+	FB.Facebook.apiClient.users_hasAppPermission('email',function(res,ex){
+		if (res == 0) {
+			// no permission, ask for it on submit
+			jQuery("#commentform").bind('submit',sfc_get_email_perms);
+		} else {
+			// we have permission, no special handler needed
+			sfc_comm_email_perm = true;
+		}
+	});
+});
+
+// ask for email permission
+function sfc_get_email_perms() {
+	if (sfc_comm_email_perm) return true;
+	if (fb_connect_user) {
+		FB.Facebook.apiClient.users_hasAppPermission('email',function(res,ex){
+			if (res == 0) {
+				FB.Connect.showPermissionDialog("email", function(perms) {
+					if (perms.match("email")) {
+						sfc_commentform_submit();
+					} else {
+						var dialog = FB.UI.FBMLPopupDialog('Email required', '');
+						var fbml='\
+<div id="fb_dialog_content" class="fb_dialog_content">\
+	<div class="fb_confirmation_stripes"></div>\
+	<div class="fb_confirmation_content"><p>This site requires permission to get your email address for you to leave a comment. You can not leave a comment without granting that permission.</p></div>\
+</div>';
+						dialog.setFBMLContent(fbml);
+						dialog.setContentWidth(540); 
+						dialog.setContentHeight(65);
+						dialog.set_placement(FB.UI.PopupPlacement.topCenter);
+						dialog.show();
+						setTimeout ( function() { dialog.close(); }, 5000 );					
+					}
+				});
+			} else {
+				sfc_commentform_submit();
+			}
+		});
+		return false;
+	} else {
+		return true;
+	}	
+}
+
+// submit the form
+function sfc_commentform_submit() {
+	jQuery("#commentform").unbind('submit',sfc_get_email_perms);
+	jQuery("#commentform :submit").click();
+}
+
+function sfc_setCookie(c_name,value,expiredays) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate()+expiredays);
+	document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
+
+function sfc_getCookie(c_name) {
+	if (document.cookie.length>0) {
+		c_start=document.cookie.indexOf(c_name + "=");
+		if (c_start!=-1) {
+			c_start=c_start + c_name.length+1;
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) c_end=document.cookie.length;
+			return unescape(document.cookie.substring(c_start,c_end));
+		}
+	}
+	return "";
+}
+
+FB.ensureInit ( function () { 
+	FB.Connect.ifUserConnected(sfc_update_user_details);
+	if (sfc_getCookie('sfc_share') == 'yes') {
+		sfc_setCookie('sfc_share', null);
+				
+		FB.Connect.streamPublish(null, 
+			{"name":"Crear un instalador Mac OS X para una aplicaci\u00f3n Java","href":"http:\/\/www.llermania.com\/mac\/?p=116","description":"(Actualizado para Mac OS X 10.5 \u2014 Leopard - Traducido por Kiermel)  Comunidad Java Art\u00edculo original en ingl\u00e9s    Con algunos simples pasos puedes convertir un programa java (.jar) en una apropiada aplicaci\u00f3n Mac OS X con un instalador nativo. Las instrucciones m\u00e1s abajo te gu\u00edan paso a paso en el proceso [...]","caption":"{*actor*} left a comment on Crear un instalador Mac OS X para una aplicaci\u00f3n Java","comments_xid":"http%3A%2F%2Fwww.llermania.com%2Fmac%2F%3Fp%3D116"},
+			[{"text":"Read Post","href":"http:\/\/www.llermania.com\/mac\/?p=116"}]			);
+	}
+}); 
+</script>
+	<p>Copyright &copy; 2008 Mackiermel<br/>
+<p>Credits: <a href="http://www.italiasw.com" title="Realized By">Matteo Turchetto</a> | <a href="http://andreasviklund.com" title="Inspired by Andreas 08 Template">Andreas Viklund</a> </p>
+    </div>
+  </body>
+
+  
+

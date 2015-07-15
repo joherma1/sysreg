@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE RegAdmin [
+	<!ELEMENT RegAdmin (Sensores,Calendario)>
+	<!ELEMENT Sensores (Temperatura)*>
+	<!ELEMENT Temperatura (id, alias)>
+	<!ELEMENT id (#PCDATA)>
+	<!ELEMENT alias (#PCDATA)>
+	<!ELEMENT Calendario (usuario,contraseña)>
+	<!ATTLIST Calendario tipo CDATA #REQUIRED>
+	<!ELEMENT usuario (#PCDATA)>
+	<!ELEMENT contraseña (#PCDATA)>
+]>
+<RegAdmin>
+	<Sensores>
+		<Temperatura>
+			<id>28f5e9zf020000d2</id>
+			<alias>Sensor superior</alias>
+		</Temperatura>
+		<Temperatura>
+			<id>282ddbaf020000b0</id>
+			<alias>Sensor inferior</alias>
+		</Temperatura>
+	</Sensores>
+	<Calendario tipo="gmail">
+		<usuario>sysreg1</usuario>
+		<contraseña>agricultura.1</contraseña>
+	</Calendario>
+</RegAdmin>

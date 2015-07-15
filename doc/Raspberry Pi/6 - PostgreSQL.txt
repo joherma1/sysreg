@@ -1,0 +1,31 @@
+apt-get install postgresql-9.1
+
+#Default config directory is: /etc/postgresql/9.1/main
+#Default data directory is: /var/lib/postgresql/9.1/main
+
+#The database server program is called postgres
+
+passwd postgres
+
+su postgres 
+
+#crear base de datos
+createdb mydb
+
+#consola
+psql
+
+#cambiar la contaseña del usuario postgres en la bd
+ALTER USER postgres WITH PASSWORD 'nueva_password';
+
+#editamos la configuracion para permitir las conexiones tcp
+nano /etc/postgresql/9.1/main/postgresql.conf 
+	listen_addresses = '*'
+	password_encryption = on
+	tcp_keepalives_idle = 60
+
+nano /etc/postgresql/9.1/main/pg_hba.conf 
+host    all             all             10.0.1.0/24             md5
+#host   all             all             0.0.0.0/0    md5
+
+

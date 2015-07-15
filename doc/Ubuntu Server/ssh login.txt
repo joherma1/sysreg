@@ -1,0 +1,12 @@
+#SSH login
+
+#On A host
+ssh-keygen -t rsa
+
+#Your public key has been saved in /home/a/.ssh/id_rsa.pub
+
+#Create ~/.ssh  on host B
+mkdir .ssh
+
+#Append public key from A on B, file .ssh/authorized_keys
+cat .ssh/id_rsa.pub | ssh b@B 'cat >> .ssh/authorized_keys'

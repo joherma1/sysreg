@@ -1,0 +1,26 @@
+#Tutorial
+http://www.mononeurona.org/pages/display/635
+
+
+ GNU Screen. It allows long-running programs to execute, and you can "detach" (desprender) and "reattach" (reemprender) to these sessions at will.
+
+#reattach
+screen -r <screen-id>
+
+screen -list
+
+sudo apt-get install screen
+
+#Fichero de configuración general
+sudo nano /etc/screenrc 
+#Eliminamos el comentario
+startup_message off
+
+#Desprender una sesion
+CTRL-a d 
+
+#Prender session
+screen -r
+
+#Cambiar sesion
+CTRL-a CTRL-w

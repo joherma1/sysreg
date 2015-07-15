@@ -1,0 +1,45 @@
+
+RXTX:
+a) Instalar RXTX en el sistema:
+	Version Estable 2.1.7
+	
+	Mac:
+	
+	Copiar en  /Library/Java/Extensions/ (para que este disponible para todos los usuarios) librxtxSerial.jnilib y RXTXcomm.jar
+	Modificar permisos en var/lock para poder abrir el puerto fixperm-217-leo.sh
+	
+	
+	La version 2.2 esta compilada para 64 bits pero tiene problemas al SerialPort.close() 
+	
+	Windows:
+	
+	Para ejecutar:
+	Identify your Java Runtime Environment's folder. For version 1.6.0, this usually is
+
+    c:\Program Files\Java\jre1.6.0_01\ 
+
+    * Copy rxtxParallel.dll to c:\Program Files\Java\jre1.6.0_01\bin\
+    * Copy rxtxSerial.dll to c:\Program Files\Java\jre1.6.0_01\bin\
+    * Copy RXTXcomm.jar to c:\Program Files\Java\jre1.6.0_01\lib\ext\ 
+    
+    Para desarrollar:
+    Identify your Java Development Kit's folder. For version 1.6.0, this usually is
+
+    c:\Program Files\Java\jdk1.6.0_01\ 
+
+    * Copy rxtxParallel.dll to c:\Program Files\Java\jdk1.6.0_01\jre\bin\
+    * Copy rxtxSerial.dll to c:\Program Files\Java\jdk1.6.0_01\jre\bin\
+    * Copy RXTXcomm.jar to c:\Program Files\Java\jdk1.6.0_01\jre\lib\ext\ 
+    
+    
+	
+b)Incluir RXTX en el proyecto (como lo hacer arduino):
+	Incluir en la carpeta del proyecto librxtxSerial.jnilib y RXTXcomm.jar de la siguiente manera
+	MyHelloWorld/lib/RXTXcomm.jar
+    MyHelloWorld/librxtxSerial.jnilib 
+    
+    Importar en el path el jar (import jar file, NO external jar)
+    
+    Igual hay que ejecutar el fixperm antes
+    
+    Donde esté el jar deberan estar los drivers para el sistema operativo de la libreria RXTX librxtxSerial.jnilib

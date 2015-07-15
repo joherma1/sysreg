@@ -1,0 +1,143 @@
+apt-get install apache2
+
+#Editar fichero host con la ip y los nombres del dominio
+#Como no tenemos un DNS configurado con estos dominios, acudimos al fichero host para que el servidor
+#entienda directamente estos dominios
+vi /etc/hosts
+127.0.0.1       localhost arroveitor.no-ip.org
+127.0.1.1       server-roveitor arroveitor.no-ip.org
+10.0.1.13       arroveitor.no-ip.org
+
+#Copiamos las paginas webs en /var/www quedando organizadas por carpetas
+ls /var/www/
+index.html  regadminweb
+
+#/etc/apache2/apache.conf vamos a tener nuestra configuración global (Todos los Virtual host)
+#Para una configuración especifica para cada virtual host editar el fichero (podemos partir del fichero default)
+#de /etc/sites-available/... configurados por nombre, ip o puerto
+
+#En nuestro caso dejamos la configuración global por defecto, elminiamos el sitio por defecto (default) 
+#y creamos una nueva web con autenticación básica y configurada especificamente en un Virtual Host!!
+a2dissite default
+
+cp  sites-available/default sites-available/regadminweb
+
+vi sites-available/regadminweb
+<VirtualHost *:80>
+        ServerAdmin joherma1@gmail.com
+        ServerName arroveitor.no-ip.org
+
+        DocumentRoot /var/www/regadminweb
+
+        <Directory /var/www/regadminweb>
+                Options Indexes FollowSymLinks MultiViews
+                AuthType Basic
+                AuthName "Zona privada RegAdminWeb"
+                AuthUserFile /etc/apache2/users
+                AuthGroupFile /etc/apache2/groups
+                require valid-user
+                #require user jose
+                AllowOverride None
+                DirectoryIndex RegAdminWeb.html
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+#Añadimos el nuevo sitio
+a2ensite regadminweb
+
+#Si tenemos más de una pagina replicar estos comandos por n
+
+#Reiniciamos el servidor
+service apache2 restart
+
+#-----REDIRECCIÓN A TOMCAT DEL SERVLET
+#Utilizamos apache para acelerar las páginas estaticas, pero en /var/lib/tomcat7/webapps/regadminweb/ esta la aplicacion original
+#Por tanto debemos tener 
+        #en Apache (/var/wwww) una copia del proyecto GWT (carpeta war renombrada) sin la carpeta WEB-INF (servlet)
+        #en Tomcat (/var/lib/tomcat7/webapps/) subido la carpeta war comprimida con el nombre del proyecto
+
+#Habilitar proxis en apache (proxy elegido mod_proxy)
+vi /etc/apache2/mods-available/proxy.load 
+        LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
+
+vi /etc/apache2/mods-available/proxy.conf
+        <IfModule mod_proxy.c>
+
+                ProxyRequests Off
+                <Proxy *>
+                AddDefaultCharset off
+                Order deny,allow
+                Allow from all
+               #Allow from .example.com
+                </Proxy>
+
+                ProxyVia On
+
+        </IfModule>
+
+#configuramos el proxy http
+vi /etc/apache2/mods-available/proxy_http.load 
+        LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
+
+vi /etc/apache2/mods-available/proxy_http.conf
+        #conforme dice google para cada servicio
+        ProxyPass /regadminweb/regadminweb/alreg http://localhost:8080/regadminweb/regadminweb/alreg
+        ProxyPassReverse /regadminweb/regadminweb/alreg http://localhost:8080/regadminweb/regadminweb/alreg
+
+        #o proxy para TODO, incluido estaticos
+        ProxyPass / http://localhost:8080/
+        ProxyPassReverse / http://localhost:8080/
+
+#habilitamos los modulos y reiniciamos
+        a2dismod proxy
+        a2dismod proxy_http
+        a2dismod proxy_ajp
+        a2enmod proxy
+        a2enmod proxy_http
+        a2enmod proxy_ajp
+        service apache2 restart
+
+#Para verificar si funciona la redirección a tomcat al escribir 
+http://10.0.1.13:8080/regadminweb/regadminweb/alreg
+#debe aparecer El Metodo HTTP GET no está soportado por esta URL
+#y si lo hacemos por apache lo mismo
+http://10.0.1.13/regadminweb/regadminweb/alreg
+#Si no aparece lo mismo hay algun error
+
+#-----Autenticación Basica Apache
+#Añadir en la directiva en el Virtual Host
+vi /etc/apache2/usuarios
+                AuthType Basic
+                AuthName "Zona privada RegAdmin"
+                AuthUserFile /etc/apache2/usuarios
+                AuthGroupFile /etc/apache2/grupos
+                require valid-user
+
+#Para crear los usuarios vamos a necesitar de htpasswd que ya viene con apache. 
+
+htpasswd -c /etc/apache2/users jose
+htpasswd /etc/apache2/users user1
+
+#Para crear los grupos creamos el archivo manualmente con la siguiente estructura : 
+vi /etc/apache2/groups
+gruop_estandar : user1 jose 
+
+
+
+###Ficheros de log 
+#por defecto si no se cambia la directiva de log
+vi /var/log/apache2/error.log
+vi /var/log/apache2/access.log
+#Para ver el fichero en tiempo real
+tail -f /var/log/apache2/error.log 

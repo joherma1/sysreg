@@ -1,0 +1,26 @@
+sudo apt-get install cifs-utils
+
+sudo mkdir /media/windowsshare
+
+#Editamos el fichero /etc/fstab
+
+#podemos poner la contraseña directamente
+//servername/sharename  /media/windowsshare  cifs  username=msusername,password=mspassword  0  0
+# O conectar como invitado
+//servername/sharename  /media/windowsshare  cifs  guest,uid=1000,iocharset=utf8,codepage=unicode,unicode  0  0
+
+#-->Pero lo mejor es guardar la contraseña en un fichero protegido
+sudo nano /etc/fstab
+//servername/sharename /media/windowsshare cifs credentials=/home/ubuntuusername/.smbcredentials,iocharset=utf8,file_mode=0777,dir_mode=0777 0 0 
+
+#y crear un fichero protegido
+sudo nano ~/.smbcredentials
+
+	username=msusername
+	password=mspassword
+
+chmod 600 ~/.smbcredentials
+
+
+#Para probar que funciona
+sudo mount -a

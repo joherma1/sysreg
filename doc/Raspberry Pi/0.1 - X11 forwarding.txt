@@ -1,0 +1,31 @@
+X11 forwarding
+
+#por defecto activada en /etc/ssh/sshd_config
+
+ssh -X pi@10.0.1.19
+
+#NO FUNCIONA, comando innecsario
+startx 
+
+#Arrancar todo el escritorio
+lxsession
+#ó
+ssh -X pi@<ip of your pi> lxsession
+
+
+#Arrancar solo la barra de aplicaciones
+lxpanel
+
+#Arrancar navegador de archivos
+pcmanfm
+
+#Arrancar navegador web
+midori
+#ó
+dillo
+
+#Arrancar editor de textos
+leafpad
+
+#Arrancar monitor de actividad
+lxtask
