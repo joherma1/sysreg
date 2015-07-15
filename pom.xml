@@ -17,6 +17,10 @@
                 <directory>src/imagenes</directory>
                 <targetPath>imagenes</targetPath>
             </resource>
+            <resource>
+                <directory>src/configuracion</directory>
+                <targetPath>configuracion</targetPath>
+            </resource>
         </resources>
     </build>
 
