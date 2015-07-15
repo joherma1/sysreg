@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -239,7 +238,7 @@ public class Interfaz {
 			gridBagConstraints11.gridy = 0;
 			l_solenoide = new JLabel();
 			l_solenoide.setText("");
-			l_solenoide.setIcon(new ImageIcon(getClass().getResource(
+			l_solenoide.setIcon(new ImageIcon( getClass().getResource(
 					"/imagenes/thumb-PGV-100G.jpg")));
 			p_interfaz.add(l_solenoide, gridBagConstraints11);
 			GridBagConstraints gbc_lblSol = new GridBagConstraints();
